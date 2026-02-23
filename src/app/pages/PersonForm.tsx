@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm, Controller } from 'react-hook-form';
 import { usePersonnel } from '../context/PersonnelContext';
@@ -107,9 +108,25 @@ export function PersonForm() {
         updatedAt: new Date().toISOString(),
       };
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<Person>({
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<Person>({
     defaultValues,
   });
+
+  useEffect(() => {
+    if (existingPerson) {
+      reset({
+        ...existingPerson,
+        family: {
+          ...existingPerson.family,
+          emergencyContact: {
+            name: existingPerson.family?.emergencyContact?.name || '',
+            phone: existingPerson.family?.emergencyContact?.phone || '',
+            relation: existingPerson.family?.emergencyContact?.relation || '',
+          },
+        },
+      });
+    }
+  }, [existingPerson?.id]);
 
   const onSubmit = (data: Person) => {
     if (isEditMode) {
