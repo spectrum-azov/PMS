@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router';
 import { usePersonnel } from '../context/PersonnelContext';
 import { useDictionaries } from '../context/DictionariesContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Users, UserCheck, UserX, Award, TrendingUp } from 'lucide-react';
 
 export function Dashboard() {
+  const navigate = useNavigate();
   const { personnel } = usePersonnel();
   const { units, positions } = useDictionaries();
 
@@ -182,7 +184,10 @@ export function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-center">
+            <button
+              className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-center"
+              onClick={() => navigate('/personnel/new')}
+            >
               <Users className="w-6 h-6 mx-auto mb-2 text-gray-400" />
               <p className="text-sm font-medium text-gray-700">Додати особу</p>
             </button>

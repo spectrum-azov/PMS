@@ -7,6 +7,7 @@ import { PersonForm } from './pages/PersonForm';
 import { UnitsPage } from './pages/UnitsPage';
 import { PositionsPage } from './pages/PositionsPage';
 import { RolesPage } from './pages/RolesPage';
+import { SettingsPage } from './pages/SettingsPage';
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
       {
         path: 'personnel',
         Component: PersonnelRegistry,
+      },
+      {
+        path: 'personnel/new',
+        Component: PersonForm,
       },
       {
         path: 'personnel/:id',
@@ -40,6 +45,10 @@ export const router = createBrowserRouter([
       {
         path: 'roles',
         Component: RolesPage,
+      },
+      {
+        path: 'settings',
+        Component: SettingsPage,
       },
     ],
   },

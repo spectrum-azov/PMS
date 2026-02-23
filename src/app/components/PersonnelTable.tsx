@@ -60,8 +60,8 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
   };
 
   return (
-    <div className="border rounded-lg overflow-hidden bg-white">
-      <Table>
+    <div className="border rounded-lg overflow-hidden bg-white overflow-x-auto">
+      <Table className="min-w-[900px]">
         <TableHeader>
           <TableRow>
             <TableHead>Позивний</TableHead>

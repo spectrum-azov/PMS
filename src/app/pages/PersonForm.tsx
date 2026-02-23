@@ -39,40 +39,84 @@ const ranks: Rank[] = [
   'Полковник'
 ];
 
+const phonePattern = /^(\+380\d{9}|0\d{9})$/;
+
+function validateBirthDate(value: string): true | string {
+  if (!value) return "Обов'язкове поле";
+  const date = new Date(value);
+  const now = new Date();
+  if (date >= now) return 'Дата не може бути у майбутньому';
+  const age = now.getFullYear() - date.getFullYear() -
+    (now < new Date(now.getFullYear(), date.getMonth(), date.getDate()) ? 1 : 0);
+  if (age < 18) return 'Вік має бути не менше 18 років';
+  if (age > 70) return 'Вік має бути не більше 70 років';
+  return true;
+}
+
 export function PersonForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getPersonById, addPerson, updatePerson } = usePersonnel();
   const { units, positions, roles } = useDictionaries();
 
-  const isEditMode = id !== 'new';
+  const isEditMode = id !== undefined;
   const existingPerson = isEditMode ? getPersonById(id!) : null;
 
+  const defaultValues: Person = existingPerson
+    ? {
+        ...existingPerson,
+        family: {
+          ...existingPerson.family,
+          emergencyContact: {
+            name: existingPerson.family?.emergencyContact?.name || '',
+            phone: existingPerson.family?.emergencyContact?.phone || '',
+            relation: existingPerson.family?.emergencyContact?.relation || '',
+          },
+        },
+      }
+    : {
+        id: '',
+        callsign: '',
+        fullName: '',
+        rank: 'Солдат',
+        birthDate: '',
+        serviceType: 'Контракт',
+        tagNumber: '',
+        unitId: '',
+        positionId: '',
+        roleIds: [],
+        status: 'Служить',
+        phone: '',
+        citizenship: 'Україна',
+        address: '',
+        registrationAddress: '',
+        militaryId: '',
+        passport: '',
+        taxId: '',
+        bloodType: '',
+        recruitedBy: '',
+        recruitedDate: '',
+        family: {
+          emergencyContact: {
+            name: '',
+            phone: '',
+            relation: '',
+          },
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
   const { register, handleSubmit, control, formState: { errors } } = useForm<Person>({
-    defaultValues: existingPerson || {
-      id: '',
-      callsign: '',
-      fullName: '',
-      rank: 'Солдат',
-      birthDate: '',
-      serviceType: 'Контракт',
-      unitId: '',
-      positionId: '',
-      roleIds: [],
-      status: 'Служить',
-      phone: '',
-      citizenship: 'Україна',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
+    defaultValues,
   });
 
   const onSubmit = (data: Person) => {
     if (isEditMode) {
-      updatePerson(id!, data);
+      updatePerson(id!, { ...data, updatedAt: new Date().toISOString() });
       toast.success('Дані успішно оновлено');
     } else {
-      const newPerson = {
+      const newPerson: Person = {
         ...data,
         id: `person-${Date.now()}`,
         createdAt: new Date().toISOString(),
@@ -99,7 +143,7 @@ export function PersonForm() {
               {isEditMode ? 'Редагування особи' : 'Додати нову особу'}
             </h2>
             <p className="text-gray-600 mt-1">
-              {isEditMode ? 'Внесіть зміни у дані' : 'Заповніть обов\'язкові поля'}
+              {isEditMode ? 'Внесіть зміни у дані' : "Заповніть обов'язкові поля"}
             </p>
           </div>
         </div>
@@ -131,7 +175,10 @@ export function PersonForm() {
                     <Label htmlFor="callsign">Позивний *</Label>
                     <Input
                       id="callsign"
-                      {...register('callsign', { required: 'Обов\'язкове поле' })}
+                      {...register('callsign', {
+                        required: "Обов'язкове поле",
+                        minLength: { value: 2, message: 'Мінімум 2 символи' },
+                      })}
                       placeholder="Сатурн"
                     />
                     {errors.callsign && (
@@ -143,7 +190,11 @@ export function PersonForm() {
                     <Label htmlFor="fullName">Повне ім'я *</Label>
                     <Input
                       id="fullName"
-                      {...register('fullName', { required: 'Обов\'язкове поле' })}
+                      {...register('fullName', {
+                        required: "Обов'язкове поле",
+                        validate: (v) =>
+                          v.trim().split(/\s+/).length >= 2 || 'Введіть як мінімум прізвище та ім\'я',
+                      })}
                       placeholder="Іваненко Іван Іванович"
                     />
                     {errors.fullName && (
@@ -156,7 +207,7 @@ export function PersonForm() {
                     <Controller
                       name="rank"
                       control={control}
-                      rules={{ required: 'Обов\'язкове поле' }}
+                      rules={{ required: "Обов'язкове поле" }}
                       render={({ field }) => (
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger>
@@ -182,7 +233,10 @@ export function PersonForm() {
                     <Input
                       id="birthDate"
                       type="date"
-                      {...register('birthDate', { required: 'Обов\'язкове поле' })}
+                      {...register('birthDate', {
+                        required: "Обов'язкове поле",
+                        validate: validateBirthDate,
+                      })}
                     />
                     {errors.birthDate && (
                       <p className="text-sm text-red-600 mt-1">{errors.birthDate.message}</p>
@@ -211,7 +265,7 @@ export function PersonForm() {
                     <Controller
                       name="serviceType"
                       control={control}
-                      rules={{ required: 'Обов\'язкове поле' }}
+                      rules={{ required: "Обов'язкове поле" }}
                       render={({ field }) => (
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger>
@@ -243,7 +297,7 @@ export function PersonForm() {
                     <Controller
                       name="unitId"
                       control={control}
-                      rules={{ required: 'Обов\'язкове поле' }}
+                      rules={{ required: 'Оберіть підрозділ' }}
                       render={({ field }) => (
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger>
@@ -269,7 +323,7 @@ export function PersonForm() {
                     <Controller
                       name="positionId"
                       control={control}
-                      rules={{ required: 'Обов\'язкове поле' }}
+                      rules={{ required: 'Оберіть посаду' }}
                       render={({ field }) => (
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger>
@@ -321,7 +375,7 @@ export function PersonForm() {
                   <Controller
                     name="roleIds"
                     control={control}
-                    rules={{ required: 'Оберіть хоча б одну роль' }}
+                    rules={{ validate: (v) => (v && v.length > 0) || 'Оберіть хоча б одну роль' }}
                     render={({ field }) => (
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {roles.map((role) => (
@@ -334,7 +388,7 @@ export function PersonForm() {
                                   field.onChange([...(field.value || []), role.id]);
                                 } else {
                                   field.onChange(
-                                    (field.value || []).filter((id) => id !== role.id)
+                                    (field.value || []).filter((rid) => rid !== role.id)
                                   );
                                 }
                               }}
@@ -366,8 +420,14 @@ export function PersonForm() {
                     <Label htmlFor="phone">Телефон *</Label>
                     <Input
                       id="phone"
-                      {...register('phone', { required: 'Обов\'язкове поле' })}
-                      placeholder="+38 098 123-45-67"
+                      {...register('phone', {
+                        required: "Обов'язкове поле",
+                        pattern: {
+                          value: phonePattern,
+                          message: 'Формат: +380XXXXXXXXX або 0XXXXXXXXX',
+                        },
+                      })}
+                      placeholder="+380981234567"
                     />
                     {errors.phone && (
                       <p className="text-sm text-red-600 mt-1">{errors.phone.message}</p>
@@ -413,18 +473,29 @@ export function PersonForm() {
                     <Label htmlFor="passport">Паспорт</Label>
                     <Input
                       id="passport"
-                      {...register('passport')}
+                      {...register('passport', {
+                        validate: (v) =>
+                          !v || /^[А-ЯҐЄІЇA-Z]{2}\s?№?\d{6}$/i.test(v) || 'Формат: КВ №987654',
+                      })}
                       placeholder="КВ №987654"
                     />
+                    {errors.passport && (
+                      <p className="text-sm text-red-600 mt-1">{errors.passport.message}</p>
+                    )}
                   </div>
 
                   <div>
                     <Label htmlFor="taxId">ІПН</Label>
                     <Input
                       id="taxId"
-                      {...register('taxId')}
-                      placeholder="123123123"
+                      {...register('taxId', {
+                        validate: (v) => !v || /^\d{10}$/.test(v) || 'ІПН має містити 10 цифр',
+                      })}
+                      placeholder="1231231230"
                     />
+                    {errors.taxId && (
+                      <p className="text-sm text-red-600 mt-1">{errors.taxId.message}</p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -486,9 +557,17 @@ export function PersonForm() {
                     <Label htmlFor="emergencyContactPhone">Телефон</Label>
                     <Input
                       id="emergencyContactPhone"
-                      {...register('family.emergencyContact.phone')}
-                      placeholder="+38 098 111-22-33"
+                      {...register('family.emergencyContact.phone', {
+                        validate: (v) =>
+                          !v || phonePattern.test(v) || 'Формат: +380XXXXXXXXX або 0XXXXXXXXX',
+                      })}
+                      placeholder="+380981112233"
                     />
+                    {errors.family?.emergencyContact?.phone && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.family.emergencyContact.phone.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>

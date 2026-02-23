@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(node_modules.bintsc:*)",
+      "Bash(./node_modules/.bin/tsc:*)",
+      "Bash(powershell.exe -Command \"cd ''d:\\\\Downloads\\\\PMS''; & ''.\\\\node_modules\\\\.bin\\\\tsc'' --noEmit 2>&1\")",
+      "Bash(powershell.exe -Command \"Set-Location ''d:\\\\Downloads\\\\PMS''; npm run build 2>&1\")",
+      "Bash(powershell.exe -Command \"Set-Location ''d:\\\\Downloads\\\\PMS''; npm install 2>&1\")",
+      "Bash(powershell.exe -Command \"Set-Location ''d:\\\\Downloads\\\\PMS''; npm run dev 2>&1\")",
+      "Bash(powershell.exe -Command \"Get-Content ''C:\\\\Users\\\\Ivan\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--Downloads-PMS\\\\tasks\\\\be13509.output''\")"
+    ]
+  }
+}

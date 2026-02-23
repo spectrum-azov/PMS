@@ -93,29 +93,29 @@ export function PersonCard() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/personnel')}>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/personnel')} className="shrink-0">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Назад
+            <span className="hidden sm:inline">Назад</span>
           </Button>
-          <Separator orientation="vertical" className="h-8" />
-          <div>
-            <div className="flex items-center gap-3">
-              <h2 className="text-3xl font-semibold text-gray-900">{person.callsign}</h2>
+          <Separator orientation="vertical" className="h-8 hidden sm:block" />
+          <div className="min-w-0">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">{person.callsign}</h2>
               {getStatusBadge(person.status)}
             </div>
-            <p className="text-gray-600 mt-1">{person.fullName}</p>
+            <p className="text-gray-600 mt-1 truncate">{person.fullName}</p>
           </div>
         </div>
-        <Button onClick={() => navigate(`/personnel/${id}/edit`)}>
-          <Edit className="w-4 h-4 mr-2" />
-          Редагувати
+        <Button onClick={() => navigate(`/personnel/${id}/edit`)} className="shrink-0">
+          <Edit className="w-4 h-4 sm:mr-2" />
+          <span className="hidden sm:inline">Редагувати</span>
         </Button>
       </div>
 
       {/* Quick Info Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
@@ -175,7 +175,7 @@ export function PersonCard() {
 
       {/* Tabs */}
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
           <TabsTrigger value="general">Загальне</TabsTrigger>
           <TabsTrigger value="education">Освіта і навички</TabsTrigger>
           <TabsTrigger value="family">Родина</TabsTrigger>

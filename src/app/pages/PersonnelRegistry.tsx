@@ -20,18 +20,18 @@ export function PersonnelRegistry() {
             Знайдено: <span className="font-medium">{filteredPersonnel.length}</span> записів
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <Button variant="outline" size="sm">
-            <Upload className="w-4 h-4 mr-2" />
-            Імпорт
+            <Upload className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Імпорт</span>
           </Button>
           <Button variant="outline" size="sm">
-            <Download className="w-4 h-4 mr-2" />
-            Експорт
+            <Download className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Експорт</span>
           </Button>
           <Button onClick={() => navigate('/personnel/new')}>
-            <UserPlus className="w-4 h-4 mr-2" />
-            Додати особу
+            <UserPlus className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Додати особу</span>
           </Button>
         </div>
       </div>
