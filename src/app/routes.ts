@@ -1,0 +1,46 @@
+import { createBrowserRouter } from 'react-router';
+import { Layout } from './pages/Layout';
+import { Dashboard } from './pages/Dashboard';
+import { PersonnelRegistry } from './pages/PersonnelRegistry';
+import { PersonCard } from './pages/PersonCard';
+import { PersonForm } from './pages/PersonForm';
+import { UnitsPage } from './pages/UnitsPage';
+import { PositionsPage } from './pages/PositionsPage';
+import { RolesPage } from './pages/RolesPage';
+
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    Component: Layout,
+    children: [
+      {
+        index: true,
+        Component: Dashboard,
+      },
+      {
+        path: 'personnel',
+        Component: PersonnelRegistry,
+      },
+      {
+        path: 'personnel/:id',
+        Component: PersonCard,
+      },
+      {
+        path: 'personnel/:id/edit',
+        Component: PersonForm,
+      },
+      {
+        path: 'units',
+        Component: UnitsPage,
+      },
+      {
+        path: 'positions',
+        Component: PositionsPage,
+      },
+      {
+        path: 'roles',
+        Component: RolesPage,
+      },
+    ],
+  },
+]);
