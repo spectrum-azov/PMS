@@ -39,9 +39,7 @@ jobs:
         run: npm ci
       - name: Build
         env:
-          VITE_GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
-          VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
-          VITE_GOOGLE_SHEET_ID_APPLICATIONS: ${{ secrets.VITE_GOOGLE_SHEET_ID_APPLICATIONS }}
+          VITE_BASE_PATH: ${{ env.VITE_BASE_PATH }}
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v5
