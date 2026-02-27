@@ -372,6 +372,7 @@ export const en: Record<TranslationKey, string> = {
     theme_toggle: 'Toggle theme',
     theme_light: 'Light',
     theme_dark: 'Dark',
+    theme_spectrum: 'Spectrum',
     theme_system: 'System',
     common_show: 'Show',
     common_page: 'Page',

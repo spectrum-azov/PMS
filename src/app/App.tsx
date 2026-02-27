@@ -9,7 +9,14 @@ import { ThemeProvider } from './components/theme-provider';
 
 export default function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+      themes={["light", "dark", "spectrum", "system"]}
+      value={{ light: "light", dark: "dark", spectrum: "spectrum" }}
+    >
       <LanguageProvider>
         <SettingsProvider>
           <DictionariesProvider>

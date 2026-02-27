@@ -369,6 +369,7 @@ export const uk = {
     theme_toggle: 'Змінити тему',
     theme_light: 'Світла',
     theme_dark: 'Темна',
+    theme_spectrum: 'Спектрум',
     theme_system: 'Системна',
     common_show: 'Показати',
     common_page: 'Сторінка',
