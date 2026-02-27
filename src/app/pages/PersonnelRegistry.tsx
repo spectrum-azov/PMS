@@ -43,7 +43,15 @@ export function PersonnelRegistry() {
   const { filteredPersonnel, filters, setFilters, loading, error, reload } = usePersonnel();
   const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState<number>(() => {
+    if (typeof window === 'undefined') return 10;
+    const saved = localStorage.getItem('personnel-page-size');
+    return saved ? parseInt(saved, 10) : 10;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('personnel-page-size', pageSize.toString());
+  }, [pageSize]);
 
   // Reset to first page when filters change
   useEffect(() => {
