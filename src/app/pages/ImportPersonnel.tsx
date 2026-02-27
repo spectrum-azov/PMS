@@ -33,7 +33,7 @@ export function ImportPersonnel() {
     const { t } = useLanguage();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const { addPerson } = usePersonnel();
+    const { addPerson, personnel } = usePersonnel();
     const { units, positions, ranks, roles } = useDictionaries();
 
     const [data, setData] = useState<ImportRow[]>([]);
@@ -66,6 +66,9 @@ export function ImportPersonnel() {
                     const rawPhone = getVal(['phone', 'Телефон', 'телефон', 'Phone', 'Номер']);
                     const rawStatus = getVal(['status', 'Статус', 'статус', 'Status']);
                     const rawServiceType = getVal(['serviceType', 'servicetype', 'Вид служби', 'вид служби', 'Service Type']);
+                    const rawMilitaryId = getVal(['militaryId', 'military id', 'військовий квиток', 'в/к', 'Військовий квиток']);
+                    const rawPassport = getVal(['passport', 'паспорт', 'Паспорт']);
+                    const rawTaxId = getVal(['taxId', 'іпн', 'ІПН', 'tax id', 'Tax ID']);
 
                     // Normalize matching values
                     let matchedUnit = '';
@@ -134,13 +137,16 @@ export function ImportPersonnel() {
                         serviceType: matchedServiceType as ServiceType,
                         status: matchedStatus as ServiceStatus,
                         phone: rawPhone,
+                        militaryId: rawMilitaryId,
+                        passport: rawPassport,
+                        taxId: rawTaxId,
                         roleIds: [],
                     };
 
-                    return validateRow(parsedRow);
+                    return parsedRow;
                 });
 
-                setData(parsedRows);
+                setData(checkDuplicates(parsedRows));
             },
             error: (error) => {
                 toast.error(`${t('import_err_parse')} ${error.message}`);
@@ -166,14 +172,69 @@ export function ImportPersonnel() {
         };
     };
 
-    const updateRowField = (id: string, field: keyof Person, value: any) => {
-        setData(prev => prev.map(row => {
-            if (row._id === id) {
-                const updated = { ...row, [field]: value };
-                return validateRow(updated);
+    const checkDuplicates = (rows: ImportRow[]): ImportRow[] => {
+        const seenMilitaryId = new Set<string>();
+        const seenPassport = new Set<string>();
+        const seenTaxId = new Set<string>();
+
+        // Pre-fill sets with existing personnel data to prevent duplicates with existing database
+        personnel.forEach(p => {
+            if (p.militaryId) seenMilitaryId.add(p.militaryId);
+            if (p.passport) seenPassport.add(p.passport);
+            if (p.taxId) seenTaxId.add(p.taxId);
+        });
+
+        return rows.map(r => {
+            const row = validateRow({ ...r });
+            let isDuplicate = false;
+            const duplicateFields: string[] = [];
+
+            if (row.militaryId) {
+                if (seenMilitaryId.has(row.militaryId)) {
+                    isDuplicate = true;
+                    duplicateFields.push(t('import_duplicate_military') || 'Військовий квиток');
+                } else {
+                    seenMilitaryId.add(row.militaryId);
+                }
             }
+
+            if (row.passport) {
+                if (seenPassport.has(row.passport)) {
+                    isDuplicate = true;
+                    duplicateFields.push(t('import_duplicate_passport') || 'Паспорт');
+                } else {
+                    seenPassport.add(row.passport);
+                }
+            }
+
+            if (row.taxId) {
+                if (seenTaxId.has(row.taxId)) {
+                    isDuplicate = true;
+                    duplicateFields.push(t('import_duplicate_tax') || 'ІПН');
+                } else {
+                    seenTaxId.add(row.taxId);
+                }
+            }
+
+            if (isDuplicate) {
+                row._isValid = false;
+                row._errors.push(`${t('import_duplicate') || 'Дублікат'}: ${duplicateFields.join(', ')}`);
+            }
+
             return row;
-        }));
+        });
+    };
+
+    const updateRowField = (id: string, field: keyof Person, value: any) => {
+        setData(prev => {
+            const temp = prev.map(row => {
+                if (row._id === id) {
+                    return { ...row, [field]: value };
+                }
+                return row;
+            });
+            return checkDuplicates(temp);
+        });
     };
 
     const toggleRowSelection = (id: string) => {
@@ -209,6 +270,9 @@ export function ImportPersonnel() {
                 positionId: row.positionId!,
                 status: row.status as ServiceStatus,
                 phone: row.phone!,
+                militaryId: row.militaryId || undefined,
+                passport: row.passport || undefined,
+                taxId: row.taxId || undefined,
                 roleIds: row.roleIds || [],
             } as Person;
 

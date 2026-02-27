@@ -408,4 +408,11 @@ export const en: Record<TranslationKey, string> = {
     import_select_pos: 'Select Position',
     import_select_service_type: 'Select type',
     import_select_status: 'Select status',
+    import_duplicate: 'Duplicate',
+    import_duplicate_military: 'Military ID',
+    import_duplicate_passport: 'Passport',
+    import_duplicate_tax: 'Tax ID',
+    import_col_military_id: 'Military ID',
+    import_col_passport: 'Passport',
+    import_col_tax_id: 'Tax ID',
 };
