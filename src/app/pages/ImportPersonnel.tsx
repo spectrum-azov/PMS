@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { useLanguage } from '../context/LanguageContext';
 import { usePersonnel } from '../context/PersonnelContext';
 import { useDictionaries } from '../context/DictionariesContext';
+import { organizationalUnits } from '../data/mockData';
 import { Person, ServiceStatus, ServiceType } from '../types/personnel';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
@@ -78,7 +79,7 @@ export function ImportPersonnel() {
                     // 1. Match Unit
                     if (rawUnit) {
                         const val = cleanString(rawUnit);
-                        const found = units.find(u =>
+                        const found = organizationalUnits.find(u =>
                             cleanString(u.name) === val ||
                             (u.abbreviation && cleanString(u.abbreviation) === val) ||
                             cleanString(u.name).includes(val)
