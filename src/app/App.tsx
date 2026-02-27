@@ -1,5 +1,5 @@
 import { RouterProvider } from 'react-router';
-import { router } from './routes';
+import { router } from './routes.tsx';
 import { PersonnelProvider } from './context/PersonnelContext';
 import { DictionariesProvider } from './context/DictionariesContext';
 import { SettingsProvider } from './context/SettingsContext';
