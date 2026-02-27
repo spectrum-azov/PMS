@@ -124,30 +124,6 @@ export function PersonnelRegistry() {
           <PersonnelFilters
             filters={filters}
             onFiltersChange={setFilters}
-            actionSlot={
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <Settings2 className="w-4 h-4" />
-                    <span className="hidden sm:inline">{t('table_columns')}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>{t('table_columns_settings')}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {columnOptions.map((column) => (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      checked={isVisible(column.id)}
-                      onCheckedChange={() => toggleColumn(column.id)}
-                      onSelect={(e) => e.preventDefault()}
-                    >
-                      {column.label}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            }
           />
         </CardContent>
       </Card>
@@ -203,6 +179,28 @@ export function PersonnelRegistry() {
                 <div className="text-sm text-muted-foreground">
                   {t('common_page') || 'Page'} {currentPage} {t('common_of') || 'of'} {totalPages}
                 </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2 h-9">
+                      <Settings2 className="w-4 h-4" />
+                      <span className="hidden sm:inline">{t('table_columns')}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>{t('table_columns_settings')}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {columnOptions.map((column) => (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        checked={isVisible(column.id)}
+                        onCheckedChange={() => toggleColumn(column.id)}
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        {column.label}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               {totalPages > 1 && (
