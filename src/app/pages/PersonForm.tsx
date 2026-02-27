@@ -23,9 +23,16 @@ import { Checkbox } from '../components/ui/checkbox';
 import { useLanguage } from '../context/LanguageContext';
 import { MaskedInput } from '../components/ui/masked-input';
 
-const phonePattern = /^0\d{9}$/;
-const stripPhone = (phone: string) => phone ? phone.replace(/^\+38/, '') : '';
-const prepPhone = (phone: string) => phone ? (phone.startsWith('+38') ? phone : '+38' + phone) : '';
+const phonePattern = /^(?:\+?38)?0\d{9}$/;
+const docPattern = /^[А-ЯҐЄІЇA-Z]{2}\s\d{6}$/i;
+const stripPhone = (phone: string) => phone ? phone.replace(/^\+38|^38/, '') : '';
+const prepPhone = (phone: string) => {
+  if (!phone) return '';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 12 && digits.startsWith('380')) return '+' + digits;
+  if (digits.length === 10 && digits.startsWith('0')) return '+38' + digits;
+  return phone.startsWith('+') ? phone : '+38' + phone;
+};
 
 export function PersonForm() {
   const { id } = useParams();
@@ -454,9 +461,11 @@ export function PersonForm() {
                         <MaskedInput
                           id="phone"
                           label={t('form_phone')}
-                          mask="+{38} (000) 000-00-00"
+                          mask="+38 (000) 000-00-00"
                           value={field.value}
-                          onAccept={(value) => field.onChange(value)}
+                          onAccept={(value) => {
+                            field.onChange(value);
+                          }}
                           error={errors.phone?.message}
                           placeholder="+38 (0__) ___-__-__"
                         />
@@ -494,9 +503,15 @@ export function PersonForm() {
                     <Label htmlFor="militaryId">{t('form_military_id')}</Label>
                     <Input
                       id="militaryId"
-                      {...register('militaryId')}
-                      placeholder="АА №123456"
+                      {...register('militaryId', {
+                        validate: (v) =>
+                          !v || docPattern.test(v) || t('form_val_doc_format'),
+                      })}
+                      placeholder="АА 123456"
                     />
+                    {errors.militaryId && (
+                      <p className="text-sm text-red-600 mt-1">{errors.militaryId.message}</p>
+                    )}
                   </div>
 
                   <div>
@@ -505,9 +520,9 @@ export function PersonForm() {
                       id="passport"
                       {...register('passport', {
                         validate: (v) =>
-                          !v || /^[А-ЯҐЄІЇA-Z]{2}\s?№?\d{6}$/i.test(v) || t('form_val_passport_format'),
+                          !v || docPattern.test(v) || t('form_val_doc_format'),
                       })}
-                      placeholder="КВ №987654"
+                      placeholder="КВ 987654"
                     />
                     {errors.passport && (
                       <p className="text-sm text-red-600 mt-1">{errors.passport.message}</p>
@@ -595,9 +610,11 @@ export function PersonForm() {
                         <MaskedInput
                           id="emergencyContactPhone"
                           label={t('form_ec_phone')}
-                          mask="+{38} (000) 000-00-00"
+                          mask="+38 (000) 000-00-00"
                           value={field.value}
-                          onAccept={(value) => field.onChange(value)}
+                          onAccept={(value) => {
+                            field.onChange(value);
+                          }}
                           error={errors.family?.emergencyContact?.phone?.message}
                           placeholder="+38 (0__) ___-__-__"
                         />

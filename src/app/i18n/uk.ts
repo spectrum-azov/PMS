@@ -173,7 +173,8 @@ export const uk = {
     form_val_select_unit: 'Оберіть підрозділ',
     form_val_select_position: 'Оберіть посаду',
     form_val_phone_format: 'Формат: +380XXXXXXXXX або 0XXXXXXXXX',
-    form_val_passport_format: 'Формат: КВ №987654',
+    form_val_passport_format: 'Формат: АА 123456',
+    form_val_doc_format: 'Формат: АА 123456',
     form_val_taxid_format: 'ІПН має містити 10 цифр',
 
     form_saved_success: 'Дані успішно оновлено',

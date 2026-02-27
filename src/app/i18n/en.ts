@@ -176,7 +176,8 @@ export const en: Record<TranslationKey, string> = {
     form_val_select_unit: 'Select a unit',
     form_val_select_position: 'Select a position',
     form_val_phone_format: 'Format: +380XXXXXXXXX or 0XXXXXXXXX',
-    form_val_passport_format: 'Format: XX №123456',
+    form_val_passport_format: 'Format: AA 123456',
+    form_val_doc_format: 'Format: AA 123456',
     form_val_taxid_format: 'Tax ID must contain 10 digits',
 
     form_saved_success: 'Data updated successfully',
