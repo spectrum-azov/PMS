@@ -58,7 +58,7 @@ export function PersonnelRegistry() {
             ) : (
               <>{t('registry_found')} <span className="font-medium">{filteredPersonnel.length}</span> {t('registry_records')}</>
             )}
-          </div>>
+          </div>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">
