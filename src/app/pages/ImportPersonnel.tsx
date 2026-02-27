@@ -99,7 +99,7 @@ export function ImportPersonnel() {
                 setData(parsedRows);
             },
             error: (error) => {
-                toast.error(`Error parsing CSV: ${error.message}`);
+                toast.error(`${t('import_err_parse')} ${error.message}`);
             }
         });
 
@@ -148,7 +148,7 @@ export function ImportPersonnel() {
         const toImport = data.filter(d => d._selected && d._isValid);
 
         if (toImport.length === 0) {
-            toast.error("No valid rows selected to import.");
+            toast.error(t('import_err_no_valid'));
             setIsImporting(false);
             return;
         }
@@ -176,10 +176,10 @@ export function ImportPersonnel() {
         setIsImporting(false);
 
         if (successCount === toImport.length) {
-            toast.success(`Successfully imported ${successCount} personnel.`);
+            toast.success(`${t('import_success')} ${successCount} ${t('import_success_pl')}`);
             navigate('/personnel');
         } else {
-            toast.error(`Imported ${successCount} out of ${toImport.length} selected.`);
+            toast.error(`${t('import_partial')} ${successCount} ${t('import_partial_out_of')} ${toImport.length} ${t('import_partial_selected')}`);
             // Remove successful ones and leave failed/invalid
             setData(prev => prev.filter(r => r._isValid === false || !r._selected));
         }
@@ -194,13 +194,13 @@ export function ImportPersonnel() {
                 <Button variant="ghost" size="icon" onClick={() => navigate('/personnel')}>
                     <ChevronLeft className="w-5 h-5" />
                 </Button>
-                <h2 className="text-3xl font-semibold text-foreground">Import Personnel</h2>
+                <h2 className="text-3xl font-semibold text-foreground">{t('import_title')}</h2>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Upload CSV File</CardTitle>
-                    <CardDescription>Select a .csv file containing personnel data. The system will attempt to match fields such as unit and position.</CardDescription>
+                    <CardTitle>{t('import_upload_title')}</CardTitle>
+                    <CardDescription>{t('import_upload_desc')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex gap-4">
@@ -212,12 +212,12 @@ export function ImportPersonnel() {
                             onChange={handleFileUpload}
                         />
                         <Button onClick={() => fileInputRef.current?.click()} variant="outline">
-                            <Upload className="w-4 h-4 mr-2" /> Select File
+                            <Upload className="w-4 h-4 mr-2" /> {t('import_select_file')}
                         </Button>
 
                         {data.length > 0 && (
                             <Button onClick={handleImport} disabled={validSelectedCount === 0 || isImporting} className="ml-auto">
-                                <Save className="w-4 h-4 mr-2" /> Import ({validSelectedCount} valid)
+                                <Save className="w-4 h-4 mr-2" /> {t('import_btn')} ({validSelectedCount} {t('import_valid')})
                             </Button>
                         )}
                     </div>
@@ -237,14 +237,14 @@ export function ImportPersonnel() {
                                             checked={selectedCount === data.length}
                                         />
                                     </th>
-                                    <th className="p-3 w-10">Status</th>
-                                    <th className="p-3">Callsign</th>
-                                    <th className="p-3">Full Name</th>
-                                    <th className="p-3">Rank</th>
-                                    <th className="p-3">DOB</th>
-                                    <th className="p-3">Unit</th>
-                                    <th className="p-3">Position</th>
-                                    <th className="p-3">Phone</th>
+                                    <th className="p-3 w-10">{t('import_col_status')}</th>
+                                    <th className="p-3">{t('import_col_callsign')}</th>
+                                    <th className="p-3">{t('import_col_fullname')}</th>
+                                    <th className="p-3">{t('import_col_rank')}</th>
+                                    <th className="p-3">{t('import_col_dob')}</th>
+                                    <th className="p-3">{t('import_col_unit')}</th>
+                                    <th className="p-3">{t('import_col_position')}</th>
+                                    <th className="p-3">{t('import_col_phone')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -261,7 +261,9 @@ export function ImportPersonnel() {
                                             {row._isValid ? (
                                                 <Check className="w-5 h-5 text-green-500 inline" />
                                             ) : (
-                                                <AlertCircle className="w-5 h-5 text-destructive inline" title={`Missing: ${row._errors.join(', ')}`} />
+                                                <span title={`${t('import_missing')} ${row._errors.join(', ')}`}>
+                                                    <AlertCircle className="w-5 h-5 text-destructive inline" />
+                                                </span>
                                             )}
                                         </td>
                                         <td className="p-3">
@@ -284,7 +286,7 @@ export function ImportPersonnel() {
                                                 onChange={e => updateRowField(row._id, 'rank', e.target.value)}
                                                 className={`flex h-8 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ${row._errors.includes('rank') ? 'border-destructive' : ''}`}
                                             >
-                                                <option value="">Select Rank</option>
+                                                <option value="">{t('import_select_rank')}</option>
                                                 {ranks.map(r => (
                                                     <option key={r.id} value={r.name}>{r.name}</option>
                                                 ))}
@@ -304,7 +306,7 @@ export function ImportPersonnel() {
                                                 onChange={e => updateRowField(row._id, 'unitId', e.target.value)}
                                                 className={`flex h-8 min-w-[150px] rounded-md border border-input bg-background px-3 py-1 text-sm ${row._errors.includes('unitId') ? 'border-destructive' : ''}`}
                                             >
-                                                <option value="">Select Unit</option>
+                                                <option value="">{t('import_select_unit')}</option>
                                                 {units.map(u => (
                                                     <option key={u.id} value={u.id}>{u.name}</option>
                                                 ))}
@@ -316,7 +318,7 @@ export function ImportPersonnel() {
                                                 onChange={e => updateRowField(row._id, 'positionId', e.target.value)}
                                                 className={`flex h-8 min-w-[150px] rounded-md border border-input bg-background px-3 py-1 text-sm ${row._errors.includes('positionId') ? 'border-destructive' : ''}`}
                                             >
-                                                <option value="">Select Position</option>
+                                                <option value="">{t('import_select_pos')}</option>
                                                 {positions.map(p => (
                                                     <option key={p.id} value={p.id}>{p.name}</option>
                                                 ))}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router';
-import { Users, LayoutDashboard, Settings, Shield, Building2, Briefcase, UserCog, Menu, X, Languages } from 'lucide-react';
+import { Users, LayoutDashboard, Settings, Shield, Building2, Briefcase, UserCog, Menu, X, Languages, Upload } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Separator } from '../components/ui/separator';
 import { useSettings } from '../context/SettingsContext';
@@ -23,6 +23,7 @@ export function Layout() {
     { name: t('nav_units'), path: '/units', icon: Building2 },
     { name: t('nav_positions'), path: '/positions', icon: Briefcase },
     { name: t('nav_roles'), path: '/roles', icon: UserCog },
+    { name: t('import_title'), path: '/personnel/import', icon: Upload },
   ];
 
   const closeSidebar = () => setSidebarOpen(false);

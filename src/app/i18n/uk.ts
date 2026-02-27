@@ -374,6 +374,33 @@ export const uk = {
     common_show: 'Показати',
     common_page: 'Сторінка',
     common_of: 'з',
+
+    // Import Personnel
+    import_title: 'Імпорт особового складу',
+    import_upload_title: 'Завантажити CSV файл',
+    import_upload_desc: 'Оберіть .csv файл із даними особового складу. Система спробує автоматично розпізнати підрозділи та посади.',
+    import_select_file: 'Обрати файл',
+    import_btn: 'Імпорт',
+    import_valid: 'валідних',
+    import_err_parse: 'Помилка розбору CSV:',
+    import_err_no_valid: 'Немає валідних рядків для імпорту.',
+    import_success: 'Успішно імпортовано',
+    import_success_pl: 'осіб.',
+    import_partial: 'Імпортовано',
+    import_partial_out_of: 'з',
+    import_partial_selected: 'обраних.',
+    import_col_status: 'Статус',
+    import_col_callsign: 'Позивний',
+    import_col_fullname: 'ПІБ',
+    import_col_rank: 'Звання',
+    import_col_dob: 'Дата нар.',
+    import_col_unit: 'Підрозділ',
+    import_col_position: 'Посада',
+    import_col_phone: 'Телефон',
+    import_missing: 'Відсутні:',
+    import_select_rank: 'Оберіть звання',
+    import_select_unit: 'Оберіть підрозділ',
+    import_select_pos: 'Оберіть посаду',
 };
 
 export type TranslationKey = keyof typeof uk;

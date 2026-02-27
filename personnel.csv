@@ -1,2 +1,2 @@
-id,callsign,fullName,rank,birthDate,serviceType,tagNumber,unitId,positionId,roleIds,status,militaryId,passport,taxId,phone,additionalPhones,address,registrationAddress,citizenship,bloodType,recruitedBy,recruitedDate
-7,Сатурн,Іваненко Іван Іванович,Старший сержант,1993-04-12,Контракт,1245,8,pos3,"role1; role3",Служить,АА 123456,КВ 987654,2123123123,+38 098 123-45-67,+38 098 123-45-68,"Київ, вул Абв 1","Київ, вул Абв 2",Україна,A (II) Rh+,Шевченківський ТЦК,2022-03-15
+callsign,fullName,rank,birthDate,serviceType,tagNumber,unit,status,militaryId,passport,taxId,phone,additionalPhones,address,registrationAddress,citizenship,bloodType
+Сатурн,Іваненко Іван Іванович,Старший сержант,1993-04-12,Контракт,1245,8,Оператор радіозв\'язку,Служить,АА 123456,КВ 987654,2123123123,+38 098 123-45-67,+38 098 123-45-68,"Київ, вул Абв 1","Київ, вул Абв 2",Україна,A (II) Rh+

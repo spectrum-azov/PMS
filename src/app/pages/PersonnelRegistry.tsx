@@ -103,10 +103,6 @@ export function PersonnelRegistry() {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => navigate('/personnel/import')}>
-            <Upload className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">{t('common_import')}</span>
-          </Button>
           <Button variant="outline" size="sm">
             <Download className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">{t('common_export')}</span>
