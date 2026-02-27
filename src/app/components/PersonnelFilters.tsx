@@ -64,7 +64,7 @@ export function PersonnelFilters({ filters, onFiltersChange, actionSlot }: Perso
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder={t('filters_search_placeholder')}
-            className="pl-10"
+            className="pl-12"
             value={filters.search || ''}
             onChange={(e) => handleSearchChange(e.target.value)}
           />

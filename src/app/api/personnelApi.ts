@@ -6,6 +6,9 @@ const STORAGE_KEY = 'personnel-data';
 
 /** Get all personnel with optional filtering */
 export async function getPersonnel(filters?: PersonnelFilters): Promise<ApiResult<Person[]>> {
+    // Simulate network latency
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     const err = maybeError();
     if (err) return { success: false, message: err };
 

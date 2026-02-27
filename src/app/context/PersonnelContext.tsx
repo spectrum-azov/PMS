@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { Person, PersonnelFilters } from '../types/personnel';
 import * as api from '../api/personnelApi';
 import { toast } from 'sonner';
@@ -19,18 +19,24 @@ interface PersonnelContextType {
 
 const PersonnelContext = createContext<PersonnelContextType | undefined>(undefined);
 
+const DEBOUNCE_MS = 300;
+
 export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const [personnel, setPersonnel] = useState<Person[]>([]);
   const [filters, setFilters] = useState<PersonnelFilters>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load personnel from API on mount
+  // Keep a ref of the latest filters so the debounced callback always sees them
+  const filtersRef = useRef(filters);
+  filtersRef.current = filters;
+
+  // Load personnel from mock API with current filters (backend-side filtering)
   const loadPersonnel = useCallback(async () => {
     setLoading(true);
     setError(null);
 
-    const result = await api.getPersonnel();
+    const result = await api.getPersonnel(filtersRef.current);
     if (result.success) {
       setPersonnel(result.data);
     } else {
@@ -40,15 +46,34 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
+  // Initial load
   useEffect(() => {
     loadPersonnel();
   }, [loadPersonnel]);
+
+  // Re-fetch when filters change (debounced)
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    // Skip the initial render – already handled above
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      loadPersonnel();
+    }, DEBOUNCE_MS);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters]);
 
   const addPerson = async (person: Person): Promise<boolean> => {
     const { id: _id, createdAt: _c, updatedAt: _u, ...personData } = person;
     const result = await api.createPerson(personData);
     if (result.success) {
-      setPersonnel(prev => [...prev, result.data]);
+      // Re-fetch to get the updated list with current filters applied
+      await loadPersonnel();
       return true;
     }
     toast.error(result.message);
@@ -58,9 +83,8 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const updatePerson = async (id: string, updates: Partial<Person>): Promise<boolean> => {
     const result = await api.updatePerson(id, updates);
     if (result.success) {
-      setPersonnel(prev =>
-        prev.map(p => (p.id === id ? result.data : p))
-      );
+      // Re-fetch to keep consistency with server-side filtered state
+      await loadPersonnel();
       return true;
     }
     toast.error(result.message);
@@ -70,7 +94,8 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const deletePerson = async (id: string): Promise<boolean> => {
     const result = await api.deletePerson(id);
     if (result.success) {
-      setPersonnel(prev => prev.filter(p => p.id !== id));
+      // Re-fetch to keep consistency with server-side filtered state
+      await loadPersonnel();
       return true;
     }
     toast.error(result.message);
@@ -81,40 +106,8 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     return personnel.find(p => p.id === id);
   };
 
-  // Client-side filtering (mirrors what the API returns when filters are passed)
-  const filteredPersonnel = personnel.filter(person => {
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      const matchesSearch =
-        person.callsign.toLowerCase().includes(searchLower) ||
-        person.fullName.toLowerCase().includes(searchLower) ||
-        person.phone.includes(searchLower) ||
-        person.militaryId?.toLowerCase().includes(searchLower);
-      if (!matchesSearch) return false;
-    }
-
-    if (filters.unitId && person.unitId !== filters.unitId) {
-      return false;
-    }
-
-    if (filters.positionId && person.positionId !== filters.positionId) {
-      return false;
-    }
-
-    if (filters.status && person.status !== filters.status) {
-      return false;
-    }
-
-    if (filters.serviceType && person.serviceType !== filters.serviceType) {
-      return false;
-    }
-
-    if (filters.roleId && !person.roleIds.includes(filters.roleId)) {
-      return false;
-    }
-
-    return true;
-  });
+  // personnel already contains filtered results from the API
+  const filteredPersonnel = personnel;
 
   return (
     <PersonnelContext.Provider
