@@ -113,17 +113,17 @@ export function PositionsPage() {
 
   const getCategoryBadge = (category: string) => {
     const colors: Record<string, string> = {
-      'Командир': 'bg-red-100 text-red-800',
-      'Сержант': 'bg-orange-100 text-orange-800',
-      'Солдат': 'bg-blue-100 text-blue-800',
-      'Цивільний': 'bg-gray-100 text-gray-800',
+      'positions_cat_commander': 'bg-red-100 text-red-800',
+      'positions_cat_sergeant': 'bg-orange-100 text-orange-800',
+      'positions_cat_soldier': 'bg-blue-100 text-blue-800',
+      'positions_cat_civilian': 'bg-gray-100 text-gray-800',
     };
 
     const translatedCategory = (() => {
-      if (category === 'Командир') return t('positions_cat_commander');
-      if (category === 'Сержант') return t('positions_cat_sergeant');
-      if (category === 'Солдат') return t('positions_cat_soldier');
-      if (category === 'Цивільний') return t('positions_cat_civilian');
+      if (category === 'positions_cat_commander') return t('positions_cat_commander');
+      if (category === 'positions_cat_sergeant') return t('positions_cat_sergeant');
+      if (category === 'positions_cat_soldier') return t('positions_cat_soldier');
+      if (category === 'positions_cat_civilian') return t('positions_cat_civilian');
       return category;
     })();
 
@@ -180,10 +180,10 @@ export function PositionsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Командир">{t('positions_cat_commander')}</SelectItem>
-                      <SelectItem value="Сержант">{t('positions_cat_sergeant')}</SelectItem>
-                      <SelectItem value="Солдат">{t('positions_cat_soldier')}</SelectItem>
-                      <SelectItem value="Цивільний">{t('positions_cat_civilian')}</SelectItem>
+                      <SelectItem value="positions_cat_commander">{t('positions_cat_commander')}</SelectItem>
+                      <SelectItem value="positions_cat_sergeant">{t('positions_cat_sergeant')}</SelectItem>
+                      <SelectItem value="positions_cat_soldier">{t('positions_cat_soldier')}</SelectItem>
+                      <SelectItem value="positions_cat_civilian">{t('positions_cat_civilian')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

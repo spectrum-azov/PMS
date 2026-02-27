@@ -13,7 +13,7 @@ export interface OrganizationalUnit {
 export interface Position {
   id: string;
   name: string;
-  category: 'Командир' | 'Сержант' | 'Солдат' | 'Цивільний';
+  category: 'positions_cat_commander' | 'positions_cat_sergeant' | 'positions_cat_soldier' | 'positions_cat_civilian';
   description?: string;
 }
 

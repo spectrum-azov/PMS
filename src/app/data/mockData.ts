@@ -84,14 +84,14 @@ export const organizationalUnits: OrganizationalUnit[] = [
 
 // Довідник: Посади
 export const positions: Position[] = [
-  { id: 'pos1', name: 'Начальник вузла', category: 'Командир', description: 'Керівник підрозділу' },
-  { id: 'pos2', name: 'Старший зміни', category: 'Сержант', description: 'Організація роботи зміни' },
-  { id: 'pos3', name: 'Оператор радіозв\'язку', category: 'Солдат', description: 'Обслуговування радіомережі' },
-  { id: 'pos4', name: 'Системний адміністратор', category: 'Солдат', description: 'Адміністрування мереж' },
-  { id: 'pos5', name: 'Оператор РРЛ', category: 'Солдат', description: 'Обслуговування ретрансляторів' },
-  { id: 'pos6', name: 'Інженер супутникового зв\'язку', category: 'Солдат', description: 'Супутниковий зв\'язок' },
-  { id: 'pos7', name: 'Інженер криптозахисту', category: 'Солдат', description: 'Криптографічний захист' },
-  { id: 'pos8', name: 'Технік з ремонту', category: 'Солдат', description: 'Ремонт обладнання' }
+  { id: 'pos1', name: 'Начальник вузла', category: 'positions_cat_commander', description: 'Керівник підрозділу' },
+  { id: 'pos2', name: 'Старший зміни', category: 'positions_cat_sergeant', description: 'Організація роботи зміни' },
+  { id: 'pos3', name: 'Оператор радіозв\'язку', category: 'positions_cat_soldier', description: 'Обслуговування радіомережі' },
+  { id: 'pos4', name: 'Системний адміністратор', category: 'positions_cat_soldier', description: 'Адміністрування мереж' },
+  { id: 'pos5', name: 'Оператор РРЛ', category: 'positions_cat_soldier', description: 'Обслуговування ретрансляторів' },
+  { id: 'pos6', name: 'Інженер супутникового зв\'язку', category: 'positions_cat_soldier', description: 'Супутниковий зв\'язок' },
+  { id: 'pos7', name: 'Інженер криптозахисту', category: 'positions_cat_soldier', description: 'Криптографічний захист' },
+  { id: 'pos8', name: 'Технік з ремонту', category: 'positions_cat_soldier', description: 'Ремонт обладнання' }
 ];
 
 // Довідник: Функціональні напрямки
