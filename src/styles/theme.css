@@ -135,6 +135,12 @@
     text-transform: uppercase;
     letter-spacing: 1px;
   }
+
+  input,
+  textarea,
+  select {
+    padding: 0.4em 0.75em;
+  }
 }
 
 @theme inline {
