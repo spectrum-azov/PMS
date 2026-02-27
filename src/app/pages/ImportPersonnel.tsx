@@ -177,13 +177,6 @@ export function ImportPersonnel() {
         const seenPassport = new Set<string>();
         const seenTaxId = new Set<string>();
 
-        // Pre-fill sets with existing personnel data to prevent duplicates with existing database
-        personnel.forEach(p => {
-            if (p.militaryId) seenMilitaryId.add(p.militaryId);
-            if (p.passport) seenPassport.add(p.passport);
-            if (p.taxId) seenTaxId.add(p.taxId);
-        });
-
         return rows.map(r => {
             const row = validateRow({ ...r });
             let isDuplicate = false;
@@ -218,6 +211,7 @@ export function ImportPersonnel() {
 
             if (isDuplicate) {
                 row._isValid = false;
+                row._selected = false; // Deselect duplicates by default
                 row._errors.push(`${t('import_duplicate') || 'Дублікат'}: ${duplicateFields.join(', ')}`);
             }
 
