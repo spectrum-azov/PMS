@@ -149,8 +149,8 @@ export function UnitsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-semibold text-gray-900">{t('units_title')}</h2>
-          <p className="text-gray-600 mt-1">
+          <h2 className="text-3xl font-semibold text-foreground">{t('units_title')}</h2>
+          <p className="text-muted-foreground mt-1">
             {t('units_subtitle')} <span className="font-medium">{units.length}</span>
           </p>
         </div>
@@ -259,7 +259,7 @@ export function UnitsPage() {
               {t('units_list')}
             </CardTitle>
             <div className="flex items-center gap-2">
-              <Label htmlFor="page-size" className="text-sm text-gray-600">
+              <Label htmlFor="page-size" className="text-sm text-muted-foreground">
                 {t('common_show') || 'Показати'}:
               </Label>
               <Select
@@ -298,7 +298,7 @@ export function UnitsPage() {
               <TableBody>
                 {units.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                       {t('units_empty')}
                     </TableCell>
                   </TableRow>
@@ -315,7 +315,7 @@ export function UnitsPage() {
                       </TableCell>
                       <TableCell>{getTypeBadge(unit.type)}</TableCell>
                       <TableCell>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-muted-foreground">
                           {getParentName(unit.parentId)}
                         </span>
                       </TableCell>

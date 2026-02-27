@@ -53,8 +53,8 @@ export function Layout() {
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl font-semibold text-gray-900">{settings.organizationName}</h1>
-                <p className="text-sm text-gray-500">{settings.organizationSubtitle}</p>
+                <h1 className="text-xl font-semibold text-foreground">{settings.organizationName}</h1>
+                <p className="text-sm text-muted-foreground">{settings.organizationSubtitle}</p>
               </div>
             </div>
 
@@ -108,8 +108,8 @@ export function Layout() {
           {/* Mobile sidebar header */}
           <div className="flex items-center justify-between p-4 border-b md:hidden">
             <div>
-              <p className="text-sm font-semibold text-gray-900">{settings.organizationName}</p>
-              <p className="text-xs text-gray-500">{settings.organizationSubtitle}</p>
+              <p className="text-sm font-semibold text-foreground">{settings.organizationName}</p>
+              <p className="text-xs text-muted-foreground">{settings.organizationSubtitle}</p>
             </div>
             <Button variant="ghost" size="sm" onClick={closeSidebar}>
               <X className="w-4 h-4" />
@@ -138,7 +138,7 @@ export function Layout() {
           <Separator className="my-4" />
 
           <div className="px-4 py-3">
-            <p className="text-xs text-gray-500 mb-2">{t('nav_directories')}</p>
+            <p className="text-xs text-muted-foreground mb-2">{t('nav_directories')}</p>
             <div className="space-y-1">
               {dictionaryNav.map((item) => {
                 const Icon = item.icon;
