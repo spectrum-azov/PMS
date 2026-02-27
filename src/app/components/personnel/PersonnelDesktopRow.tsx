@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { useLanguage } from '../../context/LanguageContext';
-import { ColumnId } from './PersonnelTable';
+import { ColumnId } from './types';
 import { usePersonnelFormatters } from '../../hooks/usePersonnelFormatters';
 
 interface PersonnelDesktopRowProps {

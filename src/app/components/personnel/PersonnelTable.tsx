@@ -12,8 +12,7 @@ import { Card, CardContent } from '../ui/card';
 import { PersonnelMobileCard } from './PersonnelMobileCard';
 import { PersonnelDesktopRow } from './PersonnelDesktopRow';
 
-export type ColumnId = 'callsign' | 'fullname' | 'rank' | 'unit' | 'position' | 'roles' | 'service_type' | 'status' | 'phone';
-export const DEFAULT_COLUMNS: ColumnId[] = ['callsign', 'fullname', 'rank', 'unit', 'position', 'roles', 'service_type', 'status', 'phone'];
+import { ColumnId, DEFAULT_COLUMNS } from './types';
 
 interface PersonnelTableProps {
     personnel: Person[];

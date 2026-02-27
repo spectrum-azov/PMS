@@ -29,7 +29,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { ColumnId } from '../PersonnelTable';
+import { ColumnId } from './types';
 
 interface RegistryPaginationProps {
     currentPage: number;

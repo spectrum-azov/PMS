@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router';
 import { usePersonnel } from '../context/PersonnelContext';
 import { PersonnelFilters } from '../components/personnel/PersonnelFilters';
-import { PersonnelTable, ColumnId, DEFAULT_COLUMNS } from '../components/personnel/PersonnelTable';
+import { PersonnelTable } from '../components/personnel/PersonnelTable';
+import { ColumnId, DEFAULT_COLUMNS } from '../components/personnel/types';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
