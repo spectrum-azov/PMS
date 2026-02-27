@@ -6,7 +6,7 @@ import { Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '../components/ui/badge';
 import { useLanguage } from '../context/LanguageContext';
-import { PositionPagination } from '../components/positions/PositionPagination';
+import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { PositionTable } from '../components/positions/PositionTable';
 import { PositionDialog } from '../components/positions/PositionDialog';
 
@@ -138,7 +138,7 @@ export function PositionsPage() {
           />
 
           {totalPages > 0 && (
-            <PositionPagination
+            <DataTablePagination
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               pageSize={pageSize}

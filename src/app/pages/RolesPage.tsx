@@ -9,7 +9,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { RolesTable } from '../components/roles/RolesTable';
 import { DirectionDialog } from '../components/roles/DirectionDialog';
 import { RoleDialog } from '../components/roles/RoleDialog';
-import { RolePagination } from '../components/roles/RolePagination';
+import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { Button } from '../components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
 
@@ -239,7 +239,7 @@ export function RolesPage() {
           />
 
           {totalPages > 0 && (
-            <RolePagination
+            <DataTablePagination
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               pageSize={pageSize}

@@ -6,7 +6,7 @@ import { Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '../components/ui/badge';
 import { useLanguage } from '../context/LanguageContext';
-import { UnitPagination } from '../components/units/UnitPagination';
+import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { UnitTable } from '../components/units/UnitTable';
 import { UnitDialog } from '../components/units/UnitDialog';
 
@@ -152,7 +152,7 @@ export function UnitsPage() {
           />
 
           {totalPages > 0 && (
-            <UnitPagination
+            <DataTablePagination
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               pageSize={pageSize}

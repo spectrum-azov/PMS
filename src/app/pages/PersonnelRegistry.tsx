@@ -9,7 +9,16 @@ import { Skeleton } from '../components/ui/skeleton';
 import { UserPlus, Download, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useState, useEffect } from 'react';
-import { RegistryPagination } from '../components/personnel/RegistryPagination';
+import { DataTablePagination } from '../components/ui/DataTablePagination';
+import { Settings2 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
 
 const STORAGE_KEY = 'personnel-table-columns';
 
@@ -128,16 +137,36 @@ export function PersonnelRegistry() {
           <PersonnelTable personnel={paginatedPersonnel} visibleColumns={visibleColumns} />
 
           {totalPages > 0 && (
-            <RegistryPagination
+            <DataTablePagination
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               pageSize={pageSize}
               setPageSize={setPageSize}
               totalPages={totalPages}
-              visibleColumns={visibleColumns}
-              toggleColumn={toggleColumn}
-              isVisible={isVisible}
-              columnOptions={columnOptions}
+              actions={
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2 h-9">
+                      <Settings2 className="w-4 h-4" />
+                      <span className="hidden sm:inline">{t('table_columns')}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>{t('table_columns_settings')}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {columnOptions.map((column) => (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        checked={isVisible(column.id)}
+                        onCheckedChange={() => toggleColumn(column.id)}
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        {column.label}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              }
             />
           )}
         </div>
