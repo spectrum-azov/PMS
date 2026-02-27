@@ -26,37 +26,18 @@ import {
   DropdownMenuSeparator,
 } from './ui/dropdown-menu';
 
+export type ColumnId = 'callsign' | 'fullname' | 'rank' | 'unit' | 'position' | 'roles' | 'service_type' | 'status' | 'phone';
+export const DEFAULT_COLUMNS: ColumnId[] = ['callsign', 'fullname', 'rank', 'unit', 'position', 'roles', 'service_type', 'status', 'phone'];
+
 interface PersonnelTableProps {
   personnel: Person[];
+  visibleColumns: ColumnId[];
 }
 
-type ColumnId = 'callsign' | 'fullname' | 'rank' | 'unit' | 'position' | 'roles' | 'service_type' | 'status' | 'phone';
-
-const STORAGE_KEY = 'personnel-table-columns';
-const DEFAULT_COLUMNS: ColumnId[] = ['callsign', 'fullname', 'rank', 'unit', 'position', 'roles', 'service_type', 'status', 'phone'];
-
-export function PersonnelTable({ personnel }: PersonnelTableProps) {
+export function PersonnelTable({ personnel, visibleColumns }: PersonnelTableProps) {
   const navigate = useNavigate();
   const { units, positions, roles } = useDictionaries();
   const { t } = useLanguage();
-
-  const [visibleColumns, setVisibleColumns] = useState<ColumnId[]>(() => {
-    if (typeof window === 'undefined') return DEFAULT_COLUMNS;
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : DEFAULT_COLUMNS;
-  });
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleColumns));
-  }, [visibleColumns]);
-
-  const toggleColumn = (column: ColumnId) => {
-    setVisibleColumns(prev =>
-      prev.includes(column)
-        ? prev.filter(c => c !== column)
-        : [...prev, column]
-    );
-  };
 
   const getUnitName = (unitId: string) => {
     const unit = units.find(u => u.id === unitId);
@@ -103,45 +84,8 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
 
   const isVisible = (column: ColumnId) => visibleColumns.includes(column);
 
-  const columnOptions: { id: ColumnId; label: string }[] = [
-    { id: 'callsign', label: t('table_col_callsign') },
-    { id: 'fullname', label: t('table_col_fullname') },
-    { id: 'rank', label: t('table_col_rank') },
-    { id: 'unit', label: t('table_col_unit') },
-    { id: 'position', label: t('table_col_position') },
-    { id: 'roles', label: t('table_col_roles') },
-    { id: 'service_type', label: t('table_col_service_type') },
-    { id: 'status', label: t('table_col_status') },
-    { id: 'phone', label: t('table_col_phone') },
-  ];
-
   return (
     <div className="space-y-4">
-      <div className="flex justify-end mb-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Settings2 className="w-4 h-4" />
-              {t('table_columns')}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>{t('table_columns_settings')}</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {columnOptions.map((column) => (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                checked={isVisible(column.id)}
-                onCheckedChange={() => toggleColumn(column.id)}
-                onSelect={(e) => e.preventDefault()}
-              >
-                {column.label}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
       {/* Mobile view - Cards */}
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {personnel.length === 0 ? (
@@ -260,7 +204,7 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
           <TableBody>
             {personnel.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columnOptions.filter(o => isVisible(o.id)).length + 1} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={visibleColumns.length + 1} className="text-center py-8 text-muted-foreground">
                   {t('table_empty_state')}
                 </TableCell>
               </TableRow>

@@ -16,9 +16,10 @@ import { useLanguage } from '../context/LanguageContext';
 interface PersonnelFiltersProps {
   filters: Filters;
   onFiltersChange: (filters: Filters) => void;
+  actionSlot?: React.ReactNode;
 }
 
-export function PersonnelFilters({ filters, onFiltersChange }: PersonnelFiltersProps) {
+export function PersonnelFilters({ filters, onFiltersChange, actionSlot }: PersonnelFiltersProps) {
   const { units, positions, roles } = useDictionaries();
   const { t } = useLanguage();
 
@@ -147,6 +148,12 @@ export function PersonnelFilters({ filters, onFiltersChange }: PersonnelFiltersP
             <SelectItem value="Мобілізований">{t('filters_service_mobilized')}</SelectItem>
           </SelectContent>
         </Select>
+
+        {actionSlot && (
+          <div className="ml-auto">
+            {actionSlot}
+          </div>
+        )}
       </div>
 
       {/* Active Filters Tags */}

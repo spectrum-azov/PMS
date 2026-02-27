@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router';
 import { usePersonnel } from '../context/PersonnelContext';
 import { PersonnelFilters } from '../components/PersonnelFilters';
-import { PersonnelTable } from '../components/PersonnelTable';
+import { PersonnelTable, ColumnId, DEFAULT_COLUMNS } from '../components/PersonnelTable';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
-import { UserPlus, Download, Upload, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { UserPlus, Download, Upload, RefreshCw, ChevronLeft, ChevronRight, Settings2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useState, useEffect } from 'react';
 import {
@@ -26,7 +26,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
 import { Label } from '../components/ui/label';
+
+const STORAGE_KEY = 'personnel-table-columns';
 
 export function PersonnelRegistry() {
   const navigate = useNavigate();
@@ -39,6 +49,38 @@ export function PersonnelRegistry() {
   useEffect(() => {
     setCurrentPage(1);
   }, [filters]);
+
+  const [visibleColumns, setVisibleColumns] = useState<ColumnId[]>(() => {
+    if (typeof window === 'undefined') return DEFAULT_COLUMNS;
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : DEFAULT_COLUMNS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleColumns));
+  }, [visibleColumns]);
+
+  const toggleColumn = (column: ColumnId) => {
+    setVisibleColumns(prev =>
+      prev.includes(column)
+        ? prev.filter(c => c !== column)
+        : [...prev, column]
+    );
+  };
+
+  const isVisible = (column: ColumnId) => visibleColumns.includes(column);
+
+  const columnOptions: { id: ColumnId; label: string }[] = [
+    { id: 'callsign', label: t('table_col_callsign') },
+    { id: 'fullname', label: t('table_col_fullname') },
+    { id: 'rank', label: t('table_col_rank') },
+    { id: 'unit', label: t('table_col_unit') },
+    { id: 'position', label: t('table_col_position') },
+    { id: 'roles', label: t('table_col_roles') },
+    { id: 'service_type', label: t('table_col_service_type') },
+    { id: 'status', label: t('table_col_status') },
+    { id: 'phone', label: t('table_col_phone') },
+  ];
 
   const totalPages = Math.ceil(filteredPersonnel.length / pageSize);
   const paginatedPersonnel = filteredPersonnel.slice(
@@ -79,7 +121,34 @@ export function PersonnelRegistry() {
       {/* Filters */}
       <Card>
         <CardContent className="pt-6">
-          <PersonnelFilters filters={filters} onFiltersChange={setFilters} />
+          <PersonnelFilters
+            filters={filters}
+            onFiltersChange={setFilters}
+            actionSlot={
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Settings2 className="w-4 h-4" />
+                    <span className="hidden sm:inline">{t('table_columns')}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>{t('table_columns_settings')}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {columnOptions.map((column) => (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      checked={isVisible(column.id)}
+                      onCheckedChange={() => toggleColumn(column.id)}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      {column.label}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            }
+          />
         </CardContent>
       </Card>
 
@@ -104,7 +173,7 @@ export function PersonnelRegistry() {
         </Card>
       ) : (
         <div className="space-y-4">
-          <PersonnelTable personnel={paginatedPersonnel} />
+          <PersonnelTable personnel={paginatedPersonnel} visibleColumns={visibleColumns} />
 
           {totalPages > 0 && (
             <div className="flex flex-col sm:flex-row items-center justify-between py-4 gap-4">
