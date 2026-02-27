@@ -5,9 +5,10 @@ import { usePersonnel } from '../context/PersonnelContext';
 import { useDictionaries } from '../context/DictionariesContext';
 import { organizationalUnits } from '../data/mockData';
 import { Person, ServiceStatus, ServiceType } from '../types/personnel';
+import { checkDuplicatesInDb } from '../api/personnelApi';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Upload, ChevronLeft, Check, AlertCircle, Save } from 'lucide-react';
+import { Upload, ChevronLeft, Check, AlertCircle, Save, Loader2, Database } from 'lucide-react';
 import Papa from 'papaparse';
 import { toast } from 'sonner';
 import { Input } from '../components/ui/input';
@@ -39,6 +40,8 @@ export function ImportPersonnel() {
 
     const [data, setData] = useState<ImportRow[]>([]);
     const [isImporting, setIsImporting] = useState(false);
+    const [isChecking, setIsChecking] = useState(false);
+    const [dbChecked, setDbChecked] = useState(false);
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -158,6 +161,7 @@ export function ImportPersonnel() {
                 });
 
                 setData(checkDuplicates(parsedRows));
+                setDbChecked(false); // Reset DB check on new file upload
             },
             error: (error) => {
                 toast.error(`${t('import_err_parse')} ${error.message}`);
@@ -252,7 +256,56 @@ export function ImportPersonnel() {
         setData(prev => prev.map(row => ({ ...row, _selected: checked })));
     };
 
+    const handleCheckDb = async () => {
+        setIsChecking(true);
+        const items = data.map(row => ({
+            militaryId: row.militaryId || undefined,
+            passport: row.passport || undefined,
+            taxId: row.taxId || undefined,
+        }));
+
+        const result = await checkDuplicatesInDb(items);
+
+        if (!result.success) {
+            toast.error(result.message);
+            setIsChecking(false);
+            return;
+        }
+
+        setData(prev => {
+            const updated = prev.map((row, idx) => {
+                const check = result.data[idx];
+                if (check && check.isDuplicate) {
+                    const fieldLabels = check.matchedFields.map(f => {
+                        if (f === 'militaryId') return t('import_duplicate_military') || 'Військовий квиток';
+                        if (f === 'passport') return t('import_duplicate_passport') || 'Паспорт';
+                        return t('import_duplicate_tax') || 'ІПН';
+                    });
+                    return {
+                        ...row,
+                        _isValid: false,
+                        _selected: false,
+                        _errors: [
+                            ...row._errors.filter(e => !e.includes(t('import_duplicate_db') || 'Дублікат (БД)')),
+                            `${t('import_duplicate_db') || 'Дублікат (БД)'}: ${fieldLabels.join(', ')}`,
+                        ],
+                    };
+                }
+                return row;
+            });
+            return updated;
+        });
+
+        setDbChecked(true);
+        setIsChecking(false);
+        toast.success(t('import_db_checked'));
+    };
+
     const handleImport = async () => {
+        if (!dbChecked) {
+            toast.error(t('import_check_db_required'));
+            return;
+        }
         setIsImporting(true);
         let successCount = 0;
         const toImport = data.filter(d => d._selected && d._isValid);
@@ -334,9 +387,25 @@ export function ImportPersonnel() {
                         </Button>
 
                         {data.length > 0 && (
-                            <Button onClick={handleImport} disabled={validSelectedCount === 0 || isImporting} className="ml-auto">
-                                <Save className="w-4 h-4 mr-2" /> {t('import_btn')} ({validSelectedCount} {t('import_valid')})
-                            </Button>
+                            <>
+                                <Button
+                                    onClick={handleCheckDb}
+                                    disabled={isChecking || dbChecked}
+                                    variant={dbChecked ? 'secondary' : 'outline'}
+                                >
+                                    {isChecking ? (
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    ) : dbChecked ? (
+                                        <Check className="w-4 h-4 mr-2" />
+                                    ) : (
+                                        <Database className="w-4 h-4 mr-2" />
+                                    )}
+                                    {isChecking ? t('import_checking_db') : dbChecked ? t('import_db_checked') : t('import_check_db')}
+                                </Button>
+                                <Button onClick={handleImport} disabled={validSelectedCount === 0 || isImporting || !dbChecked} className="ml-auto">
+                                    <Save className="w-4 h-4 mr-2" /> {t('import_btn')} ({validSelectedCount} {t('import_valid')})
+                                </Button>
+                            </>
                         )}
                     </div>
                 </CardContent>

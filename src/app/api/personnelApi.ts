@@ -99,3 +99,52 @@ export async function deletePerson(id: string): Promise<ApiResult<{ id: string }
 
     return { success: true, data: { id } };
 }
+
+// --- Duplicate check for Import ---
+
+export interface DuplicateCheckItem {
+    militaryId?: string;
+    passport?: string;
+    taxId?: string;
+}
+
+export interface DuplicateCheckResult {
+    index: number;
+    isDuplicate: boolean;
+    matchedFields: ('militaryId' | 'passport' | 'taxId')[];
+}
+
+/** Check a batch of items against existing DB personnel for duplicates */
+export async function checkDuplicatesInDb(
+    items: DuplicateCheckItem[]
+): Promise<ApiResult<DuplicateCheckResult[]>> {
+    // Simulate network latency
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const err = maybeError();
+    if (err) return { success: false, message: err };
+
+    const results: DuplicateCheckResult[] = items.map((item, index) => {
+        const matchedFields: ('militaryId' | 'passport' | 'taxId')[] = [];
+
+        for (const person of db.personnel) {
+            if (item.militaryId && person.militaryId && item.militaryId === person.militaryId) {
+                if (!matchedFields.includes('militaryId')) matchedFields.push('militaryId');
+            }
+            if (item.passport && person.passport && item.passport === person.passport) {
+                if (!matchedFields.includes('passport')) matchedFields.push('passport');
+            }
+            if (item.taxId && person.taxId && item.taxId === person.taxId) {
+                if (!matchedFields.includes('taxId')) matchedFields.push('taxId');
+            }
+        }
+
+        return {
+            index,
+            isDuplicate: matchedFields.length > 0,
+            matchedFields,
+        };
+    });
+
+    return { success: true, data: results };
+}
