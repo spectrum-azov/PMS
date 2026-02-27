@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { OrganizationalUnit, Position, Role, FunctionalDirection } from '../types/personnel';
+import { OrganizationalUnit, Position, Role, FunctionalDirection, RankItem } from '../types/personnel';
 import * as dictApi from '../api/dictionariesApi';
 import { toast } from 'sonner';
 
@@ -32,6 +32,13 @@ interface DictionariesContextType {
   deleteDirection: (id: string) => Promise<boolean>;
   getDirectionById: (id: string) => FunctionalDirection | undefined;
 
+  // Ranks
+  ranks: RankItem[];
+  addRank: (rank: RankItem) => Promise<boolean>;
+  updateRank: (id: string, rank: Partial<RankItem>) => Promise<boolean>;
+  deleteRank: (id: string) => Promise<boolean>;
+  getRankById: (id: string) => RankItem | undefined;
+
   // Loading / error
   loading: boolean;
   error: string | null;
@@ -45,6 +52,7 @@ export function DictionariesProvider({ children }: { children: React.ReactNode }
   const [positions, setPositions] = useState<Position[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [directions, setDirections] = useState<FunctionalDirection[]>([]);
+  const [ranks, setRanks] = useState<RankItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,11 +61,12 @@ export function DictionariesProvider({ children }: { children: React.ReactNode }
     setLoading(true);
     setError(null);
 
-    const [unitsRes, posRes, rolesRes, dirRes] = await Promise.all([
+    const [unitsRes, posRes, rolesRes, dirRes, ranksRes] = await Promise.all([
       dictApi.getUnits(),
       dictApi.getPositions(),
       dictApi.getRoles(),
       dictApi.getDirections(),
+      dictApi.getRanks(),
     ]);
 
     let hasError = false;
@@ -68,6 +77,8 @@ export function DictionariesProvider({ children }: { children: React.ReactNode }
     if (rolesRes.success) setRoles(rolesRes.data);
     else hasError = true;
     if (dirRes.success) setDirections(dirRes.data);
+    else hasError = true;
+    if (ranksRes.success) setRanks(ranksRes.data);
     else hasError = true;
 
     if (hasError) {
@@ -223,6 +234,41 @@ export function DictionariesProvider({ children }: { children: React.ReactNode }
 
   const getDirectionById = (id: string) => directions.find(d => d.id === id);
 
+  // ─── Ranks ────────────────────────────────
+
+  const addRank = async (rank: RankItem): Promise<boolean> => {
+    const { id: _id, ...data } = rank;
+    const result = await dictApi.createRank(data);
+    if (result.success) {
+      setRanks(prev => [...prev, result.data]);
+      return true;
+    }
+    toast.error(result.message);
+    return false;
+  };
+
+  const updateRank = async (id: string, updates: Partial<RankItem>): Promise<boolean> => {
+    const result = await dictApi.updateRank(id, updates);
+    if (result.success) {
+      setRanks(prev => prev.map(r => (r.id === id ? result.data : r)));
+      return true;
+    }
+    toast.error(result.message);
+    return false;
+  };
+
+  const deleteRank = async (id: string): Promise<boolean> => {
+    const result = await dictApi.deleteRank(id);
+    if (result.success) {
+      setRanks(prev => prev.filter(r => r.id !== id));
+      return true;
+    }
+    toast.error(result.message);
+    return false;
+  };
+
+  const getRankById = (id: string) => ranks.find(r => r.id === id);
+
   return (
     <DictionariesContext.Provider
       value={{
@@ -246,6 +292,11 @@ export function DictionariesProvider({ children }: { children: React.ReactNode }
         updateDirection,
         deleteDirection,
         getDirectionById,
+        ranks,
+        addRank,
+        updateRank,
+        deleteRank,
+        getRankById,
         loading,
         error,
         reload: loadAll,

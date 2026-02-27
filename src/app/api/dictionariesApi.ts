@@ -1,4 +1,4 @@
-import { OrganizationalUnit, Position, Role, FunctionalDirection } from '../types/personnel';
+import { OrganizationalUnit, Position, Role, FunctionalDirection, RankItem } from '../types/personnel';
 import { ApiResult } from './types';
 import { db, maybeError } from './mockDb';
 
@@ -201,5 +201,56 @@ export async function deleteDirection(id: string): Promise<ApiResult<{ id: strin
 
     db.directions.splice(idx, 1);
     db.persist(DIRECTIONS_KEY, db.directions);
+    return { success: true, data: { id } };
+}
+
+// ═══════════════════════════════════════════
+// Ranks
+// ═══════════════════════════════════════════
+
+const RANKS_KEY = 'ranks-data';
+
+export async function getRanks(): Promise<ApiResult<RankItem[]>> {
+    const err = maybeError();
+    if (err) return { success: false, message: err };
+    return { success: true, data: [...db.ranks] };
+}
+
+export async function createRank(
+    rank: Omit<RankItem, 'id'>
+): Promise<ApiResult<RankItem>> {
+    const err = maybeError();
+    if (err) return { success: false, message: err };
+
+    const newRank: RankItem = { ...rank, id: db.nextId() };
+    db.ranks.push(newRank);
+    db.persist(RANKS_KEY, db.ranks);
+    return { success: true, data: { ...newRank } };
+}
+
+export async function updateRank(
+    id: string,
+    updates: Partial<RankItem>
+): Promise<ApiResult<RankItem>> {
+    const err = maybeError();
+    if (err) return { success: false, message: err };
+
+    const idx = db.ranks.findIndex((r) => r.id === id);
+    if (idx === -1) return { success: false, message: 'Звання не знайдено', code: 404 };
+
+    db.ranks[idx] = { ...db.ranks[idx], ...updates, id };
+    db.persist(RANKS_KEY, db.ranks);
+    return { success: true, data: { ...db.ranks[idx] } };
+}
+
+export async function deleteRank(id: string): Promise<ApiResult<{ id: string }>> {
+    const err = maybeError();
+    if (err) return { success: false, message: err };
+
+    const idx = db.ranks.findIndex((r) => r.id === id);
+    if (idx === -1) return { success: false, message: 'Звання не знайдено', code: 404 };
+
+    db.ranks.splice(idx, 1);
+    db.persist(RANKS_KEY, db.ranks);
     return { success: true, data: { id } };
 }

@@ -33,28 +33,18 @@ export type ServiceStatus = 'Служить' | 'Переведений' | 'Зв�
 
 export type ServiceType = 'Контракт' | 'Мобілізований';
 
-export type Rank = 
-  | 'Солдат'
-  | 'Старший солдат'
-  | 'Молодший сержант'
-  | 'Сержант'
-  | 'Старший сержант'
-  | 'Головний сержант'
-  | 'Штаб-сержант'
-  | 'Майстер-сержант'
-  | 'Головний майстер-сержант'
-  | 'Молодший лейтенант'
-  | 'Лейтенант'
-  | 'Старший лейтенант'
-  | 'Капітан'
-  | 'Майор'
-  | 'Підполковник'
-  | 'Полковник';
+// Довідник: Звання
+export interface RankItem {
+  id: string;
+  name: string;
+}
+
+export type Rank = string;
 
 // Основна модель - Людина (P0)
 export interface Person {
   id: string;
-  
+
   // Основні дані (P0)
   callsign: string;
   fullName: string;
@@ -62,47 +52,47 @@ export interface Person {
   birthDate: string;
   serviceType: ServiceType;
   tagNumber?: string;
-  
+
   // Організаційні дані (P0)
   unitId: string;
   positionId: string;
   roleIds: string[];
   status: ServiceStatus;
-  
+
   // Документи (P0)
   militaryId?: string;
   passport?: string;
   taxId?: string;
-  
+
   // Контакти (P0)
   phone: string;
   additionalPhones?: string[];
   address?: string;
   registrationAddress?: string;
   citizenship?: string;
-  
+
   // Додаткові дані (P1)
   bloodType?: string;
   recruitedBy?: string;
   recruitedDate?: string;
-  
+
   // Розширені дані (P1)
   education?: Education[];
   drivingLicense?: DrivingLicense;
   family?: Family;
-  
+
   // Навички (P1)
   skills?: Skill[];
-  
+
   // Допуски (P3)
   clearances?: string[];
-  
+
   // Медичні дані (P3)
   medical?: MedicalInfo;
-  
+
   // Нагороди (P2)
   awards?: Award[];
-  
+
   // Метадані
   createdAt: string;
   updatedAt: string;

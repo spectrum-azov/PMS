@@ -1,10 +1,11 @@
-import { Person, OrganizationalUnit, Position, Role, FunctionalDirection } from '../types/personnel';
+import { Person, OrganizationalUnit, Position, Role, FunctionalDirection, RankItem } from '../types/personnel';
 import {
     organizationalUnits,
     positions as seedPositions,
     roles as seedRoles,
     functionalDirections,
     mockPersonnel,
+    ranks as seedRanks,
 } from '../data/mockData';
 
 // Error simulation rate (0.0 to 1.0). Set to 0 to disable.
@@ -17,6 +18,7 @@ class MockDatabase {
     positions: Position[] = [];
     roles: Role[] = [];
     directions: FunctionalDirection[] = [];
+    ranks: RankItem[] = [];
 
     private _idCounter = 1000;
 
@@ -31,6 +33,7 @@ class MockDatabase {
         this.positions = this._loadOrDefault<Position[]>('positions-data', seedPositions);
         this.roles = this._loadOrDefault<Role[]>('roles-data', seedRoles);
         this.directions = this._loadOrDefault<FunctionalDirection[]>('directions-data', functionalDirections);
+        this.ranks = this._loadOrDefault<RankItem[]>('ranks-data', seedRanks);
     }
 
     /** Generate a unique ID */

@@ -1,4 +1,24 @@
-import { OrganizationalUnit, Position, FunctionalDirection, Role, Person } from '../types/personnel';
+import { OrganizationalUnit, Position, FunctionalDirection, Role, Person, RankItem } from '../types/personnel';
+
+// Довідник: Звання
+export const ranks: RankItem[] = [
+  { id: 'rank1', name: 'Солдат' },
+  { id: 'rank2', name: 'Старший солдат' },
+  { id: 'rank3', name: 'Молодший сержант' },
+  { id: 'rank4', name: 'Сержант' },
+  { id: 'rank5', name: 'Старший сержант' },
+  { id: 'rank6', name: 'Головний сержант' },
+  { id: 'rank7', name: 'Штаб-сержант' },
+  { id: 'rank8', name: 'Майстер-сержант' },
+  { id: 'rank9', name: 'Головний майстер-сержант' },
+  { id: 'rank10', name: 'Молодший лейтенант' },
+  { id: 'rank11', name: 'Лейтенант' },
+  { id: 'rank12', name: 'Старший лейтенант' },
+  { id: 'rank13', name: 'Капітан' },
+  { id: 'rank14', name: 'Майор' },
+  { id: 'rank15', name: 'Підполковник' },
+  { id: 'rank16', name: 'Полковник' },
+];
 
 // Довідник: Організаційна структура
 export const organizationalUnits: OrganizationalUnit[] = [
@@ -375,11 +395,11 @@ export function buildUnitHierarchy(units: OrganizationalUnit[]): OrganizationalU
 export function getUnitPath(unitId: string, units: OrganizationalUnit[]): string {
   const path: string[] = [];
   let currentUnit = units.find(u => u.id === unitId);
-  
+
   while (currentUnit) {
     path.unshift(currentUnit.abbreviation || currentUnit.name);
     currentUnit = units.find(u => u.id === currentUnit!.parentId);
   }
-  
+
   return path.join(' → ');
 }

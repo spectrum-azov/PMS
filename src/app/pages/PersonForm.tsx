@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router';
 import { useForm, Controller } from 'react-hook-form';
 import { usePersonnel } from '../context/PersonnelContext';
 import { useDictionaries } from '../context/DictionariesContext';
-import { Person, Rank } from '../types/personnel';
+import { Person } from '../types/personnel';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -20,25 +20,6 @@ import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { Separator } from '../components/ui/separator';
 import { toast } from 'sonner';
 import { Checkbox } from '../components/ui/checkbox';
-
-const ranks: Rank[] = [
-  'Солдат',
-  'Старший солдат',
-  'Молодший сержант',
-  'Сержант',
-  'Старший сержант',
-  'Головний сержант',
-  'Штаб-сержант',
-  'Майстер-сержант',
-  'Головний майстер-сержант',
-  'Молодший лейтенант',
-  'Лейтенант',
-  'Старший лейтенант',
-  'Капітан',
-  'Майор',
-  'Підполковник',
-  'Полковник'
-];
 
 const phonePattern = /^(\+380\d{9}|0\d{9})$/;
 
@@ -58,7 +39,7 @@ export function PersonForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getPersonById, addPerson, updatePerson } = usePersonnel();
-  const { units, positions, roles } = useDictionaries();
+  const { units, positions, roles, ranks } = useDictionaries();
 
   const isEditMode = id !== undefined;
   const existingPerson = isEditMode ? getPersonById(id!) : null;
@@ -238,8 +219,8 @@ export function PersonForm() {
                           </SelectTrigger>
                           <SelectContent>
                             {ranks.map((rank) => (
-                              <SelectItem key={rank} value={rank}>
-                                {rank}
+                              <SelectItem key={rank.id} value={rank.name}>
+                                {rank.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
