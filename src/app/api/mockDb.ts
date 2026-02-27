@@ -20,8 +20,6 @@ class MockDatabase {
     directions: FunctionalDirection[] = [];
     ranks: RankItem[] = [];
 
-    private _idCounter = 1000;
-
     constructor() {
         this.seed();
     }
@@ -38,7 +36,7 @@ class MockDatabase {
 
     /** Generate a unique ID */
     nextId(): string {
-        return String(++this._idCounter);
+        return crypto.randomUUID();
     }
 
     /** Persist a collection to localStorage */
