@@ -102,6 +102,8 @@
   --ring: #f8d73c;
   --font-weight-medium: 600;
   --font-weight-normal: 400;
+  --font-sans: "Play", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Tektur", system-ui, sans-serif;
   --chart-1: #f2d244;
   --chart-2: #49a1d6;
   --chart-3: #77c063;
@@ -116,6 +118,23 @@
   --sidebar-accent-foreground: #f5f7fa;
   --sidebar-border: #353a41;
   --sidebar-ring: #f8d73c;
+
+  font-family: var(--font-sans);
+  letter-spacing: 0.5px;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  label {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 }
 
 @theme inline {
