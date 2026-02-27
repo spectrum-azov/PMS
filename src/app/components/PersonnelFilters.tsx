@@ -60,7 +60,7 @@ export function PersonnelFilters({ filters, onFiltersChange }: PersonnelFiltersP
       {/* Search Bar */}
       <div className="flex gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder={t('filters_search_placeholder')}
             className="pl-10"
@@ -79,8 +79,8 @@ export function PersonnelFilters({ filters, onFiltersChange }: PersonnelFiltersP
       {/* Filters Row */}
       <div className="flex flex-wrap gap-3">
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-medium text-gray-700">{t('filters_title')}</span>
+          <Filter className="w-4 h-4 text-muted-foreground" />
+          <span className="text-sm font-medium text-foreground">{t('filters_title')}</span>
         </div>
 
         <Select value={filters.unitId || 'all'} onValueChange={handleUnitChange}>
@@ -157,7 +157,7 @@ export function PersonnelFilters({ filters, onFiltersChange }: PersonnelFiltersP
               {t('filters_unit')}: {units.find(u => u.id === filters.unitId)?.abbreviation}
               <button
                 onClick={() => handleUnitChange('all')}
-                className="ml-2 hover:text-red-600"
+                className="ml-2 hover:text-destructive"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -168,7 +168,7 @@ export function PersonnelFilters({ filters, onFiltersChange }: PersonnelFiltersP
               {t('filters_position')}: {positions.find(p => p.id === filters.positionId)?.name}
               <button
                 onClick={() => handlePositionChange('all')}
-                className="ml-2 hover:text-red-600"
+                className="ml-2 hover:text-destructive"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -179,7 +179,7 @@ export function PersonnelFilters({ filters, onFiltersChange }: PersonnelFiltersP
               {t('filters_role')}: {roles.find(r => r.id === filters.roleId)?.name}
               <button
                 onClick={() => handleRoleChange('all')}
-                className="ml-2 hover:text-red-600"
+                className="ml-2 hover:text-destructive"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -195,7 +195,7 @@ export function PersonnelFilters({ filters, onFiltersChange }: PersonnelFiltersP
               }
               <button
                 onClick={() => handleStatusChange('all')}
-                className="ml-2 hover:text-red-600"
+                className="ml-2 hover:text-destructive"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -210,7 +210,7 @@ export function PersonnelFilters({ filters, onFiltersChange }: PersonnelFiltersP
               }
               <button
                 onClick={() => handleServiceTypeChange('all')}
-                className="ml-2 hover:text-red-600"
+                className="ml-2 hover:text-destructive"
               >
                 <X className="w-3 h-3" />
               </button>

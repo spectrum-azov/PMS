@@ -78,8 +78,8 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
       {/* Mobile view - Cards */}
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {personnel.length === 0 ? (
-          <Card className="bg-white">
-            <CardContent className="py-8 text-center text-gray-500">
+          <Card className="bg-card">
+            <CardContent className="py-8 text-center text-muted-foreground">
               {t('table_empty_state')}
             </CardContent>
           </Card>
@@ -87,19 +87,19 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
           personnel.map((person) => (
             <Card
               key={person.id}
-              className="cursor-pointer hover:border-blue-400 transition-colors bg-white overflow-hidden"
+              className="cursor-pointer hover:border-primary transition-colors bg-card overflow-hidden"
               onClick={() => navigate(`/personnel/${person.id}`)}
             >
               <CardHeader className="p-4 pb-2">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-blue-600" />
-                      <span className="font-mono font-bold text-lg text-blue-600">
+                      <Shield className="w-4 h-4 text-primary" />
+                      <span className="font-mono font-bold text-lg text-primary">
                         {person.callsign}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-500 font-medium mt-0.5 uppercase tracking-wider">
+                    <div className="text-xs text-muted-foreground font-medium mt-0.5 uppercase tracking-wider">
                       {person.rank}
                     </div>
                   </div>
@@ -107,7 +107,7 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <MoreVertical className="w-4 h-4 text-gray-500" />
+                          <MoreVertical className="w-4 h-4 text-muted-foreground" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
@@ -136,25 +136,25 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
               </CardHeader>
               <CardContent className="p-4 pt-1 space-y-4">
                 <div>
-                  <div className="flex items-center gap-2 text-gray-900 font-semibold mb-1">
-                    <User className="w-4 h-4 text-gray-400" />
+                  <div className="flex items-center gap-2 text-foreground font-semibold mb-1">
+                    <User className="w-4 h-4 text-muted-foreground" />
                     {person.fullName}
                   </div>
                   {person.militaryId && (
-                    <div className="text-xs text-gray-500 ml-6">
+                    <div className="text-xs text-muted-foreground ml-6">
                       ID: {person.militaryId}
                     </div>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <div className="grid grid-cols-1 gap-2 bg-muted/50 p-3 rounded-lg border border-border">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500">{t('table_col_unit')}</span>
-                    <span className="font-medium text-gray-900">{getUnitName(person.unitId)}</span>
+                    <span className="text-muted-foreground">{t('table_col_unit')}</span>
+                    <span className="font-medium text-foreground">{getUnitName(person.unitId)}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500">{t('table_col_position')}</span>
-                    <span className="font-medium text-gray-900 text-right">{getPositionName(person.positionId)}</span>
+                    <span className="text-muted-foreground">{t('table_col_position')}</span>
+                    <span className="font-medium text-foreground text-right">{getPositionName(person.positionId)}</span>
                   </div>
                 </div>
 
@@ -163,8 +163,8 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
                   {getStatusBadge(person.status)}
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-gray-600 pt-3 border-t border-gray-100">
-                  <Phone className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-2 text-sm text-muted-foreground pt-3 border-t border-border">
+                  <Phone className="w-4 h-4 text-muted-foreground" />
                   <span className="font-mono">{person.phone}</span>
                 </div>
               </CardContent>
@@ -174,7 +174,7 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
       </div>
 
       {/* Desktop view - Table */}
-      <div className="hidden md:block border rounded-lg overflow-hidden bg-white overflow-x-auto">
+      <div className="hidden md:block border rounded-lg overflow-hidden bg-card overflow-x-auto">
         <Table className="min-w-[900px]">
           <TableHeader>
             <TableRow>
@@ -193,7 +193,7 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
           <TableBody>
             {personnel.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={10} className="text-center py-8 text-gray-500">
+                <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
                   {t('table_empty_state')}
                 </TableCell>
               </TableRow>
@@ -201,19 +201,19 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
               personnel.map((person) => (
                 <TableRow
                   key={person.id}
-                  className="cursor-pointer hover:bg-gray-50"
+                  className="cursor-pointer hover:bg-muted/50"
                   onClick={() => navigate(`/personnel/${person.id}`)}
                 >
                   <TableCell>
-                    <span className="font-mono font-medium text-blue-600">
+                    <span className="font-mono font-medium text-primary">
                       {person.callsign}
                     </span>
                   </TableCell>
                   <TableCell>
                     <div>
-                      <div className="font-medium text-gray-900">{person.fullName}</div>
+                      <div className="font-medium text-foreground">{person.fullName}</div>
                       {person.militaryId && (
-                        <div className="text-xs text-gray-500">{person.militaryId}</div>
+                        <div className="text-xs text-muted-foreground">{person.militaryId}</div>
                       )}
                     </div>
                   </TableCell>

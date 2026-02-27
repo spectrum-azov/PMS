@@ -51,8 +51,8 @@ export function PersonnelRegistry() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-semibold text-gray-900">{t('registry_title')}</h2>
-          <div className="text-gray-600 mt-1">
+          <h2 className="text-3xl font-semibold text-foreground">{t('registry_title')}</h2>
+          <div className="text-muted-foreground mt-1">
             {loading ? (
               <Skeleton className="h-4 w-32 inline-block" />
             ) : (
@@ -95,7 +95,7 @@ export function PersonnelRegistry() {
       ) : error ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500 mb-4">{error}</p>
+            <p className="text-muted-foreground mb-4">{error}</p>
             <Button onClick={reload} variant="outline">
               <RefreshCw className="w-4 h-4 mr-2" />
               {t('registry_retry')}
@@ -106,7 +106,7 @@ export function PersonnelRegistry() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Label htmlFor="page-size" className="text-sm text-gray-600">
+              <Label htmlFor="page-size" className="text-sm text-muted-foreground">
                 {t('common_show') || 'Show'}:
               </Label>
               <Select
@@ -128,7 +128,7 @@ export function PersonnelRegistry() {
               </Select>
             </div>
             {totalPages > 1 && (
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-muted-foreground">
                 {t('common_page') || 'Page'} {currentPage} {t('common_of') || 'of'} {totalPages}
               </div>
             )}
