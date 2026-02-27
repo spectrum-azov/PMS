@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router';
+import { useState, useEffect } from 'react';
 import { Person } from '../types/personnel';
 import { useDictionaries } from '../context/DictionariesContext';
+import { formatPhoneNumber } from '../utils/formatters';
 import {
   Table,
   TableBody,
@@ -13,22 +15,48 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { useLanguage } from '../context/LanguageContext';
 import { Card, CardContent, CardHeader, CardAction } from './ui/card';
-import { Eye, Edit, MoreVertical, Phone, User, Shield } from 'lucide-react';
+import { Eye, Edit, MoreVertical, Phone, User, Shield, Settings2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from './ui/dropdown-menu';
 
 interface PersonnelTableProps {
   personnel: Person[];
 }
 
+type ColumnId = 'callsign' | 'fullname' | 'rank' | 'unit' | 'position' | 'roles' | 'service_type' | 'status' | 'phone';
+
+const STORAGE_KEY = 'personnel-table-columns';
+const DEFAULT_COLUMNS: ColumnId[] = ['callsign', 'fullname', 'rank', 'unit', 'position', 'roles', 'service_type', 'status', 'phone'];
+
 export function PersonnelTable({ personnel }: PersonnelTableProps) {
   const navigate = useNavigate();
   const { units, positions, roles } = useDictionaries();
   const { t } = useLanguage();
+
+  const [visibleColumns, setVisibleColumns] = useState<ColumnId[]>(() => {
+    if (typeof window === 'undefined') return DEFAULT_COLUMNS;
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : DEFAULT_COLUMNS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleColumns));
+  }, [visibleColumns]);
+
+  const toggleColumn = (column: ColumnId) => {
+    setVisibleColumns(prev =>
+      prev.includes(column)
+        ? prev.filter(c => c !== column)
+        : [...prev, column]
+    );
+  };
 
   const getUnitName = (unitId: string) => {
     const unit = units.find(u => u.id === unitId);
@@ -73,8 +101,47 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
     );
   };
 
+  const isVisible = (column: ColumnId) => visibleColumns.includes(column);
+
+  const columnOptions: { id: ColumnId; label: string }[] = [
+    { id: 'callsign', label: t('table_col_callsign') },
+    { id: 'fullname', label: t('table_col_fullname') },
+    { id: 'rank', label: t('table_col_rank') },
+    { id: 'unit', label: t('table_col_unit') },
+    { id: 'position', label: t('table_col_position') },
+    { id: 'roles', label: t('table_col_roles') },
+    { id: 'service_type', label: t('table_col_service_type') },
+    { id: 'status', label: t('table_col_status') },
+    { id: 'phone', label: t('table_col_phone') },
+  ];
+
   return (
     <div className="space-y-4">
+      <div className="flex justify-end mb-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2">
+              <Settings2 className="w-4 h-4" />
+              {t('table_columns')}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>{t('table_columns_settings')}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {columnOptions.map((column) => (
+              <DropdownMenuCheckboxItem
+                key={column.id}
+                checked={isVisible(column.id)}
+                onCheckedChange={() => toggleColumn(column.id)}
+                onSelect={(e) => e.preventDefault()}
+              >
+                {column.label}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
       {/* Mobile view - Cards */}
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {personnel.length === 0 ? (
@@ -165,7 +232,7 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
 
                 <div className="flex items-center gap-2 text-sm text-muted-foreground pt-3 border-t border-border">
                   <Phone className="w-4 h-4 text-muted-foreground" />
-                  <span className="font-mono">{person.phone}</span>
+                  <span className="font-mono">{formatPhoneNumber(person.phone)}</span>
                 </div>
               </CardContent>
             </Card>
@@ -178,22 +245,22 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
         <Table className="min-w-[900px]">
           <TableHeader>
             <TableRow>
-              <TableHead>{t('table_col_callsign')}</TableHead>
-              <TableHead>{t('table_col_fullname')}</TableHead>
-              <TableHead>{t('table_col_rank')}</TableHead>
-              <TableHead>{t('table_col_unit')}</TableHead>
-              <TableHead>{t('table_col_position')}</TableHead>
-              <TableHead>{t('table_col_roles')}</TableHead>
-              <TableHead>{t('table_col_service_type')}</TableHead>
-              <TableHead>{t('table_col_status')}</TableHead>
-              <TableHead>{t('table_col_phone')}</TableHead>
+              {isVisible('callsign') && <TableHead>{t('table_col_callsign')}</TableHead>}
+              {isVisible('fullname') && <TableHead>{t('table_col_fullname')}</TableHead>}
+              {isVisible('rank') && <TableHead>{t('table_col_rank')}</TableHead>}
+              {isVisible('unit') && <TableHead>{t('table_col_unit')}</TableHead>}
+              {isVisible('position') && <TableHead>{t('table_col_position')}</TableHead>}
+              {isVisible('roles') && <TableHead>{t('table_col_roles')}</TableHead>}
+              {isVisible('service_type') && <TableHead>{t('table_col_service_type')}</TableHead>}
+              {isVisible('status') && <TableHead>{t('table_col_status')}</TableHead>}
+              {isVisible('phone') && <TableHead>{t('table_col_phone')}</TableHead>}
               <TableHead className="text-right">{t('common_actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {personnel.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={columnOptions.filter(o => isVisible(o.id)).length + 1} className="text-center py-8 text-muted-foreground">
                   {t('table_empty_state')}
                 </TableCell>
               </TableRow>
@@ -204,47 +271,65 @@ export function PersonnelTable({ personnel }: PersonnelTableProps) {
                   className="cursor-pointer hover:bg-muted/50"
                   onClick={() => navigate(`/personnel/${person.id}`)}
                 >
-                  <TableCell>
-                    <span className="font-mono font-medium text-primary">
-                      {person.callsign}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium text-foreground">{person.fullName}</div>
-                      {person.militaryId && (
-                        <div className="text-xs text-muted-foreground">{person.militaryId}</div>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm">{person.rank}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm">{getUnitName(person.unitId)}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm">{getPositionName(person.positionId)}</span>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {person.roleIds.slice(0, 2).map((roleId) => (
-                        <Badge key={roleId} variant="outline" className="text-xs">
-                          {getRoleName(roleId)}
-                        </Badge>
-                      ))}
-                      {person.roleIds.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{person.roleIds.length - 2}
-                        </Badge>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>{getServiceTypeBadge(person.serviceType)}</TableCell>
-                  <TableCell>{getStatusBadge(person.status)}</TableCell>
-                  <TableCell>
-                    <span className="text-sm font-mono">{person.phone}</span>
-                  </TableCell>
+                  {isVisible('callsign') && (
+                    <TableCell>
+                      <span className="font-mono font-medium text-primary">
+                        {person.callsign}
+                      </span>
+                    </TableCell>
+                  )}
+                  {isVisible('fullname') && (
+                    <TableCell>
+                      <div>
+                        <div className="font-medium text-foreground">{person.fullName}</div>
+                        {person.militaryId && (
+                          <div className="text-xs text-muted-foreground">{person.militaryId}</div>
+                        )}
+                      </div>
+                    </TableCell>
+                  )}
+                  {isVisible('rank') && (
+                    <TableCell>
+                      <span className="text-sm">{person.rank}</span>
+                    </TableCell>
+                  )}
+                  {isVisible('unit') && (
+                    <TableCell>
+                      <span className="text-sm">{getUnitName(person.unitId)}</span>
+                    </TableCell>
+                  )}
+                  {isVisible('position') && (
+                    <TableCell>
+                      <span className="text-sm">{getPositionName(person.positionId)}</span>
+                    </TableCell>
+                  )}
+                  {isVisible('roles') && (
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {person.roleIds.slice(0, 2).map((roleId) => (
+                          <Badge key={roleId} variant="outline" className="text-xs">
+                            {getRoleName(roleId)}
+                          </Badge>
+                        ))}
+                        {person.roleIds.length > 2 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{person.roleIds.length - 2}
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                  )}
+                  {isVisible('service_type') && (
+                    <TableCell>{getServiceTypeBadge(person.serviceType)}</TableCell>
+                  )}
+                  {isVisible('status') && (
+                    <TableCell>{getStatusBadge(person.status)}</TableCell>
+                  )}
+                  {isVisible('phone') && (
+                    <TableCell>
+                      <span className="text-sm font-mono">{formatPhoneNumber(person.phone)}</span>
+                    </TableCell>
+                  )}
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>

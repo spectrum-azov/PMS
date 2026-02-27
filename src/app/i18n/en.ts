@@ -83,6 +83,8 @@ export const en: Record<TranslationKey, string> = {
     table_col_service_type: 'Service Type',
     table_col_status: 'Status',
     table_col_phone: 'Phone',
+    table_columns: 'Columns',
+    table_columns_settings: 'Column Settings',
 
     // Filters
     filters_search_placeholder: 'Search by callsign, full name, phone or military ID...',

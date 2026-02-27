@@ -21,8 +21,11 @@ import { Separator } from '../components/ui/separator';
 import { toast } from 'sonner';
 import { Checkbox } from '../components/ui/checkbox';
 import { useLanguage } from '../context/LanguageContext';
+import { MaskedInput } from '../components/ui/masked-input';
 
-const phonePattern = /^(\+380\d{9}|0\d{9})$/;
+const phonePattern = /^0\d{9}$/;
+const stripPhone = (phone: string) => phone ? phone.replace(/^\+38/, '') : '';
+const prepPhone = (phone: string) => phone ? (phone.startsWith('+38') ? phone : '+38' + phone) : '';
 
 export function PersonForm() {
   const { id } = useParams();
@@ -49,11 +52,12 @@ export function PersonForm() {
   const defaultValues: Person = existingPerson
     ? {
       ...existingPerson,
+      phone: stripPhone(existingPerson.phone),
       family: {
         ...existingPerson.family,
         emergencyContact: {
           name: existingPerson.family?.emergencyContact?.name || '',
-          phone: existingPerson.family?.emergencyContact?.phone || '',
+          phone: stripPhone(existingPerson.family?.emergencyContact?.phone || ''),
           relation: existingPerson.family?.emergencyContact?.relation || '',
         },
       },
@@ -99,11 +103,12 @@ export function PersonForm() {
     if (existingPerson) {
       reset({
         ...existingPerson,
+        phone: stripPhone(existingPerson.phone),
         family: {
           ...existingPerson.family,
           emergencyContact: {
             name: existingPerson.family?.emergencyContact?.name || '',
-            phone: existingPerson.family?.emergencyContact?.phone || '',
+            phone: stripPhone(existingPerson.family?.emergencyContact?.phone || ''),
             relation: existingPerson.family?.emergencyContact?.relation || '',
           },
         },
@@ -115,15 +120,27 @@ export function PersonForm() {
 
   const onSubmit = async (data: Person) => {
     setSubmitting(true);
+    const processedData = {
+      ...data,
+      phone: prepPhone(data.phone),
+      family: {
+        ...data.family,
+        emergencyContact: data.family?.emergencyContact ? {
+          ...data.family.emergencyContact,
+          phone: prepPhone(data.family.emergencyContact.phone),
+        } : undefined
+      }
+    };
+
     try {
       if (isEditMode) {
-        const success = await updatePerson(id!, data);
+        const success = await updatePerson(id!, processedData);
         if (success) {
           toast.success(t('form_saved_success'));
           navigate('/personnel');
         }
       } else {
-        const success = await addPerson(data);
+        const success = await addPerson(processedData);
         if (success) {
           toast.success(t('form_created_success'));
           navigate('/personnel');
@@ -145,10 +162,10 @@ export function PersonForm() {
           </Button>
           <Separator orientation="vertical" className="h-8" />
           <div>
-            <h2 className="text-3xl font-semibold text-gray-900">
+            <h2 className="text-3xl font-semibold text-foreground">
               {isEditMode ? t('form_edit_title') : t('form_add_title')}
             </h2>
-            <p className="text-gray-600 mt-1">
+            <p className="text-muted-foreground mt-1">
               {isEditMode ? t('form_edit_subtitle') : t('form_add_subtitle')}
             </p>
           </div>
@@ -423,21 +440,28 @@ export function PersonForm() {
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="phone">{t('form_phone')}</Label>
-                    <Input
-                      id="phone"
-                      {...register('phone', {
+                    <Controller
+                      name="phone"
+                      control={control}
+                      rules={{
                         required: t('common_required_field'),
                         pattern: {
                           value: phonePattern,
                           message: t('form_val_phone_format'),
                         },
-                      })}
-                      placeholder="+380981234567"
+                      }}
+                      render={({ field }) => (
+                        <MaskedInput
+                          id="phone"
+                          label={t('form_phone')}
+                          mask="+{38} (000) 000-00-00"
+                          value={field.value}
+                          onAccept={(value) => field.onChange(value)}
+                          error={errors.phone?.message}
+                          placeholder="+38 (0__) ___-__-__"
+                        />
+                      )}
                     />
-                    {errors.phone && (
-                      <p className="text-sm text-red-600 mt-1">{errors.phone.message}</p>
-                    )}
                   </div>
 
                   <div>
@@ -560,20 +584,25 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="emergencyContactPhone">{t('form_ec_phone')}</Label>
-                    <Input
-                      id="emergencyContactPhone"
-                      {...register('family.emergencyContact.phone', {
+                    <Controller
+                      name="family.emergencyContact.phone"
+                      control={control}
+                      rules={{
                         validate: (v) =>
                           !v || phonePattern.test(v) || t('form_val_phone_format'),
-                      })}
-                      placeholder="+380981112233"
+                      }}
+                      render={({ field }) => (
+                        <MaskedInput
+                          id="emergencyContactPhone"
+                          label={t('form_ec_phone')}
+                          mask="+{38} (000) 000-00-00"
+                          value={field.value}
+                          onAccept={(value) => field.onChange(value)}
+                          error={errors.family?.emergencyContact?.phone?.message}
+                          placeholder="+38 (0__) ___-__-__"
+                        />
+                      )}
                     />
-                    {errors.family?.emergencyContact?.phone && (
-                      <p className="text-sm text-red-600 mt-1">
-                        {errors.family.emergencyContact.phone.message}
-                      </p>
-                    )}
                   </div>
 
                   <div>
@@ -593,7 +622,7 @@ export function PersonForm() {
                 <CardTitle>{t('form_education')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   {t('form_education_coming_soon')}
                 </p>
               </CardContent>
@@ -607,7 +636,7 @@ export function PersonForm() {
                 <CardTitle>{t('form_extended_title')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   {t('form_extended_coming_soon')}
                 </p>
               </CardContent>

@@ -100,6 +100,8 @@ export const uk = {
     table_col_service_type: 'Вид служби',
     table_col_status: 'Статус',
     table_col_phone: 'Телефон',
+    table_columns: 'Колонки',
+    table_columns_settings: 'Налаштування колонок',
 
     // Person Form
     form_add_title: 'Додати нову особу',

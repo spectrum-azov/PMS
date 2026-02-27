@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { uk } from 'date-fns/locale';
+import { formatPhoneNumber } from '../utils/formatters';
 
 export function PersonCard() {
   const { id } = useParams();
@@ -57,7 +58,7 @@ export function PersonCard() {
     return (
       <div className="p-6">
         <div className="text-center py-12">
-          <p className="text-gray-500 mb-4">{error}</p>
+          <p className="text-muted-foreground mb-4">{error}</p>
           <Button onClick={reload} variant="outline" className="mr-2">
             <RefreshCw className="w-4 h-4 mr-2" />
             Спробувати ще раз
@@ -104,7 +105,7 @@ export function PersonCard() {
     return (
       <div className="p-6">
         <div className="text-center py-12">
-          <p className="text-gray-500">Особу не знайдено</p>
+          <p className="text-muted-foreground">Особу не знайдено</p>
           <Button onClick={() => navigate('/personnel')} className="mt-4">
             Повернутися до реєстру
           </Button>
@@ -142,10 +143,10 @@ export function PersonCard() {
           <Separator orientation="vertical" className="h-8 hidden sm:block" />
           <div className="min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900">{person.callsign}</h2>
+              <h2 className="text-2xl sm:text-3xl font-semibold text-foreground">{person.callsign}</h2>
               {getStatusBadge(person.status)}
             </div>
-            <p className="text-gray-600 mt-1 truncate">{person.fullName}</p>
+            <p className="text-muted-foreground mt-1 truncate">{person.fullName}</p>
           </div>
         </div>
         <Button onClick={() => navigate(`/personnel/${id}/edit`)} className="shrink-0">
@@ -159,12 +160,12 @@ export function PersonCard() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-blue-600" />
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <p className="text-xs text-gray-500">Звання</p>
-                <p className="font-medium text-gray-900">{person.rank}</p>
+                <p className="text-xs text-muted-foreground">Звання</p>
+                <p className="font-medium text-foreground">{person.rank}</p>
               </div>
             </div>
           </CardContent>
@@ -173,12 +174,12 @@ export function PersonCard() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Briefcase className="w-5 h-5 text-green-600" />
+              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                <Briefcase className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <p className="text-xs text-gray-500">Вид служби</p>
-                <p className="font-medium text-gray-900">{person.serviceType}</p>
+                <p className="text-xs text-muted-foreground">Вид служби</p>
+                <p className="font-medium text-foreground">{person.serviceType}</p>
               </div>
             </div>
           </CardContent>
@@ -187,12 +188,12 @@ export function PersonCard() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-purple-600" />
+              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <p className="text-xs text-gray-500">Підрозділ</p>
-                <p className="font-medium text-gray-900 truncate">{getUnitName(person.unitId)}</p>
+                <p className="text-xs text-muted-foreground">Підрозділ</p>
+                <p className="font-medium text-foreground truncate">{getUnitName(person.unitId)}</p>
               </div>
             </div>
           </CardContent>
@@ -201,12 +202,12 @@ export function PersonCard() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-orange-600" />
+              <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 text-orange-600 dark:text-orange-400" />
               </div>
               <div>
-                <p className="text-xs text-gray-500">Посада</p>
-                <p className="font-medium text-gray-900 truncate">{getPositionName(person.positionId)}</p>
+                <p className="text-xs text-muted-foreground">Посада</p>
+                <p className="font-medium text-foreground truncate">{getPositionName(person.positionId)}</p>
               </div>
             </div>
           </CardContent>
@@ -233,31 +234,31 @@ export function PersonCard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <p className="text-sm text-gray-500">Повне ім'я</p>
+                  <p className="text-sm text-muted-foreground">Повне ім'я</p>
                   <p className="font-medium">{person.fullName}</p>
                 </div>
                 <Separator />
                 <div>
-                  <p className="text-sm text-gray-500">Позивний</p>
-                  <p className="font-medium font-mono text-blue-600">{person.callsign}</p>
+                  <p className="text-sm text-muted-foreground">Позивний</p>
+                  <p className="font-medium font-mono text-primary">{person.callsign}</p>
                 </div>
                 <Separator />
                 <div>
-                  <p className="text-sm text-gray-500">Дата народження</p>
+                  <p className="text-sm text-muted-foreground">Дата народження</p>
                   <p className="font-medium">{formatDate(person.birthDate)}</p>
                 </div>
                 <Separator />
                 {person.bloodType && (
                   <>
                     <div>
-                      <p className="text-sm text-gray-500">Група крові</p>
+                      <p className="text-sm text-muted-foreground">Група крові</p>
                       <p className="font-medium">{person.bloodType}</p>
                     </div>
                     <Separator />
                   </>
                 )}
                 <div>
-                  <p className="text-sm text-gray-500">Громадянство</p>
+                  <p className="text-sm text-muted-foreground">Громадянство</p>
                   <p className="font-medium">{person.citizenship || 'Не вказано'}</p>
                 </div>
               </CardContent>
@@ -270,19 +271,19 @@ export function PersonCard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <p className="text-sm text-gray-500">Військове звання</p>
+                  <p className="text-sm text-muted-foreground">Військове звання</p>
                   <p className="font-medium">{person.rank}</p>
                 </div>
                 <Separator />
                 <div>
-                  <p className="text-sm text-gray-500">Вид служби</p>
+                  <p className="text-sm text-muted-foreground">Вид служби</p>
                   <Badge>{person.serviceType}</Badge>
                 </div>
                 <Separator />
                 {person.tagNumber && (
                   <>
                     <div>
-                      <p className="text-sm text-gray-500">Номер жетона</p>
+                      <p className="text-sm text-muted-foreground">Номер жетона</p>
                       <p className="font-medium font-mono">{person.tagNumber}</p>
                     </div>
                     <Separator />
@@ -291,7 +292,7 @@ export function PersonCard() {
                 {person.recruitedBy && (
                   <>
                     <div>
-                      <p className="text-sm text-gray-500">Ким призваний</p>
+                      <p className="text-sm text-muted-foreground">Ким призваний</p>
                       <p className="font-medium">{person.recruitedBy}</p>
                     </div>
                     <Separator />
@@ -299,7 +300,7 @@ export function PersonCard() {
                 )}
                 {person.recruitedDate && (
                   <div>
-                    <p className="text-sm text-gray-500">Дата призову</p>
+                    <p className="text-sm text-muted-foreground">Дата призову</p>
                     <p className="font-medium">{formatDate(person.recruitedDate)}</p>
                   </div>
                 )}
@@ -313,20 +314,20 @@ export function PersonCard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <p className="text-sm text-gray-500">Підрозділ</p>
+                  <p className="text-sm text-muted-foreground">Підрозділ</p>
                   <p className="font-medium">{getUnitName(person.unitId)}</p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {getUnitPath(person.unitId)}
                   </p>
                 </div>
                 <Separator />
                 <div>
-                  <p className="text-sm text-gray-500">Штатна посада</p>
+                  <p className="text-sm text-muted-foreground">Штатна посада</p>
                   <p className="font-medium">{getPositionName(person.positionId)}</p>
                 </div>
                 <Separator />
                 <div>
-                  <p className="text-sm text-gray-500">Фактичні ролі</p>
+                  <p className="text-sm text-muted-foreground">Фактичні ролі</p>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {person.roleIds.map((roleId) => (
                       <Badge key={roleId} variant="outline">
@@ -345,21 +346,21 @@ export function PersonCard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-gray-400" />
+                  <Phone className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-gray-500">Основний телефон</p>
-                    <p className="font-medium font-mono">{person.phone}</p>
+                    <p className="text-sm text-muted-foreground">Основний телефон</p>
+                    <p className="font-medium font-mono">{formatPhoneNumber(person.phone)}</p>
                   </div>
                 </div>
                 {person.additionalPhones && person.additionalPhones.length > 0 && (
                   <>
                     <Separator />
                     <div className="flex items-center gap-3">
-                      <Phone className="w-4 h-4 text-gray-400" />
+                      <Phone className="w-4 h-4 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-gray-500">Додаткові телефони</p>
+                        <p className="text-sm text-muted-foreground">Додаткові телефони</p>
                         {person.additionalPhones.map((phone, idx) => (
-                          <p key={idx} className="font-medium font-mono">{phone}</p>
+                          <p key={idx} className="font-medium font-mono">{formatPhoneNumber(phone)}</p>
                         ))}
                       </div>
                     </div>
@@ -369,9 +370,9 @@ export function PersonCard() {
                   <>
                     <Separator />
                     <div className="flex items-start gap-3">
-                      <MapPin className="w-4 h-4 text-gray-400 mt-1" />
+                      <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
                       <div>
-                        <p className="text-sm text-gray-500">Місце проживання</p>
+                        <p className="text-sm text-muted-foreground">Місце проживання</p>
                         <p className="font-medium">{person.address}</p>
                       </div>
                     </div>
@@ -381,9 +382,9 @@ export function PersonCard() {
                   <>
                     <Separator />
                     <div className="flex items-start gap-3">
-                      <MapPin className="w-4 h-4 text-gray-400 mt-1" />
+                      <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
                       <div>
-                        <p className="text-sm text-gray-500">Місце реєстрації</p>
+                        <p className="text-sm text-muted-foreground">Місце реєстрації</p>
                         <p className="font-medium">{person.registrationAddress}</p>
                       </div>
                     </div>
@@ -409,10 +410,10 @@ export function PersonCard() {
                 {person.education && person.education.length > 0 ? (
                   <div className="space-y-4">
                     {person.education.map((edu) => (
-                      <div key={edu.id} className="p-4 bg-gray-50 rounded-lg">
-                        <p className="font-medium text-gray-900">{edu.institution}</p>
-                        <p className="text-sm text-gray-600 mt-1">{edu.specialty}</p>
-                        <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                      <div key={edu.id} className="p-4 bg-muted rounded-lg">
+                        <p className="font-medium text-foreground">{edu.institution}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{edu.specialty}</p>
+                        <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                           <span>{edu.startYear} - {edu.endYear}</span>
                           <Badge variant="outline" className="text-xs">{edu.degree}</Badge>
                         </div>
@@ -420,7 +421,7 @@ export function PersonCard() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-8">Інформація про освіту відсутня</p>
+                  <p className="text-muted-foreground text-center py-8">Інформація про освіту відсутня</p>
                 )}
               </CardContent>
             </Card>
@@ -437,7 +438,7 @@ export function PersonCard() {
                 {person.drivingLicense ? (
                   <div className="space-y-4">
                     <div>
-                      <p className="text-sm text-gray-500">Категорії</p>
+                      <p className="text-sm text-muted-foreground">Категорії</p>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {person.drivingLicense.categories.map((cat) => (
                           <Badge key={cat} variant="secondary">{cat}</Badge>
@@ -446,17 +447,17 @@ export function PersonCard() {
                     </div>
                     <Separator />
                     <div>
-                      <p className="text-sm text-gray-500">Рік отримання</p>
+                      <p className="text-sm text-muted-foreground">Рік отримання</p>
                       <p className="font-medium">{person.drivingLicense.yearObtained}</p>
                     </div>
                     <Separator />
                     <div>
-                      <p className="text-sm text-gray-500">Стаж водіння</p>
+                      <p className="text-sm text-muted-foreground">Стаж водіння</p>
                       <p className="font-medium">{person.drivingLicense.experience} років</p>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-8">Водійських прав немає</p>
+                  <p className="text-muted-foreground text-center py-8">Водійських прав немає</p>
                 )}
               </CardContent>
             </Card>
@@ -470,18 +471,18 @@ export function PersonCard() {
                 {person.skills && person.skills.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {person.skills.map((skill) => (
-                      <div key={skill.id} className="p-4 bg-gray-50 rounded-lg">
+                      <div key={skill.id} className="p-4 bg-muted rounded-lg">
                         <div className="flex items-center justify-between mb-2">
-                          <p className="font-medium text-gray-900">{skill.name}</p>
+                          <p className="font-medium text-foreground">{skill.name}</p>
                           <Badge variant={skill.level === 3 ? 'default' : 'secondary'}>
                             Рівень {skill.level}
                           </Badge>
                         </div>
-                        <p className="text-xs text-gray-500">{skill.category}</p>
+                        <p className="text-xs text-muted-foreground">{skill.category}</p>
                         <div className="mt-3">
-                          <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="w-full bg-muted-foreground/20 rounded-full h-2">
                             <div
-                              className="bg-blue-600 h-2 rounded-full transition-all"
+                              className="bg-primary h-2 rounded-full transition-all"
                               style={{ width: `${(skill.level / 3) * 100}%` }}
                             />
                           </div>
@@ -490,7 +491,7 @@ export function PersonCard() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-8">Навички не вказані</p>
+                  <p className="text-muted-foreground text-center py-8">Навички не вказані</p>
                 )}
               </CardContent>
             </Card>
@@ -510,22 +511,22 @@ export function PersonCard() {
               {person.family?.emergencyContact ? (
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-gray-500">Ім'я</p>
+                    <p className="text-sm text-muted-foreground">Ім'я</p>
                     <p className="font-medium">{person.family.emergencyContact.name}</p>
                   </div>
                   <Separator />
                   <div>
-                    <p className="text-sm text-gray-500">Телефон</p>
-                    <p className="font-medium font-mono">{person.family.emergencyContact.phone}</p>
+                    <p className="text-sm text-muted-foreground">Телефон</p>
+                    <p className="font-medium font-mono">{formatPhoneNumber(person.family.emergencyContact.phone)}</p>
                   </div>
                   <Separator />
                   <div>
-                    <p className="text-sm text-gray-500">Відношення</p>
+                    <p className="text-sm text-muted-foreground">Відношення</p>
                     <p className="font-medium">{person.family.emergencyContact.relation}</p>
                   </div>
                 </div>
               ) : (
-                <p className="text-gray-500 text-center py-8">Контактна особа не вказана</p>
+                <p className="text-muted-foreground text-center py-8">Контактна особа не вказана</p>
               )}
             </CardContent>
           </Card>
@@ -541,7 +542,7 @@ export function PersonCard() {
               {person.militaryId && (
                 <>
                   <div>
-                    <p className="text-sm text-gray-500">Військове посвідчення</p>
+                    <p className="text-sm text-muted-foreground">Військове посвідчення</p>
                     <p className="font-medium font-mono">{person.militaryId}</p>
                   </div>
                   <Separator />
@@ -550,7 +551,7 @@ export function PersonCard() {
               {person.passport && (
                 <>
                   <div>
-                    <p className="text-sm text-gray-500">Паспорт</p>
+                    <p className="text-sm text-muted-foreground">Паспорт</p>
                     <p className="font-medium font-mono">{person.passport}</p>
                   </div>
                   <Separator />
@@ -558,7 +559,7 @@ export function PersonCard() {
               )}
               {person.taxId && (
                 <div>
-                  <p className="text-sm text-gray-500">ІПН</p>
+                  <p className="text-sm text-muted-foreground">ІПН</p>
                   <p className="font-medium font-mono">{person.taxId}</p>
                 </div>
               )}
@@ -579,23 +580,23 @@ export function PersonCard() {
               {person.awards && person.awards.length > 0 ? (
                 <div className="space-y-4">
                   {person.awards.map((award) => (
-                    <div key={award.id} className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
+                    <div key={award.id} className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20 rounded-lg border border-yellow-200 dark:border-yellow-900/50">
                       <div className="flex items-start justify-between">
                         <div>
-                          <p className="font-medium text-gray-900">{award.name}</p>
-                          <p className="text-sm text-gray-600 mt-1">{award.reason}</p>
+                          <p className="font-medium text-foreground">{award.name}</p>
+                          <p className="text-sm text-muted-foreground mt-1">{award.reason}</p>
                           <div className="flex items-center gap-3 mt-3">
                             <Badge>{award.level}</Badge>
-                            <span className="text-xs text-gray-500">{formatDate(award.dateAwarded)}</span>
+                            <span className="text-xs text-muted-foreground">{formatDate(award.dateAwarded)}</span>
                           </div>
                         </div>
-                        <Award className="w-6 h-6 text-yellow-600" />
+                        <Award className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500 text-center py-8">Нагороди відсутні</p>
+                <p className="text-muted-foreground text-center py-8">Нагороди відсутні</p>
               )}
             </CardContent>
           </Card>
