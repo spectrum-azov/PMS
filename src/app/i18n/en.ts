@@ -392,7 +392,9 @@ export const en: Record<TranslationKey, string> = {
     import_partial: 'Imported',
     import_partial_out_of: 'out of',
     import_partial_selected: 'selected.',
-    import_col_status: 'Status',
+    import_col_valid: 'Valid',
+    import_col_service_type: 'Service Type',
+    import_col_service_status: 'Service Status',
     import_col_callsign: 'Callsign',
     import_col_fullname: 'Full Name',
     import_col_rank: 'Rank',
@@ -404,4 +406,6 @@ export const en: Record<TranslationKey, string> = {
     import_select_rank: 'Select Rank',
     import_select_unit: 'Select Unit',
     import_select_pos: 'Select Position',
+    import_select_service_type: 'Select type',
+    import_select_status: 'Select status',
 };

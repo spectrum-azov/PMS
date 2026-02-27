@@ -389,7 +389,9 @@ export const uk = {
     import_partial: 'Імпортовано',
     import_partial_out_of: 'з',
     import_partial_selected: 'обраних.',
-    import_col_status: 'Статус',
+    import_col_valid: 'Валідність',
+    import_col_service_type: 'Вид служби',
+    import_col_service_status: 'Статус служби',
     import_col_callsign: 'Позивний',
     import_col_fullname: 'ПІБ',
     import_col_rank: 'Звання',
@@ -401,6 +403,8 @@ export const uk = {
     import_select_rank: 'Оберіть звання',
     import_select_unit: 'Оберіть підрозділ',
     import_select_pos: 'Оберіть посаду',
+    import_select_service_type: 'Оберіть вид',
+    import_select_status: 'Оберіть статус',
 };
 
 export type TranslationKey = keyof typeof uk;

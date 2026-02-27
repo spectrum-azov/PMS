@@ -1,2 +1,2 @@
-callsign,fullName,rank,birthDate,serviceType,tagNumber,unit,status,militaryId,passport,taxId,phone,additionalPhones,address,registrationAddress,citizenship,bloodType
-Сатурн,Іваненко Іван Іванович,Старший сержант,1993-04-12,Контракт,1245,8,Оператор радіозв\'язку,Служить,АА 123456,КВ 987654,2123123123,+38 098 123-45-67,+38 098 123-45-68,"Київ, вул Абв 1","Київ, вул Абв 2",Україна,A (II) Rh+
+callsign,fullName,rank,birthDate,serviceType,tagNumber,unit,position,status,militaryId,passport,taxId,phone,address,registrationAddress,citizenship,bloodType
+Сатурн,Іваненко Іван Іванович,Старший сержант,1993-04-12,Контракт,1245,Підрозділи забезпечення,Оператор радіозв\'язку,Служить,АА 123456,КВ 987654,2123123123,+38 098 123-45-67,"Київ, вул Абв 1","Київ, вул Абв 2",Україна,A (II) Rh+
