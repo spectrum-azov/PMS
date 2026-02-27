@@ -415,4 +415,9 @@ export const en: Record<TranslationKey, string> = {
     import_col_military_id: 'Military ID',
     import_col_passport: 'Passport',
     import_col_tax_id: 'Tax ID',
+    import_col_tag_number: 'Tag #',
+    import_col_address: 'Address',
+    import_col_reg_address: 'Reg. Address',
+    import_col_citizenship: 'Citizenship',
+    import_col_blood_type: 'Blood Type',
 };

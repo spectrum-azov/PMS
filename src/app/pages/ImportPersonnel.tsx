@@ -70,6 +70,11 @@ export function ImportPersonnel() {
                     const rawMilitaryId = getVal(['militaryId', 'military id', 'військовий квиток', 'в/к', 'Військовий квиток']);
                     const rawPassport = getVal(['passport', 'паспорт', 'Паспорт']);
                     const rawTaxId = getVal(['taxId', 'іпн', 'ІПН', 'tax id', 'Tax ID']);
+                    const rawTagNumber = getVal(['tagNumber', 'tagnumber', 'жетон', 'Жетон', 'Номер жетона', 'Tag Number']);
+                    const rawAddress = getVal(['address', 'адреса', 'Адреса', 'Місце проживання', 'Address']);
+                    const rawRegAddress = getVal(['registrationAddress', 'registrationaddress', 'Адреса реєстрації', 'Місце реєстрації', 'Registration Address']);
+                    const rawCitizenship = getVal(['citizenship', 'громадянство', 'Громадянство', 'Citizenship']);
+                    const rawBloodType = getVal(['bloodType', 'bloodtype', 'Група крові', 'група крові', 'Blood Type']);
 
                     // Normalize matching values
                     let matchedUnit = '';
@@ -141,6 +146,11 @@ export function ImportPersonnel() {
                         militaryId: rawMilitaryId,
                         passport: rawPassport,
                         taxId: rawTaxId,
+                        tagNumber: rawTagNumber,
+                        address: rawAddress,
+                        registrationAddress: rawRegAddress,
+                        citizenship: rawCitizenship,
+                        bloodType: rawBloodType,
                         roleIds: [],
                     };
 
@@ -268,6 +278,11 @@ export function ImportPersonnel() {
                 militaryId: row.militaryId || undefined,
                 passport: row.passport || undefined,
                 taxId: row.taxId || undefined,
+                tagNumber: row.tagNumber || undefined,
+                address: row.address || undefined,
+                registrationAddress: row.registrationAddress || undefined,
+                citizenship: row.citizenship || undefined,
+                bloodType: row.bloodType || undefined,
                 roleIds: row.roleIds || [],
             } as Person;
 
@@ -331,66 +346,88 @@ export function ImportPersonnel() {
                 <Card>
                     <CardContent className="p-0">
                         <div className="w-full overflow-x-auto pb-4">
-                            <table className="w-full text-sm text-left border-collapse whitespace-nowrap min-w-max">
+                            <table className="w-full text-sm text-left border-collapse min-w-max">
                                 <thead className="bg-muted/50 text-muted-foreground border-b border-border">
                                     <tr>
-                                        <th className="p-3 w-10 text-center sticky left-0 bg-muted/50 z-10 border-r border-border">
+                                        <th className="p-2 w-10 text-center sticky left-0 bg-muted/50 z-10 border-r border-border">
                                             <input
                                                 type="checkbox"
                                                 onChange={(e) => toggleAll(e.target.checked)}
                                                 checked={selectedCount === data.length}
                                             />
                                         </th>
-                                        <th className="p-3 w-10 sticky left-10 bg-muted/50 z-10 border-r border-border">{t('import_col_valid')}</th>
-                                        <th className="p-3 min-w-[120px]">{t('import_col_callsign')}</th>
-                                        <th className="p-3 min-w-[200px]">{t('import_col_fullname')}</th>
-                                        <th className="p-3 min-w-[150px]">{t('import_col_rank')}</th>
-                                        <th className="p-3 min-w-[160px]">{t('import_col_service_type')}</th>
-                                        <th className="p-3 min-w-[140px]">{t('import_col_service_status')}</th>
-                                        <th className="p-3 min-w-[160px]">{t('import_col_dob')}</th>
-                                        <th className="p-3 min-w-[200px]">{t('import_col_unit')}</th>
-                                        <th className="p-3 min-w-[200px]">{t('import_col_position')}</th>
-                                        <th className="p-3 min-w-[160px]">{t('import_col_phone')}</th>
+                                        <th className="p-2 w-10 sticky left-10 bg-muted/50 z-10 border-r border-border">{t('import_col_valid')}</th>
+                                        <th className="p-2 min-w-[100px]">{t('import_col_callsign')}</th>
+                                        <th className="p-2 min-w-[180px]">{t('import_col_fullname')}</th>
+                                        <th className="p-2 min-w-[130px]">{t('import_col_rank')}</th>
+                                        <th className="p-2 min-w-[130px]">{t('import_col_dob')}</th>
+                                        <th className="p-2 min-w-[140px]">{t('import_col_service_type')}</th>
+                                        <th className="p-2 min-w-[100px]">{t('import_col_tag_number')}</th>
+                                        <th className="p-2 min-w-[180px]">{t('import_col_unit')}</th>
+                                        <th className="p-2 min-w-[180px]">{t('import_col_position')}</th>
+                                        <th className="p-2 min-w-[120px]">{t('import_col_service_status')}</th>
+                                        <th className="p-2 min-w-[140px]">{t('import_col_military_id')}</th>
+                                        <th className="p-2 min-w-[120px]">{t('import_col_passport')}</th>
+                                        <th className="p-2 min-w-[100px]">{t('import_col_tax_id')}</th>
+                                        <th className="p-2 min-w-[140px]">{t('import_col_phone')}</th>
+                                        <th className="p-2 min-w-[160px]">{t('import_col_address')}</th>
+                                        <th className="p-2 min-w-[160px]">{t('import_col_reg_address')}</th>
+                                        <th className="p-2 min-w-[120px]">{t('import_col_citizenship')}</th>
+                                        <th className="p-2 min-w-[120px]">{t('import_col_blood_type')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {data.map(row => (
                                         <tr key={row._id} className={`border-b border-border ${!row._isValid ? 'bg-destructive/10 hover:bg-destructive/20' : 'hover:bg-muted/30'}`}>
-                                            <td className="p-3 text-center sticky left-0 bg-background z-10 border-r border-border shadow-[1px_0_0_0_rgba(0,0,0,0.1)]">
+                                            <td className="p-2 text-center sticky left-0 bg-background z-10 border-r border-border shadow-[1px_0_0_0_rgba(0,0,0,0.1)]">
                                                 <input
                                                     type="checkbox"
                                                     checked={row._selected}
                                                     onChange={() => toggleRowSelection(row._id)}
                                                 />
                                             </td>
-                                            <td className="p-3 text-center sticky left-10 bg-background z-10 border-r border-border shadow-[1px_0_0_0_rgba(0,0,0,0.1)]">
+                                            <td className="p-2 text-center sticky left-10 bg-background z-10 border-r border-border shadow-[1px_0_0_0_rgba(0,0,0,0.1)]">
                                                 {row._isValid ? (
                                                     <Check className="w-5 h-5 text-green-500 inline" />
                                                 ) : (
-                                                    <span title={`${t('import_missing')} ${row._errors.join(', ')}`}>
+                                                    <span title={(() => {
+                                                        const dupErrors = row._errors.filter(e => e.includes(t('import_duplicate') || 'Дублікат'));
+                                                        const missingFields = row._errors.filter(e => !e.includes(t('import_duplicate') || 'Дублікат'));
+                                                        const parts = [];
+                                                        if (missingFields.length > 0) {
+                                                            parts.push(`${t('import_missing')} ${missingFields.join(', ')}`);
+                                                        }
+                                                        if (dupErrors.length > 0) {
+                                                            parts.push(dupErrors.join(' | '));
+                                                        }
+                                                        return parts.join(' | ');
+                                                    })()}>
                                                         <AlertCircle className="w-5 h-5 text-destructive inline" />
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="p-3">
+                                            {/* Callsign */}
+                                            <td className="p-2">
                                                 <Input
                                                     value={row.callsign || ''}
                                                     onChange={e => updateRowField(row._id, 'callsign', e.target.value)}
-                                                    className={`h-8 min-w-[100px] ${row._errors.includes('callsign') ? 'border-destructive' : ''}`}
+                                                    className={`h-8 min-w-[90px] ${row._errors.includes('callsign') ? 'border-destructive' : ''}`}
                                                 />
                                             </td>
-                                            <td className="p-3">
+                                            {/* Full Name */}
+                                            <td className="p-2">
                                                 <Input
                                                     value={row.fullName || ''}
                                                     onChange={e => updateRowField(row._id, 'fullName', e.target.value)}
                                                     className={`h-8 min-w-[150px] ${row._errors.includes('fullName') ? 'border-destructive' : ''}`}
                                                 />
                                             </td>
-                                            <td className="p-3">
+                                            {/* Rank */}
+                                            <td className="p-2">
                                                 <select
                                                     value={row.rank || ''}
                                                     onChange={e => updateRowField(row._id, 'rank', e.target.value)}
-                                                    className={`flex h-8 w-full min-w-[130px] rounded-md border border-input bg-background px-3 py-1 text-sm ${row._errors.includes('rank') ? 'border-destructive' : ''}`}
+                                                    className={`flex h-8 w-full min-w-[110px] rounded-md border border-input bg-background px-2 py-1 text-sm ${row._errors.includes('rank') ? 'border-destructive' : ''}`}
                                                 >
                                                     <option value="">{t('import_select_rank')}</option>
                                                     {ranks.map(r => (
@@ -398,42 +435,41 @@ export function ImportPersonnel() {
                                                     ))}
                                                 </select>
                                             </td>
-                                            <td className="p-3">
+                                            {/* Birth Date */}
+                                            <td className="p-2">
+                                                <Input
+                                                    type="date"
+                                                    value={row.birthDate || ''}
+                                                    onChange={e => updateRowField(row._id, 'birthDate', e.target.value)}
+                                                    className={`h-8 min-w-[120px] ${row._errors.includes('birthDate') ? 'border-destructive' : ''}`}
+                                                />
+                                            </td>
+                                            {/* Service Type */}
+                                            <td className="p-2">
                                                 <select
                                                     value={row.serviceType || ''}
                                                     onChange={e => updateRowField(row._id, 'serviceType', e.target.value)}
-                                                    className={`flex h-8 w-full min-w-[130px] rounded-md border border-input bg-background px-3 py-1 text-sm ${row._errors.includes('serviceType') ? 'border-destructive' : ''}`}
+                                                    className={`flex h-8 w-full min-w-[120px] rounded-md border border-input bg-background px-2 py-1 text-sm ${row._errors.includes('serviceType') ? 'border-destructive' : ''}`}
                                                 >
                                                     <option value="">{t('import_select_service_type')}</option>
                                                     <option value="Контракт">{t('filters_service_contract')}</option>
                                                     <option value="Мобілізований">{t('filters_service_mobilized')}</option>
                                                 </select>
                                             </td>
-                                            <td className="p-3">
-                                                <select
-                                                    value={row.status || ''}
-                                                    onChange={e => updateRowField(row._id, 'status', e.target.value)}
-                                                    className={`flex h-8 w-full min-w-[130px] rounded-md border border-input bg-background px-3 py-1 text-sm ${row._errors.includes('status') ? 'border-destructive' : ''}`}
-                                                >
-                                                    <option value="">{t('import_select_status')}</option>
-                                                    <option value="Служить">{t('filters_status_serving')}</option>
-                                                    <option value="Переведений">{t('filters_status_transferred')}</option>
-                                                    <option value="Звільнений">{t('filters_status_dismissed')}</option>
-                                                </select>
-                                            </td>
-                                            <td className="p-3">
+                                            {/* Tag Number */}
+                                            <td className="p-2">
                                                 <Input
-                                                    type="date"
-                                                    value={row.birthDate || ''}
-                                                    onChange={e => updateRowField(row._id, 'birthDate', e.target.value)}
-                                                    className={`h-8 min-w-[130px] ${row._errors.includes('birthDate') ? 'border-destructive' : ''}`}
+                                                    value={row.tagNumber || ''}
+                                                    onChange={e => updateRowField(row._id, 'tagNumber', e.target.value)}
+                                                    className="h-8 min-w-[80px]"
                                                 />
                                             </td>
-                                            <td className="p-3">
+                                            {/* Unit */}
+                                            <td className="p-2">
                                                 <select
                                                     value={row.unitId || ''}
                                                     onChange={e => updateRowField(row._id, 'unitId', e.target.value)}
-                                                    className={`flex h-8 min-w-[150px] rounded-md border border-input bg-background px-3 py-1 text-sm ${row._errors.includes('unitId') ? 'border-destructive' : ''}`}
+                                                    className={`flex h-8 min-w-[140px] rounded-md border border-input bg-background px-2 py-1 text-sm ${row._errors.includes('unitId') ? 'border-destructive' : ''}`}
                                                 >
                                                     <option value="">{t('import_select_unit')}</option>
                                                     {units.map(u => (
@@ -441,11 +477,12 @@ export function ImportPersonnel() {
                                                     ))}
                                                 </select>
                                             </td>
-                                            <td className="p-3">
+                                            {/* Position */}
+                                            <td className="p-2">
                                                 <select
                                                     value={row.positionId || ''}
                                                     onChange={e => updateRowField(row._id, 'positionId', e.target.value)}
-                                                    className={`flex h-8 min-w-[150px] rounded-md border border-input bg-background px-3 py-1 text-sm ${row._errors.includes('positionId') ? 'border-destructive' : ''}`}
+                                                    className={`flex h-8 min-w-[140px] rounded-md border border-input bg-background px-2 py-1 text-sm ${row._errors.includes('positionId') ? 'border-destructive' : ''}`}
                                                 >
                                                     <option value="">{t('import_select_pos')}</option>
                                                     {positions.map(p => (
@@ -453,11 +490,81 @@ export function ImportPersonnel() {
                                                     ))}
                                                 </select>
                                             </td>
-                                            <td className="p-3">
+                                            {/* Status */}
+                                            <td className="p-2">
+                                                <select
+                                                    value={row.status || ''}
+                                                    onChange={e => updateRowField(row._id, 'status', e.target.value)}
+                                                    className={`flex h-8 w-full min-w-[110px] rounded-md border border-input bg-background px-2 py-1 text-sm ${row._errors.includes('status') ? 'border-destructive' : ''}`}
+                                                >
+                                                    <option value="">{t('import_select_status')}</option>
+                                                    <option value="Служить">{t('filters_status_serving')}</option>
+                                                    <option value="Переведений">{t('filters_status_transferred')}</option>
+                                                    <option value="Звільнений">{t('filters_status_dismissed')}</option>
+                                                </select>
+                                            </td>
+                                            {/* Military ID */}
+                                            <td className="p-2">
+                                                <Input
+                                                    value={row.militaryId || ''}
+                                                    onChange={e => updateRowField(row._id, 'militaryId', e.target.value)}
+                                                    className="h-8 min-w-[120px]"
+                                                />
+                                            </td>
+                                            {/* Passport */}
+                                            <td className="p-2">
+                                                <Input
+                                                    value={row.passport || ''}
+                                                    onChange={e => updateRowField(row._id, 'passport', e.target.value)}
+                                                    className="h-8 min-w-[100px]"
+                                                />
+                                            </td>
+                                            {/* Tax ID */}
+                                            <td className="p-2">
+                                                <Input
+                                                    value={row.taxId || ''}
+                                                    onChange={e => updateRowField(row._id, 'taxId', e.target.value)}
+                                                    className="h-8 min-w-[90px]"
+                                                />
+                                            </td>
+                                            {/* Phone */}
+                                            <td className="p-2">
                                                 <Input
                                                     value={row.phone || ''}
                                                     onChange={e => updateRowField(row._id, 'phone', e.target.value)}
-                                                    className={`h-8 min-w-[150px] ${row._errors.includes('phone') ? 'border-destructive' : ''}`}
+                                                    className={`h-8 min-w-[130px] ${row._errors.includes('phone') ? 'border-destructive' : ''}`}
+                                                />
+                                            </td>
+                                            {/* Address */}
+                                            <td className="p-2">
+                                                <Input
+                                                    value={row.address || ''}
+                                                    onChange={e => updateRowField(row._id, 'address', e.target.value)}
+                                                    className="h-8 min-w-[140px]"
+                                                />
+                                            </td>
+                                            {/* Registration Address */}
+                                            <td className="p-2">
+                                                <Input
+                                                    value={row.registrationAddress || ''}
+                                                    onChange={e => updateRowField(row._id, 'registrationAddress', e.target.value)}
+                                                    className="h-8 min-w-[140px]"
+                                                />
+                                            </td>
+                                            {/* Citizenship */}
+                                            <td className="p-2">
+                                                <Input
+                                                    value={row.citizenship || ''}
+                                                    onChange={e => updateRowField(row._id, 'citizenship', e.target.value)}
+                                                    className="h-8 min-w-[100px]"
+                                                />
+                                            </td>
+                                            {/* Blood Type */}
+                                            <td className="p-2">
+                                                <Input
+                                                    value={row.bloodType || ''}
+                                                    onChange={e => updateRowField(row._id, 'bloodType', e.target.value)}
+                                                    className="h-8 min-w-[100px]"
                                                 />
                                             </td>
                                         </tr>
