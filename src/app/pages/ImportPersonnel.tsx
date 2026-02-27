@@ -188,6 +188,7 @@ export function ImportPersonnel() {
     };
 
     const checkDuplicates = (rows: ImportRow[]): ImportRow[] => {
+        const seenCallsign = new Set<string>();
         const seenMilitaryId = new Set<string>();
         const seenPassport = new Set<string>();
         const seenTaxId = new Set<string>();
@@ -196,6 +197,16 @@ export function ImportPersonnel() {
             const row = validateRow({ ...r });
             let isDuplicate = false;
             const duplicateFields: string[] = [];
+
+            if (row.callsign) {
+                const cs = row.callsign.toLowerCase();
+                if (seenCallsign.has(cs)) {
+                    isDuplicate = true;
+                    duplicateFields.push(t('import_duplicate_callsign') || 'Позивний');
+                } else {
+                    seenCallsign.add(cs);
+                }
+            }
 
             if (row.militaryId) {
                 if (seenMilitaryId.has(row.militaryId)) {
@@ -259,6 +270,7 @@ export function ImportPersonnel() {
     const handleCheckDb = async () => {
         setIsChecking(true);
         const items = data.map(row => ({
+            callsign: row.callsign || undefined,
             militaryId: row.militaryId || undefined,
             passport: row.passport || undefined,
             taxId: row.taxId || undefined,
@@ -277,6 +289,7 @@ export function ImportPersonnel() {
                 const check = result.data[idx];
                 if (check && check.isDuplicate) {
                     const fieldLabels = check.matchedFields.map(f => {
+                        if (f === 'callsign') return t('import_duplicate_callsign') || 'Позивний';
                         if (f === 'militaryId') return t('import_duplicate_military') || 'Військовий квиток';
                         if (f === 'passport') return t('import_duplicate_passport') || 'Паспорт';
                         return t('import_duplicate_tax') || 'ІПН';

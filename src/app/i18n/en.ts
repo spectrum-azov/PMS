@@ -409,6 +409,7 @@ export const en: Record<TranslationKey, string> = {
     import_select_service_type: 'Select type',
     import_select_status: 'Select status',
     import_duplicate: 'Duplicate',
+    import_duplicate_callsign: 'Callsign',
     import_duplicate_military: 'Military ID',
     import_duplicate_passport: 'Passport',
     import_duplicate_tax: 'Tax ID',

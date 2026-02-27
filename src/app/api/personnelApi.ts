@@ -103,6 +103,7 @@ export async function deletePerson(id: string): Promise<ApiResult<{ id: string }
 // --- Duplicate check for Import ---
 
 export interface DuplicateCheckItem {
+    callsign?: string;
     militaryId?: string;
     passport?: string;
     taxId?: string;
@@ -111,7 +112,7 @@ export interface DuplicateCheckItem {
 export interface DuplicateCheckResult {
     index: number;
     isDuplicate: boolean;
-    matchedFields: ('militaryId' | 'passport' | 'taxId')[];
+    matchedFields: ('callsign' | 'militaryId' | 'passport' | 'taxId')[];
 }
 
 /** Check a batch of items against existing DB personnel for duplicates */
@@ -125,9 +126,12 @@ export async function checkDuplicatesInDb(
     if (err) return { success: false, message: err };
 
     const results: DuplicateCheckResult[] = items.map((item, index) => {
-        const matchedFields: ('militaryId' | 'passport' | 'taxId')[] = [];
+        const matchedFields: ('callsign' | 'militaryId' | 'passport' | 'taxId')[] = [];
 
         for (const person of db.personnel) {
+            if (item.callsign && person.callsign && item.callsign.toLowerCase() === person.callsign.toLowerCase()) {
+                if (!matchedFields.includes('callsign')) matchedFields.push('callsign');
+            }
             if (item.militaryId && person.militaryId && item.militaryId === person.militaryId) {
                 if (!matchedFields.includes('militaryId')) matchedFields.push('militaryId');
             }

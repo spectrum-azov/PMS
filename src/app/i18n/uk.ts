@@ -414,6 +414,7 @@ export const uk = {
     import_select_service_type: 'Оберіть вид служби...',
     import_select_status: 'Оберіть статус...',
     import_duplicate: 'Дублікат',
+    import_duplicate_callsign: 'Позивний',
     import_duplicate_military: 'Військовий квиток',
     import_duplicate_passport: 'Паспорт',
     import_duplicate_tax: 'ІПН',
