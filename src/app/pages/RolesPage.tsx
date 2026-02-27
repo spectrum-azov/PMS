@@ -1,48 +1,17 @@
 import { useState } from 'react';
 import { useDictionaries } from '../context/DictionariesContext';
 import { Role } from '../types/personnel';
-import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../components/ui/table';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from '../components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../components/ui/select';
-import { Plus, Edit, Trash2, UserCog, Layers } from 'lucide-react';
+import { UserCog, Layers } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '../components/ui/badge';
 import { useLanguage } from '../context/LanguageContext';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationFirst,
-  PaginationLast,
-} from '../components/ui/pagination';
+import { RolesTable } from '../components/roles/RolesTable';
+import { DirectionDialog } from '../components/roles/DirectionDialog';
+import { RoleDialog } from '../components/roles/RoleDialog';
+import { RolePagination } from '../components/roles/RolePagination';
+import { Button } from '../components/ui/button';
+import { Edit, Trash2 } from 'lucide-react';
 
 export function RolesPage() {
   const { roles, addRole, updateRole, deleteRole, directions, addDirection, updateDirection, deleteDirection } = useDictionaries();
@@ -55,6 +24,7 @@ export function RolesPage() {
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
+
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
   const [isDirectionDialogOpen, setIsDirectionDialogOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
@@ -92,23 +62,21 @@ export function RolesPage() {
     setIsDirectionDialogOpen(true);
   };
 
-  const handleSubmitRole = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!roleFormData.name || !roleFormData.directionId) {
+  const handleSubmitRole = async (formData: Partial<Role>) => {
+    if (!formData.name || !formData.directionId) {
       toast.error(t('roles_err_name_required'));
       return;
     }
 
     if (editingRole) {
-      const success = await updateRole(editingRole.id, roleFormData);
+      const success = await updateRole(editingRole.id, formData);
       if (success) toast.success(t('roles_updated'));
     } else {
       const newRole: Role = {
         id: `role-${Date.now()}`,
-        name: roleFormData.name!,
-        directionId: roleFormData.directionId!,
-        level: roleFormData.level,
+        name: formData.name!,
+        directionId: formData.directionId!,
+        level: formData.level,
       };
       const success = await addRole(newRole);
       if (success) toast.success(t('roles_added'));
@@ -117,21 +85,19 @@ export function RolesPage() {
     setIsRoleDialogOpen(false);
   };
 
-  const handleSubmitDirection = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!directionFormData.name) {
+  const handleSubmitDirection = async (formData: { name: string }) => {
+    if (!formData.name) {
       toast.error(t('roles_err_dir_name_required'));
       return;
     }
 
     if (editingDirection) {
-      const success = await updateDirection(editingDirection.id, directionFormData);
+      const success = await updateDirection(editingDirection.id, formData);
       if (success) toast.success(t('roles_direction_updated'));
     } else {
       const success = await addDirection({
         id: `dir-${Date.now()}`,
-        name: directionFormData.name,
+        name: formData.name,
       });
       if (success) toast.success(t('roles_direction_added'));
     }
@@ -164,7 +130,7 @@ export function RolesPage() {
   };
 
   const getLevelBadge = (level?: number) => {
-    const colors = ['bg-gray-100 text-gray-800', 'bg-yellow-100 text-yellow-800', 'bg-orange-100 text-orange-800', 'bg-green-100 text-green-800'];
+    const colors = ['bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100', 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-100', 'bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-100', 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-100'];
     const labels = [t('roles_level_none'), t('roles_level_beginner'), t('roles_level_experienced'), t('roles_level_expert')];
     const idx = level || 0;
     return (
@@ -176,7 +142,6 @@ export function RolesPage() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-semibold text-foreground">{t('roles_title')}</h2>
@@ -186,7 +151,6 @@ export function RolesPage() {
         </div>
       </div>
 
-      {/* Functional Directions */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -194,43 +158,15 @@ export function RolesPage() {
               <Layers className="w-5 h-5" />
               {t('roles_directions_title')} ({directions.length})
             </CardTitle>
-            <Dialog open={isDirectionDialogOpen} onOpenChange={setIsDirectionDialogOpen}>
-              <DialogTrigger asChild>
-                <Button size="sm" variant="outline" onClick={() => handleOpenDirectionDialog()}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t('roles_add_direction')}
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingDirection ? t('roles_dialog_edit_direction') : t('roles_dialog_add_direction')}
-                  </DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleSubmitDirection}>
-                  <div className="space-y-4 py-4">
-                    <div>
-                      <Label htmlFor="directionName">{t('roles_direction_name')}</Label>
-                      <Input
-                        id="directionName"
-                        value={directionFormData.name}
-                        onChange={(e) => setDirectionFormData({ name: e.target.value })}
-                        placeholder=""
-                        required
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => setIsDirectionDialogOpen(false)}>
-                      {t('common_cancel')}
-                    </Button>
-                    <Button type="submit">
-                      {editingDirection ? t('common_update') : t('common_create')}
-                    </Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
+            <DirectionDialog
+              isOpen={isDirectionDialogOpen}
+              setIsOpen={setIsDirectionDialogOpen}
+              editingDirection={editingDirection}
+              directionFormData={directionFormData}
+              setDirectionFormData={setDirectionFormData}
+              handleOpenDialog={() => handleOpenDirectionDialog()}
+              onSave={handleSubmitDirection}
+            />
           </div>
         </CardHeader>
         <CardContent>
@@ -271,7 +207,6 @@ export function RolesPage() {
         </CardContent>
       </Card>
 
-      {/* Roles */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -280,231 +215,37 @@ export function RolesPage() {
               {t('roles_roles_title')} ({roles.length})
             </CardTitle>
             <div className="flex items-center gap-2">
-              <Dialog open={isRoleDialogOpen} onOpenChange={setIsRoleDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button onClick={() => handleOpenRoleDialog()}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    {t('roles_add_role')}
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>
-                      {editingRole ? t('roles_dialog_edit_role') : t('roles_dialog_add_role')}
-                    </DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={handleSubmitRole}>
-                    <div className="space-y-4 py-4">
-                      <div>
-                        <Label htmlFor="roleName">{t('roles_role_name')}</Label>
-                        <Input
-                          id="roleName"
-                          value={roleFormData.name}
-                          onChange={(e) => setRoleFormData({ ...roleFormData, name: e.target.value })}
-                          placeholder=""
-                          required
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="directionId">{t('roles_functional_direction')}</Label>
-                        <Select
-                          value={roleFormData.directionId}
-                          onValueChange={(value) => setRoleFormData({ ...roleFormData, directionId: value })}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('roles_select_direction')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {directions.map((direction) => (
-                              <SelectItem key={direction.id} value={direction.id}>
-                                {direction.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="level">{t('roles_expertise_level')}</Label>
-                        <Select
-                          value={roleFormData.level?.toString()}
-                          onValueChange={(value) => setRoleFormData({ ...roleFormData, level: parseInt(value) as 1 | 2 | 3 })}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1">1 - {t('roles_level_beginner')}</SelectItem>
-                            <SelectItem value="2">2 - {t('roles_level_experienced')}</SelectItem>
-                            <SelectItem value="3">3 - {t('roles_level_expert')}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <Button type="button" variant="outline" onClick={() => setIsRoleDialogOpen(false)}>
-                        {t('common_cancel')}
-                      </Button>
-                      <Button type="submit">
-                        {editingRole ? t('common_update') : t('common_create')}
-                      </Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
+              <RoleDialog
+                isOpen={isRoleDialogOpen}
+                setIsOpen={setIsRoleDialogOpen}
+                editingRole={editingRole}
+                roleFormData={roleFormData}
+                setRoleFormData={setRoleFormData}
+                handleOpenDialog={() => handleOpenRoleDialog()}
+                onSave={handleSubmitRole}
+                directions={directions}
+              />
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="border rounded-lg overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t('roles_col_name')}</TableHead>
-                  <TableHead>{t('roles_col_direction')}</TableHead>
-                  <TableHead>{t('roles_col_level')}</TableHead>
-                  <TableHead className="text-right">{t('common_actions')}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {roles.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                      {t('roles_empty')}
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  paginatedRoles.map((role) => (
-                    <TableRow key={role.id}>
-                      <TableCell>
-                        <span className="font-medium">{role.name}</span>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{getDirectionName(role.directionId)}</Badge>
-                      </TableCell>
-                      <TableCell>{getLevelBadge(role.level)}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleOpenRoleDialog(role)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeleteRole(role.id)}
-                          >
-                            <Trash2 className="w-4 h-4 text-red-600" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          <RolesTable
+            roles={roles}
+            paginatedRoles={paginatedRoles}
+            getDirectionName={getDirectionName}
+            getLevelBadge={getLevelBadge}
+            handleOpenRoleDialog={handleOpenRoleDialog}
+            handleDeleteRole={handleDeleteRole}
+          />
 
           {totalPages > 0 && (
-            <div className="flex flex-col sm:flex-row items-center justify-between py-4 mt-4 gap-4">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="page-size" className="text-sm text-muted-foreground">
-                    {t('common_show') || 'Показати'}:
-                  </Label>
-                  <Select
-                    value={pageSize.toString()}
-                    onValueChange={(val) => {
-                      setPageSize(parseInt(val));
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <SelectTrigger id="page-size" className="w-[80px] h-9">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="20">20</SelectItem>
-                      <SelectItem value="50">50</SelectItem>
-                      <SelectItem value="100">100</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {t('common_page') || 'Сторінка'} {currentPage} {t('common_of') || 'з'} {totalPages}
-                </div>
-              </div>
-
-              {totalPages > 1 && (
-                <Pagination className="mx-0 w-auto">
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationFirst
-                        onClick={() => setCurrentPage(1)}
-                        className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                      />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                        className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                      />
-                    </PaginationItem>
-
-                    {[...Array(totalPages)].map((_, i) => {
-                      const page = i + 1;
-                      if (
-                        page === 1 ||
-                        page === totalPages ||
-                        (page >= currentPage - 1 && page <= currentPage + 1)
-                      ) {
-                        return (
-                          <PaginationItem key={page}>
-                            <PaginationLink
-                              isActive={currentPage === page}
-                              onClick={() => setCurrentPage(page)}
-                              className="cursor-pointer"
-                            >
-                              {page}
-                            </PaginationLink>
-                          </PaginationItem>
-                        );
-                      }
-
-                      if (
-                        (page === 2 && currentPage > 3) ||
-                        (page === totalPages - 1 && currentPage < totalPages - 2)
-                      ) {
-                        return (
-                          <PaginationItem key={page}>
-                            <PaginationEllipsis />
-                          </PaginationItem>
-                        );
-                      }
-
-                      return null;
-                    })}
-
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                      />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLast
-                        onClick={() => setCurrentPage(totalPages)}
-                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              )}
-            </div>
+            <RolePagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              totalPages={totalPages}
+            />
           )}
         </CardContent>
       </Card>
