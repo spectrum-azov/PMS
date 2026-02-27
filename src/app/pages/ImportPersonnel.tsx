@@ -25,7 +25,7 @@ interface ImportRow extends Partial<Person> {
 
 function cleanString(str: string): string {
     if (!str) return '';
-    return str.toLowerCase().replace(/\s+/g, '');
+    return str.toLowerCase().replace(/[\s\'\\]+/g, '');
 }
 
 export function ImportPersonnel() {
