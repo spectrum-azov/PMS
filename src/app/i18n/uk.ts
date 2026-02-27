@@ -417,7 +417,7 @@ export const uk = {
     import_duplicate_military: 'Військовий квиток',
     import_duplicate_passport: 'Паспорт',
     import_duplicate_tax: 'ІПН',
-    import_check_db: 'Перевірити в БД',
+    import_check_db: 'Перевірити в БД на дублікати',
     import_checking_db: 'Перевірка...',
     import_db_checked: 'Перевірку виконано',
     import_check_db_required: 'Спочатку виконайте перевірку дублікатів у БД',

@@ -412,7 +412,7 @@ export const en: Record<TranslationKey, string> = {
     import_duplicate_military: 'Military ID',
     import_duplicate_passport: 'Passport',
     import_duplicate_tax: 'Tax ID',
-    import_check_db: 'Check DB',
+    import_check_db: 'Check DB for duplicates',
     import_checking_db: 'Checking...',
     import_db_checked: 'Check complete',
     import_check_db_required: 'Please run DB duplicate check first',
