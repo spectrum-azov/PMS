@@ -1,57 +1,87 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Person, PersonnelFilters } from '../types/personnel';
-import { mockPersonnel } from '../data/mockData';
+import * as api from '../api/personnelApi';
+import { toast } from 'sonner';
 
 interface PersonnelContextType {
   personnel: Person[];
   filters: PersonnelFilters;
   setFilters: (filters: PersonnelFilters) => void;
-  addPerson: (person: Person) => void;
-  updatePerson: (id: string, person: Partial<Person>) => void;
-  deletePerson: (id: string) => void;
+  addPerson: (person: Person) => Promise<boolean>;
+  updatePerson: (id: string, person: Partial<Person>) => Promise<boolean>;
+  deletePerson: (id: string) => Promise<boolean>;
   getPersonById: (id: string) => Person | undefined;
   filteredPersonnel: Person[];
+  loading: boolean;
+  error: string | null;
+  reload: () => Promise<void>;
 }
 
 const PersonnelContext = createContext<PersonnelContextType | undefined>(undefined);
 
 export function PersonnelProvider({ children }: { children: React.ReactNode }) {
-  const [personnel, setPersonnel] = useState<Person[]>(() => {
-    // Спробуємо завантажити з localStorage
-    const stored = localStorage.getItem('personnel-data');
-    return stored ? JSON.parse(stored) : mockPersonnel;
-  });
-
+  const [personnel, setPersonnel] = useState<Person[]>([]);
   const [filters, setFilters] = useState<PersonnelFilters>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Зберігаємо в localStorage при зміні
+  // Load personnel from API on mount
+  const loadPersonnel = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    const result = await api.getPersonnel();
+    if (result.success) {
+      setPersonnel(result.data);
+    } else {
+      setError(result.message);
+      toast.error(result.message);
+    }
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
-    localStorage.setItem('personnel-data', JSON.stringify(personnel));
-  }, [personnel]);
+    loadPersonnel();
+  }, [loadPersonnel]);
 
-  const addPerson = (person: Person) => {
-    setPersonnel(prev => [...prev, person]);
+  const addPerson = async (person: Person): Promise<boolean> => {
+    const { id: _id, createdAt: _c, updatedAt: _u, ...personData } = person;
+    const result = await api.createPerson(personData);
+    if (result.success) {
+      setPersonnel(prev => [...prev, result.data]);
+      return true;
+    }
+    toast.error(result.message);
+    return false;
   };
 
-  const updatePerson = (id: string, updates: Partial<Person>) => {
-    setPersonnel(prev =>
-      prev.map(p =>
-        p.id === id
-          ? { ...p, ...updates, updatedAt: new Date().toISOString() }
-          : p
-      )
-    );
+  const updatePerson = async (id: string, updates: Partial<Person>): Promise<boolean> => {
+    const result = await api.updatePerson(id, updates);
+    if (result.success) {
+      setPersonnel(prev =>
+        prev.map(p => (p.id === id ? result.data : p))
+      );
+      return true;
+    }
+    toast.error(result.message);
+    return false;
   };
 
-  const deletePerson = (id: string) => {
-    setPersonnel(prev => prev.filter(p => p.id !== id));
+  const deletePerson = async (id: string): Promise<boolean> => {
+    const result = await api.deletePerson(id);
+    if (result.success) {
+      setPersonnel(prev => prev.filter(p => p.id !== id));
+      return true;
+    }
+    toast.error(result.message);
+    return false;
   };
 
   const getPersonById = (id: string) => {
     return personnel.find(p => p.id === id);
   };
 
-  // Фільтрація персоналу
+  // Client-side filtering (mirrors what the API returns when filters are passed)
   const filteredPersonnel = personnel.filter(person => {
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
@@ -96,7 +126,10 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
         updatePerson,
         deletePerson,
         getPersonById,
-        filteredPersonnel
+        filteredPersonnel,
+        loading,
+        error,
+        reload: loadPersonnel,
       }}
     >
       {children}

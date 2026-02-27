@@ -61,17 +61,17 @@ export function UnitsPage() {
     setIsDialogOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name) {
       toast.error('Назва обов\'язкова');
       return;
     }
 
     if (editingUnit) {
-      updateUnit(editingUnit.id, formData);
-      toast.success('Підрозділ оновлено');
+      const success = await updateUnit(editingUnit.id, formData);
+      if (success) toast.success('Підрозділ оновлено');
     } else {
       const newUnit: OrganizationalUnit = {
         id: `unit-${Date.now()}`,
@@ -81,17 +81,17 @@ export function UnitsPage() {
         location: formData.location,
         parentId: formData.parentId || undefined,
       };
-      addUnit(newUnit);
-      toast.success('Підрозділ додано');
+      const success = await addUnit(newUnit);
+      if (success) toast.success('Підрозділ додано');
     }
 
     setIsDialogOpen(false);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Ви впевнені, що хочете видалити цей підрозділ?')) {
-      deleteUnit(id);
-      toast.success('Підрозділ видалено');
+      const success = await deleteUnit(id);
+      if (success) toast.success('Підрозділ видалено');
     }
   };
 

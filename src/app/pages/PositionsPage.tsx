@@ -58,17 +58,17 @@ export function PositionsPage() {
     setIsDialogOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.category) {
       toast.error('Назва та категорія обов\'язкові');
       return;
     }
 
     if (editingPosition) {
-      updatePosition(editingPosition.id, formData);
-      toast.success('Посаду оновлено');
+      const success = await updatePosition(editingPosition.id, formData);
+      if (success) toast.success('Посаду оновлено');
     } else {
       const newPosition: Position = {
         id: `pos-${Date.now()}`,
@@ -76,17 +76,17 @@ export function PositionsPage() {
         category: formData.category as any,
         description: formData.description,
       };
-      addPosition(newPosition);
-      toast.success('Посаду додано');
+      const success = await addPosition(newPosition);
+      if (success) toast.success('Посаду додано');
     }
 
     setIsDialogOpen(false);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Ви впевнені, що хочете видалити цю посаду?')) {
-      deletePosition(id);
-      toast.success('Посаду видалено');
+      const success = await deletePosition(id);
+      if (success) toast.success('Посаду видалено');
     }
   };
 

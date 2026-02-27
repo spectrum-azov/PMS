@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm, Controller } from 'react-hook-form';
 import { usePersonnel } from '../context/PersonnelContext';
@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { Separator } from '../components/ui/separator';
 import { toast } from 'sonner';
 import { Checkbox } from '../components/ui/checkbox';
@@ -65,48 +65,48 @@ export function PersonForm() {
 
   const defaultValues: Person = existingPerson
     ? {
-        ...existingPerson,
-        family: {
-          ...existingPerson.family,
-          emergencyContact: {
-            name: existingPerson.family?.emergencyContact?.name || '',
-            phone: existingPerson.family?.emergencyContact?.phone || '',
-            relation: existingPerson.family?.emergencyContact?.relation || '',
-          },
+      ...existingPerson,
+      family: {
+        ...existingPerson.family,
+        emergencyContact: {
+          name: existingPerson.family?.emergencyContact?.name || '',
+          phone: existingPerson.family?.emergencyContact?.phone || '',
+          relation: existingPerson.family?.emergencyContact?.relation || '',
         },
-      }
+      },
+    }
     : {
-        id: '',
-        callsign: '',
-        fullName: '',
-        rank: 'Солдат',
-        birthDate: '',
-        serviceType: 'Контракт',
-        tagNumber: '',
-        unitId: '',
-        positionId: '',
-        roleIds: [],
-        status: 'Служить',
-        phone: '',
-        citizenship: 'Україна',
-        address: '',
-        registrationAddress: '',
-        militaryId: '',
-        passport: '',
-        taxId: '',
-        bloodType: '',
-        recruitedBy: '',
-        recruitedDate: '',
-        family: {
-          emergencyContact: {
-            name: '',
-            phone: '',
-            relation: '',
-          },
+      id: '',
+      callsign: '',
+      fullName: '',
+      rank: 'Солдат',
+      birthDate: '',
+      serviceType: 'Контракт',
+      tagNumber: '',
+      unitId: '',
+      positionId: '',
+      roleIds: [],
+      status: 'Служить',
+      phone: '',
+      citizenship: 'Україна',
+      address: '',
+      registrationAddress: '',
+      militaryId: '',
+      passport: '',
+      taxId: '',
+      bloodType: '',
+      recruitedBy: '',
+      recruitedDate: '',
+      family: {
+        emergencyContact: {
+          name: '',
+          phone: '',
+          relation: '',
         },
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm<Person>({
     defaultValues,
@@ -128,21 +128,27 @@ export function PersonForm() {
     }
   }, [existingPerson?.id]);
 
-  const onSubmit = (data: Person) => {
-    if (isEditMode) {
-      updatePerson(id!, { ...data, updatedAt: new Date().toISOString() });
-      toast.success('Дані успішно оновлено');
-    } else {
-      const newPerson: Person = {
-        ...data,
-        id: `person-${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      addPerson(newPerson);
-      toast.success('Особу успішно додано');
+  const [submitting, setSubmitting] = useState(false);
+
+  const onSubmit = async (data: Person) => {
+    setSubmitting(true);
+    try {
+      if (isEditMode) {
+        const success = await updatePerson(id!, data);
+        if (success) {
+          toast.success('Дані успішно оновлено');
+          navigate('/personnel');
+        }
+      } else {
+        const success = await addPerson(data);
+        if (success) {
+          toast.success('Особу успішно додано');
+          navigate('/personnel');
+        }
+      }
+    } finally {
+      setSubmitting(false);
     }
-    navigate('/personnel');
   };
 
   return (
@@ -164,8 +170,8 @@ export function PersonForm() {
             </p>
           </div>
         </div>
-        <Button onClick={handleSubmit(onSubmit)}>
-          <Save className="w-4 h-4 mr-2" />
+        <Button onClick={handleSubmit(onSubmit)} disabled={submitting}>
+          {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
           Зберегти
         </Button>
       </div>
@@ -635,8 +641,8 @@ export function PersonForm() {
           >
             Скасувати
           </Button>
-          <Button type="submit">
-            <Save className="w-4 h-4 mr-2" />
+          <Button type="submit" disabled={submitting}>
+            {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             {isEditMode ? 'Оновити' : 'Створити'}
           </Button>
         </div>

@@ -1,40 +1,95 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { usePersonnel } from '../context/PersonnelContext';
-import { useDictionaries } from '../context/DictionariesContext';
+import { getDashboardData } from '../api/dashboardApi';
+import { DashboardData } from '../api/types';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Users, UserCheck, UserX, Award, TrendingUp } from 'lucide-react';
+import { Users, UserCheck, UserX, Award, TrendingUp, RefreshCw } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Skeleton } from '../components/ui/skeleton';
+import { toast } from 'sonner';
 
 export function Dashboard() {
   const navigate = useNavigate();
-  const { personnel } = usePersonnel();
-  const { units, positions } = useDictionaries();
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Статистика
-  const activePersonnel = personnel.filter(p => p.status === 'Служить').length;
-  const contractPersonnel = personnel.filter(p => p.serviceType === 'Контракт').length;
-  const mobilizedPersonnel = personnel.filter(p => p.serviceType === 'Мобілізований').length;
-  const withAwards = personnel.filter(p => p.awards && p.awards.length > 0).length;
+  const loadDashboard = async () => {
+    setLoading(true);
+    setError(null);
+    const result = await getDashboardData();
+    if (result.success) {
+      setData(result.data);
+    } else {
+      setError(result.message);
+      toast.error(result.message);
+    }
+    setLoading(false);
+  };
 
-  // Розподіл по підрозділам
-  const unitStats = units
-    .filter(u => u.parentId === '3') // Групи вузла зв'язку
-    .map(unit => ({
-      name: unit.name,
-      count: personnel.filter(p => p.unitId === unit.id).length,
-      abbreviation: unit.abbreviation
-    }))
-    .filter(stat => stat.count > 0);
+  useEffect(() => {
+    loadDashboard();
+  }, []);
 
-  // Розподіл по посадах
-  const positionStats = positions
-    .map(position => ({
-      name: position.name,
-      count: personnel.filter(p => p.positionId === position.id).length,
-      category: position.category
-    }))
-    .filter(stat => stat.count > 0)
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+  if (loading) {
+    return (
+      <div className="p-6 space-y-6">
+        <div>
+          <h2 className="text-3xl font-semibold text-gray-900">Огляд</h2>
+          <p className="text-gray-600 mt-1">Загальна інформація про особовий склад</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-5 w-5 rounded" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-16 mb-2" />
+                <Skeleton className="h-4 w-24" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {[1, 2].map((i) => (
+            <Card key={i}>
+              <CardHeader><Skeleton className="h-5 w-40" /></CardHeader>
+              <CardContent className="space-y-4">
+                {[1, 2, 3].map((j) => (
+                  <div key={j}>
+                    <Skeleton className="h-4 w-full mb-2" />
+                    <Skeleton className="h-2 w-full rounded-full" />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="p-6 space-y-6">
+        <div>
+          <h2 className="text-3xl font-semibold text-gray-900">Огляд</h2>
+          <p className="text-gray-600 mt-1">Загальна інформація про особовий склад</p>
+        </div>
+        <Card>
+          <CardContent className="py-12 text-center">
+            <p className="text-gray-500 mb-4">{error || 'Не вдалося завантажити дані'}</p>
+            <Button onClick={loadDashboard} variant="outline">
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Спробувати ще раз
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -54,9 +109,9 @@ export function Dashboard() {
             <Users className="w-5 h-5 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-gray-900">{personnel.length}</div>
+            <div className="text-3xl font-bold text-gray-900">{data.totalPersonnel}</div>
             <p className="text-sm text-gray-500 mt-1">
-              {activePersonnel} активних
+              {data.activePersonnel} активних
             </p>
           </CardContent>
         </Card>
@@ -69,9 +124,11 @@ export function Dashboard() {
             <UserCheck className="w-5 h-5 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-gray-900">{contractPersonnel}</div>
+            <div className="text-3xl font-bold text-gray-900">{data.contractPersonnel}</div>
             <p className="text-sm text-gray-500 mt-1">
-              {Math.round((contractPersonnel / personnel.length) * 100)}% від загальної кількості
+              {data.totalPersonnel > 0
+                ? Math.round((data.contractPersonnel / data.totalPersonnel) * 100)
+                : 0}% від загальної кількості
             </p>
           </CardContent>
         </Card>
@@ -84,9 +141,11 @@ export function Dashboard() {
             <UserX className="w-5 h-5 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-gray-900">{mobilizedPersonnel}</div>
+            <div className="text-3xl font-bold text-gray-900">{data.mobilizedPersonnel}</div>
             <p className="text-sm text-gray-500 mt-1">
-              {Math.round((mobilizedPersonnel / personnel.length) * 100)}% від загальної кількості
+              {data.totalPersonnel > 0
+                ? Math.round((data.mobilizedPersonnel / data.totalPersonnel) * 100)
+                : 0}% від загальної кількості
             </p>
           </CardContent>
         </Card>
@@ -99,7 +158,7 @@ export function Dashboard() {
             <Award className="w-5 h-5 text-yellow-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-gray-900">{withAwards}</div>
+            <div className="text-3xl font-bold text-gray-900">{data.withAwards}</div>
             <p className="text-sm text-gray-500 mt-1">
               Нагороджені військовослужбовці
             </p>
@@ -116,7 +175,7 @@ export function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {unitStats.map((stat, index) => (
+              {data.unitStats.map((stat, index) => (
                 <div key={index}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
@@ -132,7 +191,7 @@ export function Dashboard() {
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
                       className="bg-blue-600 h-2 rounded-full transition-all"
-                      style={{ width: `${(stat.count / personnel.length) * 100}%` }}
+                      style={{ width: `${data.totalPersonnel > 0 ? (stat.count / data.totalPersonnel) * 100 : 0}%` }}
                     />
                   </div>
                 </div>
@@ -148,7 +207,7 @@ export function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {positionStats.map((stat, index) => (
+              {data.positionStats.map((stat, index) => (
                 <div key={index}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
@@ -164,7 +223,7 @@ export function Dashboard() {
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
                       className="bg-green-600 h-2 rounded-full transition-all"
-                      style={{ width: `${(stat.count / personnel.length) * 100}%` }}
+                      style={{ width: `${data.totalPersonnel > 0 ? (stat.count / data.totalPersonnel) * 100 : 0}%` }}
                     />
                   </div>
                 </div>

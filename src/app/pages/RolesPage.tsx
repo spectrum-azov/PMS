@@ -71,17 +71,17 @@ export function RolesPage() {
     setIsDirectionDialogOpen(true);
   };
 
-  const handleSubmitRole = (e: React.FormEvent) => {
+  const handleSubmitRole = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!roleFormData.name || !roleFormData.directionId) {
       toast.error('Назва та напрямок обов\'язкові');
       return;
     }
 
     if (editingRole) {
-      updateRole(editingRole.id, roleFormData);
-      toast.success('Роль оновлено');
+      const success = await updateRole(editingRole.id, roleFormData);
+      if (success) toast.success('Роль оновлено');
     } else {
       const newRole: Role = {
         id: `role-${Date.now()}`,
@@ -89,51 +89,51 @@ export function RolesPage() {
         directionId: roleFormData.directionId!,
         level: roleFormData.level,
       };
-      addRole(newRole);
-      toast.success('Роль додано');
+      const success = await addRole(newRole);
+      if (success) toast.success('Роль додано');
     }
 
     setIsRoleDialogOpen(false);
   };
 
-  const handleSubmitDirection = (e: React.FormEvent) => {
+  const handleSubmitDirection = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!directionFormData.name) {
       toast.error('Назва обов\'язкова');
       return;
     }
 
     if (editingDirection) {
-      updateDirection(editingDirection.id, directionFormData);
-      toast.success('Напрямок оновлено');
+      const success = await updateDirection(editingDirection.id, directionFormData);
+      if (success) toast.success('Напрямок оновлено');
     } else {
-      addDirection({
+      const success = await addDirection({
         id: `dir-${Date.now()}`,
         name: directionFormData.name,
       });
-      toast.success('Напрямок додано');
+      if (success) toast.success('Напрямок додано');
     }
 
     setIsDirectionDialogOpen(false);
   };
 
-  const handleDeleteRole = (id: string) => {
+  const handleDeleteRole = async (id: string) => {
     if (confirm('Ви впевнені, що хочете видалити цю роль?')) {
-      deleteRole(id);
-      toast.success('Роль видалено');
+      const success = await deleteRole(id);
+      if (success) toast.success('Роль видалено');
     }
   };
 
-  const handleDeleteDirection = (id: string) => {
+  const handleDeleteDirection = async (id: string) => {
     const hasRoles = roles.some(r => r.directionId === id);
     if (hasRoles) {
       toast.error('Неможливо видалити напрямок, до якого прив\'язані ролі');
       return;
     }
     if (confirm('Ви впевнені, що хочете видалити цей напрямок?')) {
-      deleteDirection(id);
-      toast.success('Напрямок видалено');
+      const success = await deleteDirection(id);
+      if (success) toast.success('Напрямок видалено');
     }
   };
 

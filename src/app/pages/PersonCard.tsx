@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Separator } from '../components/ui/separator';
+import { Skeleton } from '../components/ui/skeleton';
 import {
   ArrowLeft,
   Edit,
@@ -19,7 +20,8 @@ import {
   Shield,
   Briefcase,
   FileText,
-  Heart
+  Heart,
+  RefreshCw
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { uk } from 'date-fns/locale';
@@ -27,8 +29,46 @@ import { uk } from 'date-fns/locale';
 export function PersonCard() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getPersonById } = usePersonnel();
-  const { units, positions, roles } = useDictionaries();
+  const { getPersonById, loading, error, reload } = usePersonnel();
+  const { units, positions, roles, loading: dictLoading } = useDictionaries();
+
+  if (loading || dictLoading) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-9 w-20" />
+          <Skeleton className="h-8 w-48" />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i}>
+              <CardContent className="pt-6">
+                <Skeleton className="h-12 w-full" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-12">
+          <p className="text-gray-500 mb-4">{error}</p>
+          <Button onClick={reload} variant="outline" className="mr-2">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Спробувати ще раз
+          </Button>
+          <Button onClick={() => navigate('/personnel')} className="mt-4">
+            Повернутися до реєстру
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const person = getPersonById(id!);
 
@@ -51,12 +91,12 @@ export function PersonCard() {
   const getUnitPath = (unitId: string): string => {
     const path: string[] = [];
     let currentUnit = units.find(u => u.id === unitId);
-    
+
     while (currentUnit) {
       path.unshift(currentUnit.abbreviation || currentUnit.name);
       currentUnit = units.find(u => u.id === currentUnit!.parentId);
     }
-    
+
     return path.join(' → ');
   };
 
