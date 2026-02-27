@@ -1,17 +1,17 @@
 import { useNavigate } from 'react-router';
-import { Person } from '../types/personnel';
-import { formatPhoneNumber } from '../utils/formatters';
-import { Card, CardContent, CardHeader, CardAction } from './ui/card';
+import { Person } from '../../types/personnel';
+import { formatPhoneNumber } from '../../utils/formatters';
+import { Card, CardContent, CardHeader, CardAction } from '../ui/card';
 import { Eye, Edit, MoreVertical, Phone, User, Shield } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from './ui/dropdown-menu';
-import { useLanguage } from '../context/LanguageContext';
-import { usePersonnelFormatters } from '../hooks/usePersonnelFormatters';
+} from '../ui/dropdown-menu';
+import { useLanguage } from '../../context/LanguageContext';
+import { usePersonnelFormatters } from '../../hooks/usePersonnelFormatters';
 
 interface PersonnelMobileCardProps {
     person: Person;

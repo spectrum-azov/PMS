@@ -1,19 +1,19 @@
 import { useNavigate } from 'react-router';
-import { Person } from '../types/personnel';
-import { formatPhoneNumber } from '../utils/formatters';
-import { TableRow, TableCell } from './ui/table';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
+import { Person } from '../../types/personnel';
+import { formatPhoneNumber } from '../../utils/formatters';
+import { TableRow, TableCell } from '../ui/table';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 import { Eye, Edit, MoreVertical } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from './ui/dropdown-menu';
-import { useLanguage } from '../context/LanguageContext';
+} from '../ui/dropdown-menu';
+import { useLanguage } from '../../context/LanguageContext';
 import { ColumnId } from './PersonnelTable';
-import { usePersonnelFormatters } from '../hooks/usePersonnelFormatters';
+import { usePersonnelFormatters } from '../../hooks/usePersonnelFormatters';
 
 interface PersonnelDesktopRowProps {
     person: Person;

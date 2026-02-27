@@ -1,8 +1,8 @@
 import { X } from 'lucide-react';
-import { Badge } from './ui/badge';
-import { PersonnelFilters as Filters } from '../types/personnel';
-import { useLanguage } from '../context/LanguageContext';
-import { useDictionaries } from '../context/DictionariesContext';
+import { Badge } from '../ui/badge';
+import { PersonnelFilters as Filters } from '../../types/personnel';
+import { useLanguage } from '../../context/LanguageContext';
+import { useDictionaries } from '../../context/DictionariesContext';
 
 interface PersonnelActiveFiltersProps {
     filters: Filters;
