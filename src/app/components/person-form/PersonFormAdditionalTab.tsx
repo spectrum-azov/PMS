@@ -1,5 +1,5 @@
 import { UseFormRegister, Control, FieldErrors, Controller } from 'react-hook-form';
-import { Person } from '../../../types/personnel';
+import { Person } from '../../types/personnel';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
