@@ -1,33 +1,40 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router';
-import { Users, LayoutDashboard, Settings, Shield, Building2, Briefcase, UserCog, Menu, X } from 'lucide-react';
+import { Users, LayoutDashboard, Settings, Shield, Building2, Briefcase, UserCog, Menu, X, Languages } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Separator } from '../components/ui/separator';
 import { useSettings } from '../context/SettingsContext';
+import { useLanguage } from '../context/LanguageContext';
+import { ThemeToggle } from '../components/theme-toggle';
 
 export function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { settings } = useSettings();
+  const { lang, setLang, t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigation = [
-    { name: 'Огляд', path: '/', icon: LayoutDashboard },
-    { name: 'Реєстр людей', path: '/personnel', icon: Users },
+    { name: t('nav_overview'), path: '/', icon: LayoutDashboard },
+    { name: t('nav_registry'), path: '/personnel', icon: Users },
   ];
 
   const dictionaryNav = [
-    { name: 'Підрозділи', path: '/units', icon: Building2 },
-    { name: 'Посади', path: '/positions', icon: Briefcase },
-    { name: 'Ролі', path: '/roles', icon: UserCog },
+    { name: t('nav_units'), path: '/units', icon: Building2 },
+    { name: t('nav_positions'), path: '/positions', icon: Briefcase },
+    { name: t('nav_roles'), path: '/roles', icon: UserCog },
   ];
 
   const closeSidebar = () => setSidebarOpen(false);
 
+  const toggleLanguage = () => {
+    setLang(lang === 'uk' ? 'en' : 'uk');
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-background border-b border-border sticky top-0 z-50">
         <div className="px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -37,7 +44,7 @@ export function Layout() {
                 size="sm"
                 className="md:hidden"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                aria-label="Відкрити меню"
+                aria-label={t('nav_open_menu')}
               >
                 {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </Button>
@@ -50,14 +57,30 @@ export function Layout() {
                 <p className="text-sm text-gray-500">{settings.organizationSubtitle}</p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/settings')}
-            >
-              <Settings className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Налаштування</span>
-            </Button>
+
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleLanguage}
+                className="px-2"
+                title={lang === 'uk' ? 'Switch to English' : 'Перемкнути на українську'}
+              >
+                <Languages className="w-4 h-4 mr-1" />
+                <span className="font-medium text-sm">
+                  {lang === 'uk' ? 'UA' : 'EN'}
+                </span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/settings')}
+              >
+                <Settings className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t('nav_settings')}</span>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -75,7 +98,7 @@ export function Layout() {
         <aside
           className={`
             fixed md:static top-0 left-0 z-40 md:z-auto
-            w-64 bg-white border-r border-gray-200
+            w-64 bg-background border-r border-border
             h-full md:min-h-[calc(100vh-73px)]
             transition-transform duration-200 ease-in-out
             ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -115,7 +138,7 @@ export function Layout() {
           <Separator className="my-4" />
 
           <div className="px-4 py-3">
-            <p className="text-xs text-gray-500 mb-2">Довідники</p>
+            <p className="text-xs text-gray-500 mb-2">{t('nav_directories')}</p>
             <div className="space-y-1">
               {dictionaryNav.map((item) => {
                 const Icon = item.icon;
@@ -146,3 +169,4 @@ export function Layout() {
     </div>
   );
 }
+

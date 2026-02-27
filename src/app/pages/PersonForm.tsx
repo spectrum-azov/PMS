@@ -20,26 +20,28 @@ import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { Separator } from '../components/ui/separator';
 import { toast } from 'sonner';
 import { Checkbox } from '../components/ui/checkbox';
+import { useLanguage } from '../context/LanguageContext';
 
 const phonePattern = /^(\+380\d{9}|0\d{9})$/;
-
-function validateBirthDate(value: string): true | string {
-  if (!value) return "Обов'язкове поле";
-  const date = new Date(value);
-  const now = new Date();
-  if (date >= now) return 'Дата не може бути у майбутньому';
-  const age = now.getFullYear() - date.getFullYear() -
-    (now < new Date(now.getFullYear(), date.getMonth(), date.getDate()) ? 1 : 0);
-  if (age < 18) return 'Вік має бути не менше 18 років';
-  if (age > 70) return 'Вік має бути не більше 70 років';
-  return true;
-}
 
 export function PersonForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getPersonById, addPerson, updatePerson } = usePersonnel();
   const { units, positions, roles, ranks } = useDictionaries();
+  const { t } = useLanguage();
+
+  const validateBirthDate = (value: string): true | string => {
+    if (!value) return t('common_required_field');
+    const date = new Date(value);
+    const now = new Date();
+    if (date >= now) return t('form_val_birthdate_future');
+    const age = now.getFullYear() - date.getFullYear() -
+      (now < new Date(now.getFullYear(), date.getMonth(), date.getDate()) ? 1 : 0);
+    if (age < 18) return t('form_val_birthdate_min18');
+    if (age > 70) return t('form_val_birthdate_max70');
+    return true;
+  };
 
   const isEditMode = id !== undefined;
   const existingPerson = isEditMode ? getPersonById(id!) : null;
@@ -107,7 +109,7 @@ export function PersonForm() {
         },
       });
     }
-  }, [existingPerson?.id]);
+  }, [existingPerson?.id, reset]);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -117,13 +119,13 @@ export function PersonForm() {
       if (isEditMode) {
         const success = await updatePerson(id!, data);
         if (success) {
-          toast.success('Дані успішно оновлено');
+          toast.success(t('form_saved_success'));
           navigate('/personnel');
         }
       } else {
         const success = await addPerson(data);
         if (success) {
-          toast.success('Особу успішно додано');
+          toast.success(t('form_created_success'));
           navigate('/personnel');
         }
       }
@@ -139,21 +141,21 @@ export function PersonForm() {
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={() => navigate('/personnel')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Назад
+            {t('common_back')}
           </Button>
           <Separator orientation="vertical" className="h-8" />
           <div>
             <h2 className="text-3xl font-semibold text-gray-900">
-              {isEditMode ? 'Редагування особи' : 'Додати нову особу'}
+              {isEditMode ? t('form_edit_title') : t('form_add_title')}
             </h2>
             <p className="text-gray-600 mt-1">
-              {isEditMode ? 'Внесіть зміни у дані' : "Заповніть обов'язкові поля"}
+              {isEditMode ? t('form_edit_subtitle') : t('form_add_subtitle')}
             </p>
           </div>
         </div>
         <Button onClick={handleSubmit(onSubmit)} disabled={submitting}>
           {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-          Зберегти
+          {t('form_save')}
         </Button>
       </div>
 
@@ -161,9 +163,9 @@ export function PersonForm() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Tabs defaultValue="general" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="general">Основні дані (P0)</TabsTrigger>
-            <TabsTrigger value="additional">Додаткові дані (P1)</TabsTrigger>
-            <TabsTrigger value="extended">Розширені дані</TabsTrigger>
+            <TabsTrigger value="general">{t('form_tab_general')}</TabsTrigger>
+            <TabsTrigger value="additional">{t('form_tab_additional')}</TabsTrigger>
+            <TabsTrigger value="extended">{t('form_tab_extended')}</TabsTrigger>
           </TabsList>
 
           {/* General Tab - P0 */}
@@ -172,16 +174,16 @@ export function PersonForm() {
               {/* Personal Info */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Особисті дані</CardTitle>
+                  <CardTitle>{t('form_personal_info')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="callsign">Позивний *</Label>
+                    <Label htmlFor="callsign">{t('form_callsign')}</Label>
                     <Input
                       id="callsign"
                       {...register('callsign', {
-                        required: "Обов'язкове поле",
-                        minLength: { value: 2, message: 'Мінімум 2 символи' },
+                        required: t('common_required_field'),
+                        minLength: { value: 2, message: t('form_val_min2') },
                       })}
                       placeholder="Сатурн"
                     />
@@ -191,13 +193,13 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="fullName">Повне ім'я *</Label>
+                    <Label htmlFor="fullName">{t('form_fullname')}</Label>
                     <Input
                       id="fullName"
                       {...register('fullName', {
-                        required: "Обов'язкове поле",
+                        required: t('common_required_field'),
                         validate: (v) =>
-                          v.trim().split(/\s+/).length >= 2 || 'Введіть як мінімум прізвище та ім\'я',
+                          v.trim().split(/\s+/).length >= 2 || t('form_val_fullname'),
                       })}
                       placeholder="Іваненко Іван Іванович"
                     />
@@ -207,15 +209,15 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="rank">Військове звання *</Label>
+                    <Label htmlFor="rank">{t('form_rank')}</Label>
                     <Controller
                       name="rank"
                       control={control}
-                      rules={{ required: "Обов'язкове поле" }}
+                      rules={{ required: t('common_required_field') }}
                       render={({ field }) => (
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Оберіть звання" />
+                            <SelectValue placeholder={t('form_select_rank')} />
                           </SelectTrigger>
                           <SelectContent>
                             {ranks.map((rank) => (
@@ -233,12 +235,12 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="birthDate">Дата народження *</Label>
+                    <Label htmlFor="birthDate">{t('form_birthdate')}</Label>
                     <Input
                       id="birthDate"
                       type="date"
                       {...register('birthDate', {
-                        required: "Обов'язкове поле",
+                        required: t('common_required_field'),
                         validate: validateBirthDate,
                       })}
                     />
@@ -248,7 +250,7 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="citizenship">Громадянство</Label>
+                    <Label htmlFor="citizenship">{t('form_citizenship')}</Label>
                     <Input
                       id="citizenship"
                       {...register('citizenship')}
@@ -261,23 +263,23 @@ export function PersonForm() {
               {/* Service Info */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Служба</CardTitle>
+                  <CardTitle>{t('form_service')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="serviceType">Вид служби *</Label>
+                    <Label htmlFor="serviceType">{t('form_service_type')}</Label>
                     <Controller
                       name="serviceType"
                       control={control}
-                      rules={{ required: "Обов'язкове поле" }}
+                      rules={{ required: t('common_required_field') }}
                       render={({ field }) => (
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Контракт">Контракт</SelectItem>
-                            <SelectItem value="Мобілізований">Мобілізований</SelectItem>
+                            <SelectItem value="Контракт">{t('form_service_contract')}</SelectItem>
+                            <SelectItem value="Мобілізований">{t('form_service_mobilized')}</SelectItem>
                           </SelectContent>
                         </Select>
                       )}
@@ -288,7 +290,7 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="tagNumber">Номер жетона</Label>
+                    <Label htmlFor="tagNumber">{t('form_tag_number')}</Label>
                     <Input
                       id="tagNumber"
                       {...register('tagNumber')}
@@ -297,15 +299,15 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="unitId">Підрозділ *</Label>
+                    <Label htmlFor="unitId">{t('form_unit')}</Label>
                     <Controller
                       name="unitId"
                       control={control}
-                      rules={{ required: 'Оберіть підрозділ' }}
+                      rules={{ required: t('form_val_select_unit') }}
                       render={({ field }) => (
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Оберіть підрозділ" />
+                            <SelectValue placeholder={t('form_select_unit')} />
                           </SelectTrigger>
                           <SelectContent>
                             {units.map((unit) => (
@@ -323,15 +325,15 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="positionId">Штатна посада *</Label>
+                    <Label htmlFor="positionId">{t('form_position')}</Label>
                     <Controller
                       name="positionId"
                       control={control}
-                      rules={{ required: 'Оберіть посаду' }}
+                      rules={{ required: t('form_val_select_position') }}
                       render={({ field }) => (
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Оберіть посаду" />
+                            <SelectValue placeholder={t('form_select_position')} />
                           </SelectTrigger>
                           <SelectContent>
                             {positions.map((position) => (
@@ -349,7 +351,7 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="status">Статус</Label>
+                    <Label htmlFor="status">{t('form_status')}</Label>
                     <Controller
                       name="status"
                       control={control}
@@ -359,9 +361,9 @@ export function PersonForm() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Служить">Служить</SelectItem>
-                            <SelectItem value="Переведений">Переведений</SelectItem>
-                            <SelectItem value="Звільнений">Звільнений</SelectItem>
+                            <SelectItem value="Служить">{t('form_status_serving')}</SelectItem>
+                            <SelectItem value="Переведений">{t('form_status_transferred')}</SelectItem>
+                            <SelectItem value="Звільнений">{t('form_status_discharged')}</SelectItem>
                           </SelectContent>
                         </Select>
                       )}
@@ -373,13 +375,13 @@ export function PersonForm() {
               {/* Roles */}
               <Card className="lg:col-span-2">
                 <CardHeader>
-                  <CardTitle>Фактичні ролі *</CardTitle>
+                  <CardTitle>{t('form_roles')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Controller
                     name="roleIds"
                     control={control}
-                    rules={{ validate: (v) => (v && v.length > 0) || 'Оберіть хоча б одну роль' }}
+                    rules={{ validate: (v) => (v && v.length > 0) || t('form_roles_required') }}
                     render={({ field }) => (
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {roles.map((role) => (
@@ -417,18 +419,18 @@ export function PersonForm() {
               {/* Contact Info */}
               <Card className="lg:col-span-2">
                 <CardHeader>
-                  <CardTitle>Контактна інформація</CardTitle>
+                  <CardTitle>{t('form_contact')}</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="phone">Телефон *</Label>
+                    <Label htmlFor="phone">{t('form_phone')}</Label>
                     <Input
                       id="phone"
                       {...register('phone', {
-                        required: "Обов'язкове поле",
+                        required: t('common_required_field'),
                         pattern: {
                           value: phonePattern,
-                          message: 'Формат: +380XXXXXXXXX або 0XXXXXXXXX',
+                          message: t('form_val_phone_format'),
                         },
                       })}
                       placeholder="+380981234567"
@@ -439,7 +441,7 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="address">Місце проживання</Label>
+                    <Label htmlFor="address">{t('form_address')}</Label>
                     <Input
                       id="address"
                       {...register('address')}
@@ -448,7 +450,7 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="registrationAddress">Місце реєстрації</Label>
+                    <Label htmlFor="registrationAddress">{t('form_reg_address')}</Label>
                     <Input
                       id="registrationAddress"
                       {...register('registrationAddress')}
@@ -461,11 +463,11 @@ export function PersonForm() {
               {/* Documents */}
               <Card className="lg:col-span-2">
                 <CardHeader>
-                  <CardTitle>Документи</CardTitle>
+                  <CardTitle>{t('form_documents')}</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="militaryId">Військове посвідчення</Label>
+                    <Label htmlFor="militaryId">{t('form_military_id')}</Label>
                     <Input
                       id="militaryId"
                       {...register('militaryId')}
@@ -474,12 +476,12 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="passport">Паспорт</Label>
+                    <Label htmlFor="passport">{t('form_passport')}</Label>
                     <Input
                       id="passport"
                       {...register('passport', {
                         validate: (v) =>
-                          !v || /^[А-ЯҐЄІЇA-Z]{2}\s?№?\d{6}$/i.test(v) || 'Формат: КВ №987654',
+                          !v || /^[А-ЯҐЄІЇA-Z]{2}\s?№?\d{6}$/i.test(v) || t('form_val_passport_format'),
                       })}
                       placeholder="КВ №987654"
                     />
@@ -489,11 +491,11 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="taxId">ІПН</Label>
+                    <Label htmlFor="taxId">{t('form_tax_id')}</Label>
                     <Input
                       id="taxId"
                       {...register('taxId', {
-                        validate: (v) => !v || /^\d{10}$/.test(v) || 'ІПН має містити 10 цифр',
+                        validate: (v) => !v || /^\d{10}$/.test(v) || t('form_val_taxid_format'),
                       })}
                       placeholder="1231231230"
                     />
@@ -511,11 +513,11 @@ export function PersonForm() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Додаткова інформація</CardTitle>
+                  <CardTitle>{t('form_additional_info')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="bloodType">Група крові</Label>
+                    <Label htmlFor="bloodType">{t('form_blood_type')}</Label>
                     <Input
                       id="bloodType"
                       {...register('bloodType')}
@@ -524,7 +526,7 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="recruitedBy">Ким призваний</Label>
+                    <Label htmlFor="recruitedBy">{t('form_recruited_by')}</Label>
                     <Input
                       id="recruitedBy"
                       {...register('recruitedBy')}
@@ -533,7 +535,7 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="recruitedDate">Дата призову</Label>
+                    <Label htmlFor="recruitedDate">{t('form_recruited_date')}</Label>
                     <Input
                       id="recruitedDate"
                       type="date"
@@ -545,11 +547,11 @@ export function PersonForm() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Контактна особа</CardTitle>
+                  <CardTitle>{t('form_emergency_contact')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="emergencyContactName">Ім'я</Label>
+                    <Label htmlFor="emergencyContactName">{t('form_ec_name')}</Label>
                     <Input
                       id="emergencyContactName"
                       {...register('family.emergencyContact.name')}
@@ -558,12 +560,12 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="emergencyContactPhone">Телефон</Label>
+                    <Label htmlFor="emergencyContactPhone">{t('form_ec_phone')}</Label>
                     <Input
                       id="emergencyContactPhone"
                       {...register('family.emergencyContact.phone', {
                         validate: (v) =>
-                          !v || phonePattern.test(v) || 'Формат: +380XXXXXXXXX або 0XXXXXXXXX',
+                          !v || phonePattern.test(v) || t('form_val_phone_format'),
                       })}
                       placeholder="+380981112233"
                     />
@@ -575,7 +577,7 @@ export function PersonForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="emergencyContactRelation">Відношення</Label>
+                    <Label htmlFor="emergencyContactRelation">{t('form_ec_relation')}</Label>
                     <Input
                       id="emergencyContactRelation"
                       {...register('family.emergencyContact.relation')}
@@ -588,11 +590,11 @@ export function PersonForm() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Освіта</CardTitle>
+                <CardTitle>{t('form_education')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-500">
-                  Функціонал додавання освіти буде доступний у наступних версіях
+                  {t('form_education_coming_soon')}
                 </p>
               </CardContent>
             </Card>
@@ -602,11 +604,11 @@ export function PersonForm() {
           <TabsContent value="extended" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Навички, допуски, медичні дані</CardTitle>
+                <CardTitle>{t('form_extended_title')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-500">
-                  Функціонал буде доступний у наступних версіях (P1, P2, P3)
+                  {t('form_extended_coming_soon')}
                 </p>
               </CardContent>
             </Card>
@@ -620,11 +622,11 @@ export function PersonForm() {
             variant="outline"
             onClick={() => navigate('/personnel')}
           >
-            Скасувати
+            {t('common_cancel')}
           </Button>
           <Button type="submit" disabled={submitting}>
             {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-            {isEditMode ? 'Оновити' : 'Створити'}
+            {isEditMode ? t('common_update') : t('common_create')}
           </Button>
         </div>
       </form>

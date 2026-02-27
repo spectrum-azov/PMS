@@ -7,9 +7,11 @@ import { Users, UserCheck, UserX, Award, TrendingUp, RefreshCw } from 'lucide-re
 import { Button } from '../components/ui/button';
 import { Skeleton } from '../components/ui/skeleton';
 import { toast } from 'sonner';
+import { useLanguage } from '../context/LanguageContext';
 
 export function Dashboard() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,8 +37,8 @@ export function Dashboard() {
     return (
       <div className="p-6 space-y-6">
         <div>
-          <h2 className="text-3xl font-semibold text-gray-900">Огляд</h2>
-          <p className="text-gray-600 mt-1">Загальна інформація про особовий склад</p>
+          <h2 className="text-3xl font-semibold text-gray-900">{t('dashboard_title')}</h2>
+          <p className="text-gray-600 mt-1">{t('dashboard_subtitle')}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
@@ -75,15 +77,15 @@ export function Dashboard() {
     return (
       <div className="p-6 space-y-6">
         <div>
-          <h2 className="text-3xl font-semibold text-gray-900">Огляд</h2>
-          <p className="text-gray-600 mt-1">Загальна інформація про особовий склад</p>
+          <h2 className="text-3xl font-semibold text-gray-900">{t('dashboard_title')}</h2>
+          <p className="text-gray-600 mt-1">{t('dashboard_subtitle')}</p>
         </div>
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500 mb-4">{error || 'Не вдалося завантажити дані'}</p>
+            <p className="text-gray-500 mb-4">{error || t('dashboard_failed_to_load')}</p>
             <Button onClick={loadDashboard} variant="outline">
               <RefreshCw className="w-4 h-4 mr-2" />
-              Спробувати ще раз
+              {t('common_retry')}
             </Button>
           </CardContent>
         </Card>
@@ -95,8 +97,8 @@ export function Dashboard() {
     <div className="p-6 space-y-6">
       {/* Page Header */}
       <div>
-        <h2 className="text-3xl font-semibold text-gray-900">Огляд</h2>
-        <p className="text-gray-600 mt-1">Загальна інформація про особовий склад</p>
+        <h2 className="text-3xl font-semibold text-gray-900">{t('dashboard_title')}</h2>
+        <p className="text-gray-600 mt-1">{t('dashboard_subtitle')}</p>
       </div>
 
       {/* Stats Cards */}
@@ -104,14 +106,14 @@ export function Dashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Всього особового складу
+              {t('dashboard_total_personnel')}
             </CardTitle>
             <Users className="w-5 h-5 text-blue-600" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-gray-900">{data.totalPersonnel}</div>
             <p className="text-sm text-gray-500 mt-1">
-              {data.activePersonnel} активних
+              {data.activePersonnel} {t('dashboard_active')}
             </p>
           </CardContent>
         </Card>
@@ -119,7 +121,7 @@ export function Dashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Контрактники
+              {t('dashboard_contract')}
             </CardTitle>
             <UserCheck className="w-5 h-5 text-green-600" />
           </CardHeader>
@@ -128,7 +130,7 @@ export function Dashboard() {
             <p className="text-sm text-gray-500 mt-1">
               {data.totalPersonnel > 0
                 ? Math.round((data.contractPersonnel / data.totalPersonnel) * 100)
-                : 0}% від загальної кількості
+                : 0}{t('dashboard_pct_of_total')}
             </p>
           </CardContent>
         </Card>
@@ -136,7 +138,7 @@ export function Dashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Мобілізовані
+              {t('dashboard_mobilized')}
             </CardTitle>
             <UserX className="w-5 h-5 text-orange-600" />
           </CardHeader>
@@ -145,7 +147,7 @@ export function Dashboard() {
             <p className="text-sm text-gray-500 mt-1">
               {data.totalPersonnel > 0
                 ? Math.round((data.mobilizedPersonnel / data.totalPersonnel) * 100)
-                : 0}% від загальної кількості
+                : 0}{t('dashboard_pct_of_total')}
             </p>
           </CardContent>
         </Card>
@@ -153,14 +155,14 @@ export function Dashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              З нагородами
+              {t('dashboard_with_awards')}
             </CardTitle>
             <Award className="w-5 h-5 text-yellow-600" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-gray-900">{data.withAwards}</div>
             <p className="text-sm text-gray-500 mt-1">
-              Нагороджені військовослужбовці
+              {t('dashboard_awarded_soldiers')}
             </p>
           </CardContent>
         </Card>
@@ -171,7 +173,7 @@ export function Dashboard() {
         {/* По підрозділам */}
         <Card>
           <CardHeader>
-            <CardTitle>Розподіл по підрозділам</CardTitle>
+            <CardTitle>{t('dashboard_unit_distribution')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -203,7 +205,7 @@ export function Dashboard() {
         {/* По посадам */}
         <Card>
           <CardHeader>
-            <CardTitle>Топ-5 посад</CardTitle>
+            <CardTitle>{t('dashboard_top5_positions')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -238,7 +240,7 @@ export function Dashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5" />
-            Швидкі дії
+            {t('dashboard_quick_actions')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -248,15 +250,15 @@ export function Dashboard() {
               onClick={() => navigate('/personnel/new')}
             >
               <Users className="w-6 h-6 mx-auto mb-2 text-gray-400" />
-              <p className="text-sm font-medium text-gray-700">Додати особу</p>
+              <p className="text-sm font-medium text-gray-700">{t('dashboard_add_person')}</p>
             </button>
             <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all text-center">
               <Award className="w-6 h-6 mx-auto mb-2 text-gray-400" />
-              <p className="text-sm font-medium text-gray-700">Додати нагороду</p>
+              <p className="text-sm font-medium text-gray-700">{t('dashboard_add_award')}</p>
             </button>
             <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all text-center">
               <TrendingUp className="w-6 h-6 mx-auto mb-2 text-gray-400" />
-              <p className="text-sm font-medium text-gray-700">Формувати звіт</p>
+              <p className="text-sm font-medium text-gray-700">{t('dashboard_generate_report')}</p>
             </button>
           </div>
         </CardContent>

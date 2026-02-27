@@ -31,9 +31,30 @@ import {
 import { Plus, Edit, Trash2, UserCog, Layers } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '../components/ui/badge';
+import { useLanguage } from '../context/LanguageContext';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationFirst,
+  PaginationLast,
+} from '../components/ui/pagination';
 
 export function RolesPage() {
   const { roles, addRole, updateRole, deleteRole, directions, addDirection, updateDirection, deleteDirection } = useDictionaries();
+  const { t } = useLanguage();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const totalPages = Math.ceil(roles.length / pageSize);
+  const paginatedRoles = roles.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
   const [isDirectionDialogOpen, setIsDirectionDialogOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
@@ -75,13 +96,13 @@ export function RolesPage() {
     e.preventDefault();
 
     if (!roleFormData.name || !roleFormData.directionId) {
-      toast.error('Назва та напрямок обов\'язкові');
+      toast.error(t('roles_err_name_required'));
       return;
     }
 
     if (editingRole) {
       const success = await updateRole(editingRole.id, roleFormData);
-      if (success) toast.success('Роль оновлено');
+      if (success) toast.success(t('roles_updated'));
     } else {
       const newRole: Role = {
         id: `role-${Date.now()}`,
@@ -90,7 +111,7 @@ export function RolesPage() {
         level: roleFormData.level,
       };
       const success = await addRole(newRole);
-      if (success) toast.success('Роль додано');
+      if (success) toast.success(t('roles_added'));
     }
 
     setIsRoleDialogOpen(false);
@@ -100,51 +121,51 @@ export function RolesPage() {
     e.preventDefault();
 
     if (!directionFormData.name) {
-      toast.error('Назва обов\'язкова');
+      toast.error(t('roles_err_dir_name_required'));
       return;
     }
 
     if (editingDirection) {
       const success = await updateDirection(editingDirection.id, directionFormData);
-      if (success) toast.success('Напрямок оновлено');
+      if (success) toast.success(t('roles_direction_updated'));
     } else {
       const success = await addDirection({
         id: `dir-${Date.now()}`,
         name: directionFormData.name,
       });
-      if (success) toast.success('Напрямок додано');
+      if (success) toast.success(t('roles_direction_added'));
     }
 
     setIsDirectionDialogOpen(false);
   };
 
   const handleDeleteRole = async (id: string) => {
-    if (confirm('Ви впевнені, що хочете видалити цю роль?')) {
+    if (confirm(t('roles_confirm_delete_role'))) {
       const success = await deleteRole(id);
-      if (success) toast.success('Роль видалено');
+      if (success) toast.success(t('roles_deleted'));
     }
   };
 
   const handleDeleteDirection = async (id: string) => {
     const hasRoles = roles.some(r => r.directionId === id);
     if (hasRoles) {
-      toast.error('Неможливо видалити напрямок, до якого прив\'язані ролі');
+      toast.error(t('roles_err_dir_has_roles'));
       return;
     }
-    if (confirm('Ви впевнені, що хочете видалити цей напрямок?')) {
+    if (confirm(t('roles_confirm_delete_dir'))) {
       const success = await deleteDirection(id);
-      if (success) toast.success('Напрямок видалено');
+      if (success) toast.success(t('roles_direction_deleted'));
     }
   };
 
   const getDirectionName = (directionId: string) => {
     const direction = directions.find(d => d.id === directionId);
-    return direction?.name || 'Невідомо';
+    return direction?.name || t('common_unknown');
   };
 
   const getLevelBadge = (level?: number) => {
     const colors = ['bg-gray-100 text-gray-800', 'bg-yellow-100 text-yellow-800', 'bg-orange-100 text-orange-800', 'bg-green-100 text-green-800'];
-    const labels = ['Не вказано', 'Початківець', 'Досвідчений', 'Експерт'];
+    const labels = [t('roles_level_none'), t('roles_level_beginner'), t('roles_level_experienced'), t('roles_level_expert')];
     const idx = level || 0;
     return (
       <Badge variant="secondary" className={colors[idx]}>
@@ -158,9 +179,9 @@ export function RolesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-semibold text-gray-900">Ролі та функціональні напрямки</h2>
+          <h2 className="text-3xl font-semibold text-gray-900">{t('roles_title')}</h2>
           <p className="text-gray-600 mt-1">
-            Управління ролями та напрямками діяльності
+            {t('roles_subtitle')}
           </p>
         </div>
       </div>
@@ -171,40 +192,40 @@ export function RolesPage() {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <Layers className="w-5 h-5" />
-              Функціональні напрямки ({directions.length})
+              {t('roles_directions_title')} ({directions.length})
             </CardTitle>
             <Dialog open={isDirectionDialogOpen} onOpenChange={setIsDirectionDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" variant="outline" onClick={() => handleOpenDirectionDialog()}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Додати напрямок
+                  {t('roles_add_direction')}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>
-                    {editingDirection ? 'Редагувати напрямок' : 'Новий напрямок'}
+                    {editingDirection ? t('roles_dialog_edit_direction') : t('roles_dialog_add_direction')}
                   </DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmitDirection}>
                   <div className="space-y-4 py-4">
                     <div>
-                      <Label htmlFor="directionName">Назва напрямку *</Label>
+                      <Label htmlFor="directionName">{t('roles_direction_name')}</Label>
                       <Input
                         id="directionName"
                         value={directionFormData.name}
                         onChange={(e) => setDirectionFormData({ name: e.target.value })}
-                        placeholder="Радіозв'язок"
+                        placeholder=""
                         required
                       />
                     </div>
                   </div>
                   <DialogFooter>
                     <Button type="button" variant="outline" onClick={() => setIsDirectionDialogOpen(false)}>
-                      Скасувати
+                      {t('common_cancel')}
                     </Button>
                     <Button type="submit">
-                      {editingDirection ? 'Оновити' : 'Створити'}
+                      {editingDirection ? t('common_update') : t('common_create')}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -223,7 +244,7 @@ export function RolesPage() {
                 >
                   <span className="font-medium text-blue-900">{direction.name}</span>
                   <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                    {rolesCount} ролей
+                    {rolesCount} {t('roles_roles')}
                   </Badge>
                   <div className="flex gap-1 ml-2">
                     <Button
@@ -256,81 +277,105 @@ export function RolesPage() {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <UserCog className="w-5 h-5" />
-              Список ролей ({roles.length})
+              {t('roles_roles_title')} ({roles.length})
             </CardTitle>
-            <Dialog open={isRoleDialogOpen} onOpenChange={setIsRoleDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={() => handleOpenRoleDialog()}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Додати роль
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingRole ? 'Редагувати роль' : 'Нова роль'}
-                  </DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleSubmitRole}>
-                  <div className="space-y-4 py-4">
-                    <div>
-                      <Label htmlFor="roleName">Назва ролі *</Label>
-                      <Input
-                        id="roleName"
-                        value={roleFormData.name}
-                        onChange={(e) => setRoleFormData({ ...roleFormData, name: e.target.value })}
-                        placeholder="HF-оператор"
-                        required
-                      />
-                    </div>
+            <div className="flex items-center justify-gap-2">
+              <div className="flex items-center gap-2 mr-4">
+                <Label htmlFor="page-size" className="text-sm text-gray-600">
+                  {t('common_show') || 'Показати'}:
+                </Label>
+                <Select
+                  value={pageSize.toString()}
+                  onValueChange={(val) => {
+                    setPageSize(parseInt(val));
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger id="page-size" className="w-[80px] h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Dialog open={isRoleDialogOpen} onOpenChange={setIsRoleDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={() => handleOpenRoleDialog()}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    {t('roles_add_role')}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      {editingRole ? t('roles_dialog_edit_role') : t('roles_dialog_add_role')}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={handleSubmitRole}>
+                    <div className="space-y-4 py-4">
+                      <div>
+                        <Label htmlFor="roleName">{t('roles_role_name')}</Label>
+                        <Input
+                          id="roleName"
+                          value={roleFormData.name}
+                          onChange={(e) => setRoleFormData({ ...roleFormData, name: e.target.value })}
+                          placeholder=""
+                          required
+                        />
+                      </div>
 
-                    <div>
-                      <Label htmlFor="directionId">Функціональний напрямок *</Label>
-                      <Select
-                        value={roleFormData.directionId}
-                        onValueChange={(value) => setRoleFormData({ ...roleFormData, directionId: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Оберіть напрямок" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {directions.map((direction) => (
-                            <SelectItem key={direction.id} value={direction.id}>
-                              {direction.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                      <div>
+                        <Label htmlFor="directionId">{t('roles_functional_direction')}</Label>
+                        <Select
+                          value={roleFormData.directionId}
+                          onValueChange={(value) => setRoleFormData({ ...roleFormData, directionId: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('roles_select_direction')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {directions.map((direction) => (
+                              <SelectItem key={direction.id} value={direction.id}>
+                                {direction.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                    <div>
-                      <Label htmlFor="level">Рівень експертизи</Label>
-                      <Select
-                        value={roleFormData.level?.toString()}
-                        onValueChange={(value) => setRoleFormData({ ...roleFormData, level: parseInt(value) as 1 | 2 | 3 })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">1 - Початківець</SelectItem>
-                          <SelectItem value="2">2 - Досвідчений</SelectItem>
-                          <SelectItem value="3">3 - Експерт</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div>
+                        <Label htmlFor="level">{t('roles_expertise_level')}</Label>
+                        <Select
+                          value={roleFormData.level?.toString()}
+                          onValueChange={(value) => setRoleFormData({ ...roleFormData, level: parseInt(value) as 1 | 2 | 3 })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1">1 - {t('roles_level_beginner')}</SelectItem>
+                            <SelectItem value="2">2 - {t('roles_level_experienced')}</SelectItem>
+                            <SelectItem value="3">3 - {t('roles_level_expert')}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                  </div>
-                  <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => setIsRoleDialogOpen(false)}>
-                      Скасувати
-                    </Button>
-                    <Button type="submit">
-                      {editingRole ? 'Оновити' : 'Створити'}
-                    </Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
+                    <DialogFooter>
+                      <Button type="button" variant="outline" onClick={() => setIsRoleDialogOpen(false)}>
+                        {t('common_cancel')}
+                      </Button>
+                      <Button type="submit">
+                        {editingRole ? t('common_update') : t('common_create')}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -338,21 +383,21 @@ export function RolesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Назва ролі</TableHead>
-                  <TableHead>Функціональний напрямок</TableHead>
-                  <TableHead>Рівень експертизи</TableHead>
-                  <TableHead className="text-right">Дії</TableHead>
+                  <TableHead>{t('roles_col_name')}</TableHead>
+                  <TableHead>{t('roles_col_direction')}</TableHead>
+                  <TableHead>{t('roles_col_level')}</TableHead>
+                  <TableHead className="text-right">{t('common_actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {roles.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center py-8 text-gray-500">
-                      Ролей немає. Додайте першу роль.
+                      {t('roles_empty')}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  roles.map((role) => (
+                  paginatedRoles.map((role) => (
                     <TableRow key={role.id}>
                       <TableCell>
                         <span className="font-medium">{role.name}</span>
@@ -385,6 +430,74 @@ export function RolesPage() {
               </TableBody>
             </Table>
           </div>
+
+          {totalPages > 1 && (
+            <div className="flex justify-center py-4 mt-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationFirst
+                      onClick={() => setCurrentPage(1)}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+
+                  {[...Array(totalPages)].map((_, i) => {
+                    const page = i + 1;
+                    if (
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 1 && page <= currentPage + 1)
+                    ) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            isActive={currentPage === page}
+                            onClick={() => setCurrentPage(page)}
+                            className="cursor-pointer"
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    }
+
+                    if (
+                      (page === 2 && currentPage > 3) ||
+                      (page === totalPages - 1 && currentPage < totalPages - 2)
+                    ) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      );
+                    }
+
+                    return null;
+                  })}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLast
+                      onClick={() => setCurrentPage(totalPages)}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

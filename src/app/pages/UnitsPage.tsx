@@ -31,9 +31,30 @@ import {
 import { Plus, Edit, Trash2, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '../components/ui/badge';
+import { useLanguage } from '../context/LanguageContext';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationFirst,
+  PaginationLast,
+} from '../components/ui/pagination';
 
 export function UnitsPage() {
   const { units, addUnit, updateUnit, deleteUnit } = useDictionaries();
+  const { t } = useLanguage();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const totalPages = Math.ceil(units.length / pageSize);
+  const paginatedUnits = units.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUnit, setEditingUnit] = useState<OrganizationalUnit | null>(null);
   const [formData, setFormData] = useState<Partial<OrganizationalUnit>>({
@@ -65,13 +86,13 @@ export function UnitsPage() {
     e.preventDefault();
 
     if (!formData.name) {
-      toast.error('Назва обов\'язкова');
+      toast.error(t('units_err_name_required'));
       return;
     }
 
     if (editingUnit) {
       const success = await updateUnit(editingUnit.id, formData);
-      if (success) toast.success('Підрозділ оновлено');
+      if (success) toast.success(t('units_updated'));
     } else {
       const newUnit: OrganizationalUnit = {
         id: `unit-${Date.now()}`,
@@ -82,16 +103,16 @@ export function UnitsPage() {
         parentId: formData.parentId || undefined,
       };
       const success = await addUnit(newUnit);
-      if (success) toast.success('Підрозділ додано');
+      if (success) toast.success(t('units_added'));
     }
 
     setIsDialogOpen(false);
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('Ви впевнені, що хочете видалити цей підрозділ?')) {
+    if (confirm(t('units_confirm_delete'))) {
       const success = await deleteUnit(id);
-      if (success) toast.success('Підрозділ видалено');
+      if (success) toast.success(t('units_deleted'));
     }
   };
 
@@ -107,9 +128,18 @@ export function UnitsPage() {
       'Відділ': 'bg-green-100 text-green-800',
       'Група': 'bg-purple-100 text-purple-800',
     };
+
+    // translate the unit type
+    const translatedType = (() => {
+      if (type === 'Частина') return t('units_type_part');
+      if (type === 'Відділ') return t('units_type_dept');
+      if (type === 'Група') return t('units_type_group');
+      return type || t('common_not_specified');
+    })();
+
     return (
       <Badge variant="secondary" className={colors[type || ''] || ''}>
-        {type || 'Не вказано'}
+        {translatedType}
       </Badge>
     );
   };
@@ -119,28 +149,28 @@ export function UnitsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-semibold text-gray-900">Організаційні підрозділи</h2>
+          <h2 className="text-3xl font-semibold text-gray-900">{t('units_title')}</h2>
           <p className="text-gray-600 mt-1">
-            Управління структурою підрозділів. Всього: <span className="font-medium">{units.length}</span>
+            {t('units_subtitle')} <span className="font-medium">{units.length}</span>
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => handleOpenDialog()}>
               <Plus className="w-4 h-4 mr-2" />
-              Додати підрозділ
+              {t('units_add')}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {editingUnit ? 'Редагувати підрозділ' : 'Новий підрозділ'}
+                {editingUnit ? t('units_dialog_edit') : t('units_dialog_add')}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit}>
               <div className="space-y-4 py-4">
                 <div>
-                  <Label htmlFor="name">Назва *</Label>
+                  <Label htmlFor="name">{t('units_name')}</Label>
                   <Input
                     id="name"
                     value={formData.name}
@@ -151,7 +181,7 @@ export function UnitsPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="abbreviation">Скорочення</Label>
+                  <Label htmlFor="abbreviation">{t('units_abbreviation')}</Label>
                   <Input
                     id="abbreviation"
                     value={formData.abbreviation}
@@ -161,7 +191,7 @@ export function UnitsPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="type">Тип рівня</Label>
+                  <Label htmlFor="type">{t('units_type')}</Label>
                   <Select
                     value={formData.type}
                     onValueChange={(value: any) => setFormData({ ...formData, type: value })}
@@ -170,15 +200,15 @@ export function UnitsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Частина">Частина</SelectItem>
-                      <SelectItem value="Відділ">Відділ</SelectItem>
-                      <SelectItem value="Група">Група</SelectItem>
+                      <SelectItem value="Частина">{t('units_type_part')}</SelectItem>
+                      <SelectItem value="Відділ">{t('units_type_dept')}</SelectItem>
+                      <SelectItem value="Група">{t('units_type_group')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <Label htmlFor="location">Місце дислокації</Label>
+                  <Label htmlFor="location">{t('units_location')}</Label>
                   <Input
                     id="location"
                     value={formData.location}
@@ -188,16 +218,16 @@ export function UnitsPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="parentId">Батьківський підрозділ</Label>
+                  <Label htmlFor="parentId">{t('units_parent')}</Label>
                   <Select
                     value={formData.parentId || 'none'}
                     onValueChange={(value) => setFormData({ ...formData, parentId: value === 'none' ? undefined : value })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Без батьківського підрозділу" />
+                      <SelectValue placeholder={t('units_no_parent')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">Без батьківського підрозділу</SelectItem>
+                      <SelectItem value="none">{t('units_no_parent')}</SelectItem>
                       {units.filter(u => u.id !== editingUnit?.id).map(u => (
                         <SelectItem key={u.id} value={u.id}>
                           {u.abbreviation} - {u.name}
@@ -209,10 +239,10 @@ export function UnitsPage() {
               </div>
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                  Скасувати
+                  {t('common_cancel')}
                 </Button>
                 <Button type="submit">
-                  {editingUnit ? 'Оновити' : 'Створити'}
+                  {editingUnit ? t('common_update') : t('common_create')}
                 </Button>
               </DialogFooter>
             </form>
@@ -223,33 +253,57 @@ export function UnitsPage() {
       {/* Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Building2 className="w-5 h-5" />
-            Список підрозділів
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Building2 className="w-5 h-5" />
+              {t('units_list')}
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="page-size" className="text-sm text-gray-600">
+                {t('common_show') || 'Показати'}:
+              </Label>
+              <Select
+                value={pageSize.toString()}
+                onValueChange={(val) => {
+                  setPageSize(parseInt(val));
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger id="page-size" className="w-[80px] h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="20">20</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="border rounded-lg overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Скорочення</TableHead>
-                  <TableHead>Назва</TableHead>
-                  <TableHead>Тип</TableHead>
-                  <TableHead>Батьківський підрозділ</TableHead>
-                  <TableHead>Локація</TableHead>
-                  <TableHead className="text-right">Дії</TableHead>
+                  <TableHead>{t('units_col_abbrev')}</TableHead>
+                  <TableHead>{t('units_col_name')}</TableHead>
+                  <TableHead>{t('units_col_type')}</TableHead>
+                  <TableHead>{t('units_col_parent')}</TableHead>
+                  <TableHead>{t('units_col_location')}</TableHead>
+                  <TableHead className="text-right">{t('common_actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {units.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                      Підрозділів немає. Додайте перший підрозділ.
+                      {t('units_empty')}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  units.map((unit) => (
+                  paginatedUnits.map((unit) => (
                     <TableRow key={unit.id}>
                       <TableCell>
                         <span className="font-medium text-blue-600 font-mono">
@@ -292,6 +346,74 @@ export function UnitsPage() {
               </TableBody>
             </Table>
           </div>
+
+          {totalPages > 1 && (
+            <div className="flex justify-center py-4 mt-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationFirst
+                      onClick={() => setCurrentPage(1)}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+
+                  {[...Array(totalPages)].map((_, i) => {
+                    const page = i + 1;
+                    if (
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 1 && page <= currentPage + 1)
+                    ) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            isActive={currentPage === page}
+                            onClick={() => setCurrentPage(page)}
+                            className="cursor-pointer"
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    }
+
+                    if (
+                      (page === 2 && currentPage > 3) ||
+                      (page === totalPages - 1 && currentPage < totalPages - 2)
+                    ) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      );
+                    }
+
+                    return null;
+                  })}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLast
+                      onClick={() => setCurrentPage(totalPages)}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
