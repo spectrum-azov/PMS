@@ -10,8 +10,8 @@ import {
 } from './ui/select';
 import { PersonnelFilters as Filters } from '../types/personnel';
 import { useDictionaries } from '../context/DictionariesContext';
-import { Badge } from './ui/badge';
 import { useLanguage } from '../context/LanguageContext';
+import { PersonnelActiveFilters } from './PersonnelActiveFilters';
 
 interface PersonnelFiltersProps {
   filters: Filters;
@@ -49,6 +49,10 @@ export function PersonnelFilters({ filters, onFiltersChange, actionSlot }: Perso
 
   const clearFilters = () => {
     onFiltersChange({});
+  };
+
+  const handleClearFilter = (key: keyof Filters) => {
+    onFiltersChange({ ...filters, [key]: undefined });
   };
 
   const activeFiltersCount = Object.values(filters).filter(v => v !== undefined).length;
@@ -158,72 +162,10 @@ export function PersonnelFilters({ filters, onFiltersChange, actionSlot }: Perso
 
       {/* Active Filters Tags */}
       {activeFiltersCount > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {filters.unitId && (
-            <Badge variant="secondary">
-              {t('filters_unit')}: {units.find(u => u.id === filters.unitId)?.abbreviation}
-              <button
-                onClick={() => handleUnitChange('all')}
-                className="ml-2 hover:text-destructive"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </Badge>
-          )}
-          {filters.positionId && (
-            <Badge variant="secondary">
-              {t('filters_position')}: {positions.find(p => p.id === filters.positionId)?.name}
-              <button
-                onClick={() => handlePositionChange('all')}
-                className="ml-2 hover:text-destructive"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </Badge>
-          )}
-          {filters.roleId && (
-            <Badge variant="secondary">
-              {t('filters_role')}: {roles.find(r => r.id === filters.roleId)?.name}
-              <button
-                onClick={() => handleRoleChange('all')}
-                className="ml-2 hover:text-destructive"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </Badge>
-          )}
-          {filters.status && (
-            <Badge variant="secondary">
-              {t('filters_status')}: {
-                filters.status === 'Служить' ? t('filters_status_serving') :
-                  filters.status === 'Переведений' ? t('filters_status_transferred') :
-                    filters.status === 'Звільнений' ? t('filters_status_dismissed') :
-                      filters.status
-              }
-              <button
-                onClick={() => handleStatusChange('all')}
-                className="ml-2 hover:text-destructive"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </Badge>
-          )}
-          {filters.serviceType && (
-            <Badge variant="secondary">
-              {t('filters_service_type')}: {
-                filters.serviceType === 'Контракт' ? t('filters_service_contract') :
-                  filters.serviceType === 'Мобілізований' ? t('filters_service_mobilized') :
-                    filters.serviceType
-              }
-              <button
-                onClick={() => handleServiceTypeChange('all')}
-                className="ml-2 hover:text-destructive"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </Badge>
-          )}
-        </div>
+        <PersonnelActiveFilters
+          filters={filters}
+          onClearFilter={handleClearFilter}
+        />
       )}
     </div>
   );
