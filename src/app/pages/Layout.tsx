@@ -15,7 +15,6 @@ export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigation = [
-    { name: t('nav_overview'), path: '/', icon: LayoutDashboard },
     { name: t('nav_registry'), path: '/personnel', icon: Users },
   ];
 

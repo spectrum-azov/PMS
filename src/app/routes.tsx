@@ -1,6 +1,5 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { Layout } from './pages/Layout';
-import { Dashboard } from './pages/Dashboard';
 import { PersonnelRegistry } from './pages/PersonnelRegistry';
 import { PersonCard } from './pages/PersonCard';
 import { PersonForm } from './pages/PersonForm';
@@ -18,7 +17,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: Dashboard,
+        Component: () => <Navigate to="/personnel" replace />,
       },
       {
         path: 'personnel',
