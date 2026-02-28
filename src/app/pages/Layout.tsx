@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router';
-import { Users, Settings, Building2, Briefcase, UserCog, Menu, X, Languages, Upload, Bell } from 'lucide-react';
+import { Users, Settings, Building2, Briefcase, UserCog, Menu, X, Languages, Upload } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Separator } from '../components/ui/separator';
 import { useSettings } from '../context/SettingsContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ThemeToggle } from '../components/theme-toggle';
 import { NotificationCenter } from '../components/NotificationCenter';
-import { testPushNotification } from '../utils/pushNotifications';
+
 
 import logo from '../../assets/logo.png';
 
@@ -167,22 +167,6 @@ export function Layout() {
               </div>
             </div>
 
-            <Separator className="my-4" />
-
-            <div className="px-4 py-3">
-              <p className="text-xs text-muted-foreground mb-2">Tools</p>
-              <div className="space-y-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start text-xs"
-                  onClick={() => testPushNotification(t)}
-                >
-                  <Bell className="w-3 h-3 mr-2" />
-                  {t('nav_test_push')}
-                </Button>
-              </div>
-            </div>
           </div>
         </aside>
 
