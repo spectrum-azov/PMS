@@ -119,7 +119,7 @@ export default function PersonCard() {
 
       {/* Tabs */}
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+        <TabsList className="flex w-full overflow-x-auto overflow-y-hidden justify-start md:justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <TabsTrigger value="general">{t('card_tab_general')}</TabsTrigger>
           <TabsTrigger value="education">{t('card_tab_education')}</TabsTrigger>
           <TabsTrigger value="family">{t('card_tab_family')}</TabsTrigger>

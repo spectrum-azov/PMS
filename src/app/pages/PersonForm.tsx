@@ -173,7 +173,7 @@ export default function PersonForm() {
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Tabs defaultValue="general" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="flex w-full overflow-x-auto overflow-y-hidden justify-start sm:justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <TabsTrigger value="general">{t('form_tab_general')}</TabsTrigger>
             <TabsTrigger value="additional">{t('form_tab_additional')}</TabsTrigger>
             <TabsTrigger value="extended">{t('form_tab_extended')}</TabsTrigger>
