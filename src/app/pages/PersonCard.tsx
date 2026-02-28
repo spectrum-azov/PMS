@@ -17,7 +17,7 @@ import { PersonCardFamilyTab } from '../components/person-card/PersonCardFamilyT
 import { PersonCardDocumentsTab } from '../components/person-card/PersonCardDocumentsTab';
 import { PersonCardAwardsTab } from '../components/person-card/PersonCardAwardsTab';
 
-export function PersonCard() {
+export default function PersonCard() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getPersonById, loading, error, reload } = usePersonnel();

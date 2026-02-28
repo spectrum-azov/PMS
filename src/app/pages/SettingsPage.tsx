@@ -11,7 +11,7 @@ import { Save, Download, RefreshCw, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import { useLanguage } from '../context/LanguageContext';
 
-export function SettingsPage() {
+export default function SettingsPage() {
   const { settings, updateSettings } = useSettings();
   const { personnel } = usePersonnel();
   const { units, positions, roles } = useDictionaries();

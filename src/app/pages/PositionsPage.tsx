@@ -10,7 +10,7 @@ import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { PositionTable } from '../components/positions/PositionTable';
 import { PositionDialog } from '../components/positions/PositionDialog';
 
-export function PositionsPage() {
+export default function PositionsPage() {
   const { positions, addPosition, updatePosition, deletePosition } = useDictionaries();
   const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);

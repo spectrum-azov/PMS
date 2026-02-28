@@ -1,14 +1,27 @@
 import { createBrowserRouter, Navigate } from 'react-router';
+import { lazy, Suspense } from 'react';
 import { Layout } from './pages/Layout';
-import { PersonnelRegistry } from './pages/PersonnelRegistry';
-import { PersonCard } from './pages/PersonCard';
-import { PersonForm } from './pages/PersonForm';
-import { UnitsPage } from './pages/UnitsPage';
-import { PositionsPage } from './pages/PositionsPage';
-import { RolesPage } from './pages/RolesPage';
-import { SettingsPage } from './pages/SettingsPage';
 
-import { ImportPersonnel } from './pages/ImportPersonnel';
+const PersonnelRegistry = lazy(() => import('./pages/PersonnelRegistry'));
+const PersonCard = lazy(() => import('./pages/PersonCard'));
+const PersonForm = lazy(() => import('./pages/PersonForm'));
+const UnitsPage = lazy(() => import('./pages/UnitsPage'));
+const PositionsPage = lazy(() => import('./pages/PositionsPage'));
+const RolesPage = lazy(() => import('./pages/RolesPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const ImportPersonnel = lazy(() => import('./pages/ImportPersonnel'));
+
+function LazyPage({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    }>
+      {children}
+    </Suspense>
+  );
+}
 
 export const router = createBrowserRouter([
   {
@@ -21,39 +34,39 @@ export const router = createBrowserRouter([
       },
       {
         path: 'personnel',
-        Component: PersonnelRegistry,
+        Component: () => <LazyPage><PersonnelRegistry /></LazyPage>,
       },
       {
         path: 'personnel/new',
-        Component: PersonForm,
+        Component: () => <LazyPage><PersonForm /></LazyPage>,
       },
       {
         path: 'personnel/import',
-        Component: ImportPersonnel,
+        Component: () => <LazyPage><ImportPersonnel /></LazyPage>,
       },
       {
         path: 'personnel/:id',
-        Component: PersonCard,
+        Component: () => <LazyPage><PersonCard /></LazyPage>,
       },
       {
         path: 'personnel/:id/edit',
-        Component: PersonForm,
+        Component: () => <LazyPage><PersonForm /></LazyPage>,
       },
       {
         path: 'units',
-        Component: UnitsPage,
+        Component: () => <LazyPage><UnitsPage /></LazyPage>,
       },
       {
         path: 'positions',
-        Component: PositionsPage,
+        Component: () => <LazyPage><PositionsPage /></LazyPage>,
       },
       {
         path: 'roles',
-        Component: RolesPage,
+        Component: () => <LazyPage><RolesPage /></LazyPage>,
       },
       {
         path: 'settings',
-        Component: SettingsPage,
+        Component: () => <LazyPage><SettingsPage /></LazyPage>,
       },
     ],
   },

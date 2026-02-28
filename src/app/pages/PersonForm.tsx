@@ -22,7 +22,7 @@ const prepPhone = (phone: string) => {
   return phone.startsWith('+') ? phone : '+38' + phone;
 };
 
-export function PersonForm() {
+export default function PersonForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getPersonById, addPerson, updatePerson } = usePersonnel();

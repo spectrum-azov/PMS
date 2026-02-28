@@ -13,7 +13,7 @@ import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { Button } from '../components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
 
-export function RolesPage() {
+export default function RolesPage() {
   const { roles, addRole, updateRole, deleteRole, directions, addDirection, updateDirection, deleteDirection } = useDictionaries();
   const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);

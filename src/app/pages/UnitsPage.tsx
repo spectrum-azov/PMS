@@ -10,7 +10,7 @@ import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { UnitTable } from '../components/units/UnitTable';
 import { UnitDialog } from '../components/units/UnitDialog';
 
-export function UnitsPage() {
+export default function UnitsPage() {
   const { units, addUnit, updateUnit, deleteUnit } = useDictionaries();
   const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);

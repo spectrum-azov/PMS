@@ -22,7 +22,7 @@ import {
 
 const STORAGE_KEY = 'personnel-table-columns';
 
-export function PersonnelRegistry() {
+export default function PersonnelRegistry() {
   const navigate = useNavigate();
   const { filteredPersonnel, filters, setFilters, loading, error, reload } = usePersonnel();
   const { t } = useLanguage();

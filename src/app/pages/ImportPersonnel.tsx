@@ -8,7 +8,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Upload, ChevronLeft, Check, Save, Loader2, Database } from 'lucide-react';
 
-export function ImportPersonnel() {
+export default function ImportPersonnel() {
     const navigate = useNavigate();
     const { t } = useLanguage();
 
