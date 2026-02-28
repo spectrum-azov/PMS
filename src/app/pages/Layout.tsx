@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router';
-import { Users, Settings, Building2, Briefcase, UserCog, Menu, X, Languages, Upload } from 'lucide-react';
+import { Users, Settings, Building2, Briefcase, UserCog, Menu, X, Languages, Upload, Bell } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Separator } from '../components/ui/separator';
 import { useSettings } from '../context/SettingsContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ThemeToggle } from '../components/theme-toggle';
+import { testPushNotification } from '../utils/pushNotifications';
 
 import logo from '../../assets/logo.png';
 
@@ -105,10 +106,11 @@ export function Layout() {
             transition-transform duration-200 ease-in-out
             ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             md:translate-x-0
+            flex flex-col
           `}
         >
           {/* Mobile sidebar header */}
-          <div className="flex items-center justify-between p-4 border-b md:hidden">
+          <div className="flex items-center justify-between p-4 border-b md:hidden shrink-0">
             <div>
               <p className="text-sm font-semibold text-foreground">{settings.organizationName}</p>
               <p className="text-xs text-muted-foreground">{settings.organizationSubtitle}</p>
@@ -118,31 +120,9 @@ export function Layout() {
             </Button>
           </div>
 
-          <nav className="p-4 space-y-2">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-
-              return (
-                <Link key={item.path} to={item.path} onClick={closeSidebar}>
-                  <Button
-                    variant={isActive ? 'secondary' : 'ghost'}
-                    className="w-full justify-start"
-                  >
-                    <Icon className="w-4 h-4 mr-3" />
-                    {item.name}
-                  </Button>
-                </Link>
-              );
-            })}
-          </nav>
-
-          <Separator className="my-4" />
-
-          <div className="px-4 py-3">
-            <p className="text-xs text-muted-foreground mb-2">{t('nav_directories')}</p>
-            <div className="space-y-1">
-              {dictionaryNav.map((item) => {
+          <div className="flex-1 overflow-y-auto">
+            <nav className="p-4 space-y-2">
+              {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
 
@@ -150,15 +130,56 @@ export function Layout() {
                   <Link key={item.path} to={item.path} onClick={closeSidebar}>
                     <Button
                       variant={isActive ? 'secondary' : 'ghost'}
-                      size="sm"
-                      className="w-full justify-start text-xs"
+                      className="w-full justify-start"
                     >
-                      <Icon className="w-3 h-3 mr-2" />
+                      <Icon className="w-4 h-4 mr-3" />
                       {item.name}
                     </Button>
                   </Link>
                 );
               })}
+            </nav>
+
+            <Separator className="my-4" />
+
+            <div className="px-4 py-3">
+              <p className="text-xs text-muted-foreground mb-2">{t('nav_directories')}</p>
+              <div className="space-y-1">
+                {dictionaryNav.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.path;
+
+                  return (
+                    <Link key={item.path} to={item.path} onClick={closeSidebar}>
+                      <Button
+                        variant={isActive ? 'secondary' : 'ghost'}
+                        size="sm"
+                        className="w-full justify-start text-xs"
+                      >
+                        <Icon className="w-3 h-3 mr-2" />
+                        {item.name}
+                      </Button>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            <Separator className="my-4" />
+
+            <div className="px-4 py-3">
+              <p className="text-xs text-muted-foreground mb-2">Tools</p>
+              <div className="space-y-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-xs"
+                  onClick={() => testPushNotification(t)}
+                >
+                  <Bell className="w-3 h-3 mr-2" />
+                  {t('nav_test_push')}
+                </Button>
+              </div>
             </div>
           </div>
         </aside>

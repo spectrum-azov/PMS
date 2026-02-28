@@ -425,6 +425,14 @@ export const uk = {
     import_db_checked: 'Перевірку виконано',
     import_check_db_required: 'Спочатку виконайте перевірку дублікатів у БД',
     import_duplicate_db: 'Дублікат (БД)',
+
+    // Push Notifications
+    nav_test_push: 'Тестове push-сповіщення',
+    push_not_supported: 'Цей браузер не підтримує push-сповіщення',
+    push_test_title: 'Тестове сповіщення PMS',
+    push_test_body: 'Це тестове push-сповіщення з вашого додатку PMS!',
+    push_not_granted: 'Push-сповіщення не дозволено.',
+    push_denied: 'Push-сповіщення були заборонені раніше. Будь ласка, увімкніть їх у налаштуваннях вашого браузера.',
 };
 
 export type TranslationKey = keyof typeof uk;

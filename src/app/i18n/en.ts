@@ -428,4 +428,12 @@ export const en: Record<TranslationKey, string> = {
     import_col_reg_address: 'Reg. Address',
     import_col_citizenship: 'Citizenship',
     import_col_blood_type: 'Blood Type',
+
+    // Push Notifications
+    nav_test_push: 'Test push notification',
+    push_not_supported: 'This browser does not support push notification',
+    push_test_title: 'PMS Test Notification',
+    push_test_body: 'This is a test push notification from your PMS App!',
+    push_not_granted: 'Push notifications are not granted.',
+    push_denied: 'Push notifications have been denied before. Please enable them in your browser settings.',
 };
