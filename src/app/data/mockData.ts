@@ -814,7 +814,7 @@ export const mockPersonnel: Person[] = [
     updatedAt: '2024-02-19T13:15:00Z'
   },
   {
-    id: '600',
+    id: '601',
     callsign: 'Нептун',
     fullName: 'Мельник Василь Іванович',
     rank: 'Солдат',
@@ -980,7 +980,7 @@ export const mockPersonnel: Person[] = [
     updatedAt: '2024-02-15T10:00:00Z'
   },
   {
-    id: '1000',
+    id: '1110',
     callsign: 'Меркурій',
     fullName: 'Коваленко Андрій Сергійович',
     rank: 'Молодший сержант',

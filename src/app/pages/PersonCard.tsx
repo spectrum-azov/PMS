@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { usePersonnel } from '../context/PersonnelContext';
+import * as api from '../api/personnelApi';
+import { Person } from '../types/personnel';
+
 import { useDictionaries } from '../context/DictionariesContext';
 import { usePersonnelFormatters } from '../hooks/usePersonnelFormatters';
 import { useLanguage } from '../context/LanguageContext';
@@ -20,10 +23,30 @@ import { PersonCardAwardsTab } from '../components/person-card/PersonCardAwardsT
 export default function PersonCard() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getPersonById, loading, error, reload } = usePersonnel();
   const { units, loading: dictLoading } = useDictionaries();
   const { getUnitName, getPositionName, getRoleName, getStatusBadge } = usePersonnelFormatters();
   const { t } = useLanguage();
+
+  const [person, setPerson] = useState<Person | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadPerson = async () => {
+    if (!id) return;
+    setLoading(true);
+    setError(null);
+    const res = await api.getPersonById(id);
+    if (res.success) {
+      setPerson(res.data);
+    } else {
+      setError(res.message);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadPerson();
+  }, [id]);
 
   if (loading || dictLoading) {
     return (
@@ -40,7 +63,7 @@ export default function PersonCard() {
       <div className="p-6">
         <div className="text-center py-12">
           <p className="text-muted-foreground mb-4">{error}</p>
-          <Button onClick={reload} variant="outline" className="mr-2">
+          <Button onClick={loadPerson} variant="outline" className="mr-2">
             <RefreshCw className="w-4 h-4 mr-2" />
             {t('card_retry')}
           </Button>
@@ -51,8 +74,6 @@ export default function PersonCard() {
       </div>
     );
   }
-
-  const person = getPersonById(id!);
 
   const getUnitPath = (unitId: string): string => {
     const path: string[] = [];

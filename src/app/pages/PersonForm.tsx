@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { usePersonnel } from '../context/PersonnelContext';
+import * as api from '../api/personnelApi';
 import { Person } from '../types/personnel';
 import { Button } from '../components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
@@ -25,7 +26,7 @@ const prepPhone = (phone: string) => {
 export default function PersonForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getPersonById, addPerson, updatePerson } = usePersonnel();
+  const { addPerson, updatePerson } = usePersonnel();
   const { t } = useLanguage();
 
   const validateBirthDate = (value: string): true | string => {
@@ -41,7 +42,24 @@ export default function PersonForm() {
   };
 
   const isEditMode = id !== undefined;
-  const existingPerson = isEditMode ? getPersonById(id!) : null;
+
+  const [existingPerson, setExistingPerson] = useState<Person | null>(null);
+  const [loadingContext, setLoadingContext] = useState(isEditMode);
+
+  useEffect(() => {
+    if (isEditMode && id) {
+      setLoadingContext(true);
+      api.getPersonById(id).then(res => {
+        if (res.success) {
+          setExistingPerson(res.data);
+        } else {
+          toast.error(res.message);
+          navigate('/personnel');
+        }
+        setLoadingContext(false);
+      });
+    }
+  }, [id, isEditMode, navigate]);
 
   const defaultValues: Person = existingPerson
     ? {
@@ -164,8 +182,8 @@ export default function PersonForm() {
             </p>
           </div>
         </div>
-        <Button onClick={handleSubmit(onSubmit)} disabled={submitting}>
-          {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+        <Button onClick={handleSubmit(onSubmit)} disabled={submitting || loadingContext}>
+          {submitting || loadingContext ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
           {t('form_save')}
         </Button>
       </div>
@@ -210,8 +228,8 @@ export default function PersonForm() {
           >
             {t('common_cancel')}
           </Button>
-          <Button type="submit" disabled={submitting}>
-            {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+          <Button type="submit" disabled={submitting || loadingContext}>
+            {submitting || loadingContext ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             {isEditMode ? t('common_update') : t('common_create')}
           </Button>
         </div>
