@@ -101,7 +101,7 @@ export default function PositionsPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-semibold text-foreground">{t('positions_title')}</h2>
           <p className="text-muted-foreground mt-1">
@@ -121,7 +121,7 @@ export default function PositionsPage() {
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <CardTitle className="flex items-center gap-2">
               <Briefcase className="w-5 h-5" />
               {t('positions_list')}
