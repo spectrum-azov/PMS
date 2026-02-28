@@ -1,4 +1,4 @@
-@custom-variant dark (&:is(.dark *, .spectrum *));
+@custom-variant dark (&:is(.dark *, .spectrum *, .spectrum-contrast *));
 
 :root {
   --font-size: 16px;
@@ -131,15 +131,27 @@
     letter-spacing: 1px;
   }
 
-  label {
+  label,
+  [data-slot="label"],
+  [data-slot="card-title"] {
     text-transform: uppercase;
     letter-spacing: 1px;
+    color: var(--primary);
   }
 
   input,
   textarea,
-  select {
-    /* Padding removed to allow Tailwind utility classes (like pl-10) to work */
+  select,
+  [data-slot="select-trigger"],
+  [data-slot="select-value"],
+  [data-slot="checkbox"]+label,
+  [data-slot="checkbox"]~label,
+  [data-slot="checkbox"]+[data-slot="label"],
+  [data-slot="radio-group-item"]+label,
+  [data-slot="radio-group-item"]~label {
+    color: var(--foreground) !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
   }
 }
 
@@ -155,7 +167,7 @@
   --secondary: #1a1c1f;
   --secondary-foreground: #f2d244;
   --muted: #1a1c1f;
-  --muted-foreground: #9aa3af;
+  --muted-foreground: #f2d244;
   --accent: #1a1c1f;
   --accent-foreground: #f2d244;
   --destructive: #db4437;
@@ -186,6 +198,7 @@
 
   font-family: var(--font-sans);
   letter-spacing: 0.5px;
+  color: var(--foreground);
 
   h1,
   h2,
@@ -194,11 +207,27 @@
     font-family: var(--font-display);
     text-transform: uppercase;
     letter-spacing: 1px;
+    color: var(--foreground);
   }
 
-  label {
+  label,
+  [data-slot="label"],
+  [data-slot="card-title"] {
     text-transform: uppercase;
     letter-spacing: 1px;
+    color: var(--foreground);
+  }
+
+  input,
+  textarea,
+  select,
+  [data-slot="select-trigger"] {
+    color: var(--foreground) !important;
+
+    &::placeholder {
+      color: var(--muted-foreground);
+      opacity: 0.7;
+    }
   }
 }
 
