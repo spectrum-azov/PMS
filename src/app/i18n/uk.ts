@@ -20,6 +20,7 @@ export const uk = {
     common_back: 'Назад',
     common_retry: 'Спробувати ще раз',
     common_actions: 'Дії',
+    common_no_data: 'Немає даних',
     common_name: 'Назва',
     common_unknown: 'Невідомо',
     common_not_specified: 'Не вказано',

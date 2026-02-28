@@ -22,6 +22,7 @@ export const en: Record<TranslationKey, string> = {
     common_back: 'Back',
     common_retry: 'Try again',
     common_actions: 'Actions',
+    common_no_data: 'No data available',
     common_name: 'Name',
     common_unknown: 'Unknown',
     common_not_specified: 'Not specified',
