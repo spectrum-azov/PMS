@@ -42,7 +42,7 @@ export function GenericDialog({
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             {triggerLabel && (
                 <DialogTrigger asChild>
-                    <Button>
+                    <Button className="w-full sm:w-auto">
                         {triggerIcon}
                         {triggerLabel}
                     </Button>

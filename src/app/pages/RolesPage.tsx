@@ -213,17 +213,15 @@ export default function RolesPage() {
               <UserCog className="w-5 h-5" />
               {t('roles_roles_title')} ({roles.length})
             </CardTitle>
-            <div className="flex items-center gap-2">
-              <RoleDialog
-                isOpen={isRoleDialogOpen}
-                setIsOpen={setIsRoleDialogOpen}
-                editingRole={editingRole}
-                roleFormData={roleFormData}
-                setRoleFormData={setRoleFormData}
-                onSave={handleSubmitRole}
-                directions={directions}
-              />
-            </div>
+            <RoleDialog
+              isOpen={isRoleDialogOpen}
+              setIsOpen={setIsRoleDialogOpen}
+              editingRole={editingRole}
+              roleFormData={roleFormData}
+              setRoleFormData={setRoleFormData}
+              onSave={handleSubmitRole}
+              directions={directions}
+            />
           </div>
         </CardHeader>
         <CardContent>
