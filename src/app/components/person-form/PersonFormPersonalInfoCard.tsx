@@ -25,7 +25,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-[3px]">
                         <Label htmlFor="callsign">{t('form_callsign')}</Label>
                         {errors.callsign && (
                             <span className="text-xs text-destructive font-medium">{errors.callsign.message}</span>
@@ -42,7 +42,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                 </div>
 
                 <div>
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-[3px]">
                         <Label htmlFor="fullName">{t('form_fullname')}</Label>
                         {errors.fullName && (
                             <span className="text-xs text-destructive font-medium">{errors.fullName.message}</span>
@@ -60,7 +60,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                 </div>
 
                 <div>
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-[3px]">
                         <Label htmlFor="rank">{t('form_rank')}</Label>
                         {errors.rank && (
                             <span className="text-xs text-destructive font-medium">{errors.rank.message}</span>
@@ -88,7 +88,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                 </div>
 
                 <div>
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-[3px]">
                         <Label htmlFor="birthDate">{t('form_birthdate')}</Label>
                         {errors.birthDate && (
                             <span className="text-xs text-destructive font-medium">{errors.birthDate.message}</span>
@@ -105,7 +105,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                 </div>
 
                 <div>
-                    <Label htmlFor="citizenship" className="mb-1">{t('form_citizenship')}</Label>
+                    <Label htmlFor="citizenship" className="mb-[3px]">{t('form_citizenship')}</Label>
                     <Input
                         id="citizenship"
                         {...register('citizenship')}

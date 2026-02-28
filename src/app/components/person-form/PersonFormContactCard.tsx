@@ -56,7 +56,7 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                     </div>
 
                     <div>
-                        <div className="mb-1.5">
+                        <div className="mb-[3px]">
                             <Label htmlFor="address">{t('form_address')}</Label>
                         </div>
                         <Input
@@ -67,7 +67,7 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                     </div>
 
                     <div>
-                        <div className="mb-1.5">
+                        <div className="mb-[3px]">
                             <Label htmlFor="registrationAddress">{t('form_reg_address')}</Label>
                         </div>
                         <Input
