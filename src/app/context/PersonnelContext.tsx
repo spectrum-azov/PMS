@@ -55,9 +55,25 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
-  // Always debounce so StrictMode's cleanup cancels the first timer,
-  // leaving exactly one request per filter change (including initial load).
+  // ── Initial load (guarded against StrictMode double-mount) ──
+  const isMounted = React.useRef(false);
+  const prevFiltersRef = React.useRef(filters);
+
   useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      loadPersonnel(filters);
+      return;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Debounced re-fetch on every subsequent filter change ──
+  useEffect(() => {
+    // Skip if this is the initial render (already handled above)
+    if (prevFiltersRef.current === filters) return;
+    prevFiltersRef.current = filters;
+
     const timer = setTimeout(() => {
       loadPersonnel(filters);
     }, DEBOUNCE_MS);
