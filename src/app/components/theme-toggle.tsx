@@ -1,4 +1,4 @@
-import { Flame, Moon, Sun } from "lucide-react"
+import { Contrast, Flame, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Button } from "./ui/button"
@@ -21,7 +21,8 @@ export function ThemeToggle() {
                     <Sun className={`h-4 w-4 transition-all ${theme === "light" ? "rotate-0 scale-100" : "-rotate-90 scale-0 absolute"}`} />
                     <Moon className={`h-4 w-4 transition-all ${theme === "dark" ? "rotate-0 scale-100" : "rotate-90 scale-0 absolute"}`} />
                     <Flame className={`h-4 w-4 transition-all ${theme === "spectrum" ? "rotate-0 scale-100" : "rotate-90 scale-0 absolute"}`} />
-                    {theme !== "light" && theme !== "dark" && theme !== "spectrum" && (
+                    <Contrast className={`h-4 w-4 transition-all ${theme === "spectrum-contrast" ? "rotate-0 scale-100" : "rotate-90 scale-0 absolute"}`} />
+                    {theme !== "light" && theme !== "dark" && theme !== "spectrum" && theme !== "spectrum-contrast" && (
                         <>
                             <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                             <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -39,6 +40,9 @@ export function ThemeToggle() {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme("spectrum")}>
                     {t("theme_spectrum") || "Spectrum"}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("spectrum-contrast")}>
+                    {t("theme_spectrum_contrast") || "Spectrum Contrast"}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme("system")}>
                     {t("theme_system") || "System"}
