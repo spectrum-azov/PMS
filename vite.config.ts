@@ -22,21 +22,28 @@ export default defineConfig({
     }),
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'icons/*.png'],
       manifest: {
         name: 'Personnel Management System',
         short_name: 'PMS',
         description: 'Manage personnel records, organizational units, positions and roles.',
         theme_color: '#030213',
+        background_color: '#030213',
+        display: 'standalone',
+        start_url: './',
+        scope: './',
         icons: [
           {
-            src: 'assets/logo.png',
+            src: 'icons/icon-192.png',
             sizes: '192x192',
             type: 'image/png',
+            purpose: 'any maskable',
           },
           {
-            src: 'assets/logo.png',
+            src: 'icons/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
+            purpose: 'any maskable',
           },
         ],
       },
