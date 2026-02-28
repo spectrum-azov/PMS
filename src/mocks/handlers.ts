@@ -3,6 +3,7 @@ import { db, maybeError } from '../app/api/mockDb'
 import { PersonSchema, PersonnelFiltersSchema } from '../app/schemas/personnel'
 
 const API_BASE = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/api'
+const HUB_BASE = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/hubs/notifications'
 
 export const handlers = [
     // GET all personnel with filters
@@ -334,5 +335,11 @@ export const handlers = [
     http.post(`${API_BASE}/push/unsubscribe`, async () => {
         await delay(100)
         return HttpResponse.json({ success: true, data: { unsubscribed: true } })
+    }),
+
+    // SignalR Mocking (prevent 405 on GitHub Pages)
+    http.post(`${HUB_BASE}/negotiate`, async () => {
+        // Return 503 so the SignalR client fails gracefully and understands the server is unavailable
+        return new HttpResponse('Mock SignalR endpoint not available', { status: 503 })
     }),
 ]

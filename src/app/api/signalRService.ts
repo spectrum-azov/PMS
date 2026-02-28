@@ -5,7 +5,8 @@ import {
     HubConnectionState,
 } from '@microsoft/signalr';
 
-const HUB_URL = import.meta.env.VITE_SIGNALR_HUB_URL ?? '/hubs/notifications';
+const defaultHubUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/hubs/notifications';
+const HUB_URL = import.meta.env.VITE_SIGNALR_HUB_URL ?? defaultHubUrl;
 
 // ─── Event name constants ─────────────────────────────────────────────────────
 export const HUB_EVENTS = {
