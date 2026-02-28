@@ -25,17 +25,24 @@ export function useInfiniteScroll<T extends { id?: string }>({
     const [loadingMore, setLoadingMore] = useState(false);
     const [initialLoaded, setInitialLoaded] = useState(false);
     const isFetching = useRef(false);
+    const [version, setVersion] = useState(0);
+    const isFirstMount = useRef(true);
 
-    // Reset when deps change (filters, sort, etc.)
+    // Reset when deps change (filters, sort, etc.) — skip on first mount
     useEffect(() => {
+        if (isFirstMount.current) {
+            isFirstMount.current = false;
+            return;
+        }
         setItems([]);
         setPage(1);
         setTotalCount(0);
         setInitialLoaded(false);
+        setVersion(v => v + 1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, deps);
 
-    // Fetch data when page changes or after reset
+    // Fetch data when page or version changes — single trigger per change
     useEffect(() => {
         if (isFetching.current) return;
 
@@ -44,6 +51,7 @@ export function useInfiniteScroll<T extends { id?: string }>({
             setLoadingMore(true);
             try {
                 const result = await fetchFn(page, pageSize);
+                // Guard against stale fetches after a reset
                 setItems(prev => {
                     if (page === 1) return result.data;
                     return [...prev, ...result.data];
@@ -58,7 +66,7 @@ export function useInfiniteScroll<T extends { id?: string }>({
 
         doFetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, ...deps]);
+    }, [page, version]);
 
     const hasMore = initialLoaded && items.length < totalCount;
 

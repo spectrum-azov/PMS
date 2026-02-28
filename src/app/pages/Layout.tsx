@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router';
-import { Users, Settings, Building2, Briefcase, UserCog, Menu, X, Languages, Upload, LayoutDashboard } from 'lucide-react';
+import { Users, Settings, Building2, Briefcase, UserCog, Menu, X, Languages, LayoutDashboard } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Separator } from '../components/ui/separator';
 import { useSettings } from '../context/SettingsContext';

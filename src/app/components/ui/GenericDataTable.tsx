@@ -221,7 +221,7 @@ export function GenericDataTable<T>({
             </div>
 
             {/* Infinite scroll sentinel & loader */}
-            {onLoadMore && (
+            {onLoadMore && hasMore && (
                 <div ref={sentinelRef} className="flex justify-center py-4">
                     {loadingMore && (
                         <div className="flex items-center gap-2 text-muted-foreground text-sm">

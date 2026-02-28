@@ -74,7 +74,6 @@ export default function RolesPage() {
   const totalPages = Math.ceil(totalCount / pageSize);
 
   const displayData = isInfiniteScroll ? infiniteScrollData.items : paginatedRoles;
-  const displayTotalCount = isInfiniteScroll ? infiniteScrollData.totalCount : totalCount;
   const isLoading = isInfiniteScroll ? (infiniteScrollData.loadingMore && infiniteScrollData.items.length === 0) : loadingRoles;
 
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
