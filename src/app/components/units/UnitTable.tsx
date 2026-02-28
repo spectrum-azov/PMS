@@ -15,6 +15,9 @@ interface UnitTableProps {
     sortField?: string;
     sortOrder?: 'asc' | 'desc';
     onSort?: (field: string) => void;
+    hasMore?: boolean;
+    onLoadMore?: () => void;
+    loadingMore?: boolean;
 }
 
 export function UnitTable({
@@ -26,6 +29,9 @@ export function UnitTable({
     sortField,
     sortOrder,
     onSort,
+    hasMore,
+    onLoadMore,
+    loadingMore,
 }: UnitTableProps) {
     const { t } = useLanguage();
 
@@ -132,6 +138,9 @@ export function UnitTable({
             sortField={sortField}
             sortOrder={sortOrder}
             onSort={onSort}
+            hasMore={hasMore}
+            onLoadMore={onLoadMore}
+            loadingMore={loadingMore}
         />
     );
 }

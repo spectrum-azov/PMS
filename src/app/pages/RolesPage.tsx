@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDictionaries } from '../context/DictionariesContext';
+import { useSettings } from '../context/SettingsContext';
 import { Role } from '../types/personnel';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { UserCog, Layers } from 'lucide-react';
@@ -14,10 +15,13 @@ import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { Button } from '../components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
 import { getRoles } from '../api/dictionariesApi';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 
 export default function RolesPage() {
   const { roles, addRole, updateRole, deleteRole, directions, addDirection, updateDirection, deleteDirection, reload: reloadAll } = useDictionaries();
+  const { settings } = useSettings();
   const { t } = useLanguage();
+  const isInfiniteScroll = settings.tableDisplayMode === 'infiniteScroll';
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
@@ -52,7 +56,26 @@ export default function RolesPage() {
     setCurrentPage(1);
   };
 
+  // Infinite scroll
+  const fetchForInfiniteScroll = useCallback(async (pg: number, ps: number) => {
+    const result = await getRoles({ page: pg, pageSize: ps, sortBy: sortField, sortOrder });
+    if (result.success) {
+      return { data: result.data, total: result.total ?? result.data.length };
+    }
+    return { data: [] as Role[], total: 0 };
+  }, [sortField, sortOrder]);
+
+  const infiniteScrollData = useInfiniteScroll<Role>({
+    fetchFn: fetchForInfiniteScroll,
+    pageSize,
+    deps: [fetchForInfiniteScroll],
+  });
+
   const totalPages = Math.ceil(totalCount / pageSize);
+
+  const displayData = isInfiniteScroll ? infiniteScrollData.items : paginatedRoles;
+  const displayTotalCount = isInfiniteScroll ? infiniteScrollData.totalCount : totalCount;
+  const isLoading = isInfiniteScroll ? (infiniteScrollData.loadingMore && infiniteScrollData.items.length === 0) : loadingRoles;
 
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
   const [isDirectionDialogOpen, setIsDirectionDialogOpen] = useState(false);
@@ -263,13 +286,13 @@ export default function RolesPage() {
           </div>
         </CardHeader>
         <CardContent>
-          {loadingRoles ? (
+          {isLoading ? (
             <div className="space-y-3 py-4">
               {[1, 2, 3, 4, 5].map(i => <Skeleton key={i} className="h-12 w-full" />)}
             </div>
           ) : (
             <RolesTable
-              paginatedRoles={paginatedRoles}
+              paginatedRoles={displayData}
               getDirectionName={getDirectionName}
               getLevelBadge={getLevelBadge}
               handleOpenRoleDialog={handleOpenRoleDialog}
@@ -277,10 +300,13 @@ export default function RolesPage() {
               sortField={sortField}
               sortOrder={sortOrder}
               onSort={handleSort}
+              hasMore={isInfiniteScroll ? infiniteScrollData.hasMore : undefined}
+              onLoadMore={isInfiniteScroll ? infiniteScrollData.loadMore : undefined}
+              loadingMore={isInfiniteScroll ? infiniteScrollData.loadingMore : undefined}
             />
           )}
 
-          {totalPages > 0 && (
+          {!isInfiniteScroll && totalPages > 0 && (
             <DataTablePagination
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}

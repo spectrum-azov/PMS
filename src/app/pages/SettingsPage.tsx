@@ -10,6 +10,14 @@ import { Separator } from '../components/ui/separator';
 import { Save, RefreshCw, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import { useLanguage } from '../context/LanguageContext';
+import { TableDisplayMode } from '../context/SettingsContext';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 
 export default function SettingsPage() {
   const { settings, updateSettings } = useSettings();
@@ -19,9 +27,17 @@ export default function SettingsPage() {
 
   const [orgName, setOrgName] = useState(settings.organizationName);
   const [orgSubtitle, setOrgSubtitle] = useState(settings.organizationSubtitle);
+  const [tableDisplayMode, setTableDisplayMode] = useState<TableDisplayMode>(settings.tableDisplayMode);
 
   const handleSaveOrganization = () => {
     updateSettings({ organizationName: orgName, organizationSubtitle: orgSubtitle });
+    toast.success(t('settings_saved'));
+  };
+
+  const handleTableDisplayModeChange = (val: string) => {
+    const mode = val as TableDisplayMode;
+    setTableDisplayMode(mode);
+    updateSettings({ tableDisplayMode: mode });
     toast.success(t('settings_saved'));
   };
 
@@ -73,6 +89,32 @@ export default function SettingsPage() {
             <Save className="w-4 h-4 mr-2" />
             {t('settings_save')}
           </Button>
+        </CardContent>
+      </Card>
+
+      <Separator />
+
+      {/* Table Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('settings_table_title')}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label htmlFor="tableDisplayMode">{t('settings_table_display_mode')}</Label>
+            <Select
+              value={tableDisplayMode}
+              onValueChange={handleTableDisplayModeChange}
+            >
+              <SelectTrigger id="tableDisplayMode" className="w-[240px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pagination">{t('settings_table_pagination')}</SelectItem>
+                <SelectItem value="infiniteScroll">{t('settings_table_infinite_scroll')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 

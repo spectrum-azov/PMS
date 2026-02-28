@@ -22,9 +22,12 @@ interface PersonnelTableProps {
     sortField?: string;
     sortOrder?: 'asc' | 'desc';
     onSort?: (field: string) => void;
+    hasMore?: boolean;
+    onLoadMore?: () => void;
+    loadingMore?: boolean;
 }
 
-export function PersonnelTable({ personnel, visibleColumns, sortField, sortOrder, onSort }: PersonnelTableProps) {
+export function PersonnelTable({ personnel, visibleColumns, sortField, sortOrder, onSort, hasMore, onLoadMore, loadingMore }: PersonnelTableProps) {
     const { t } = useLanguage();
     const navigate = useNavigate();
     const { getUnitName, getPositionName, getRoleName, getStatusBadge, getServiceTypeBadge } = usePersonnelFormatters();
@@ -160,6 +163,9 @@ export function PersonnelTable({ personnel, visibleColumns, sortField, sortOrder
             sortField={sortField}
             sortOrder={sortOrder}
             onSort={onSort}
+            hasMore={hasMore}
+            onLoadMore={onLoadMore}
+            loadingMore={loadingMore}
         />
     );
 }

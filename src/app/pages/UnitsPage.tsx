@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDictionaries } from '../context/DictionariesContext';
+import { useSettings } from '../context/SettingsContext';
 import { OrganizationalUnit } from '../types/personnel';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Building2 } from 'lucide-react';
@@ -11,10 +12,13 @@ import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { UnitTable } from '../components/units/UnitTable';
 import { UnitDialog } from '../components/units/UnitDialog';
 import { getUnits } from '../api/dictionariesApi';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 
 export default function UnitsPage() {
   const { units, addUnit, updateUnit, deleteUnit, reload: reloadAll } = useDictionaries();
+  const { settings } = useSettings();
   const { t } = useLanguage();
+  const isInfiniteScroll = settings.tableDisplayMode === 'infiniteScroll';
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
@@ -56,6 +60,21 @@ export default function UnitsPage() {
     }
     setCurrentPage(1);
   };
+
+  // Infinite scroll
+  const fetchForInfiniteScroll = useCallback(async (pg: number, ps: number) => {
+    const result = await getUnits({ page: pg, pageSize: ps, sortBy: sortField, sortOrder });
+    if (result.success) {
+      return { data: result.data, total: result.total ?? result.data.length };
+    }
+    return { data: [] as OrganizationalUnit[], total: 0 };
+  }, [sortField, sortOrder]);
+
+  const infiniteScrollData = useInfiniteScroll<OrganizationalUnit>({
+    fetchFn: fetchForInfiniteScroll,
+    pageSize,
+    deps: [fetchForInfiniteScroll],
+  });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUnit, setEditingUnit] = useState<OrganizationalUnit | null>(null);
@@ -156,13 +175,17 @@ export default function UnitsPage() {
 
   const totalPages = Math.ceil(totalCount / pageSize);
 
+  const displayData = isInfiniteScroll ? infiniteScrollData.items : paginatedUnits;
+  const displayTotalCount = isInfiniteScroll ? infiniteScrollData.totalCount : totalCount;
+  const isLoading = isInfiniteScroll ? (infiniteScrollData.loadingMore && infiniteScrollData.items.length === 0) : loading;
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-semibold text-foreground">{t('units_title')}</h2>
           <p className="text-muted-foreground mt-1">
-            {t('units_subtitle')} <span className="font-medium">{totalCount}</span>
+            {t('units_subtitle')} <span className="font-medium">{displayTotalCount}</span>
           </p>
         </div>
         <UnitDialog
@@ -187,13 +210,13 @@ export default function UnitsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          {loading ? (
+          {isLoading ? (
             <div className="space-y-3 py-4">
               {[1, 2, 3, 4, 5].map(i => <Skeleton key={i} className="h-12 w-full" />)}
             </div>
           ) : (
             <UnitTable
-              paginatedUnits={paginatedUnits}
+              paginatedUnits={displayData}
               getParentName={getParentName}
               getTypeBadge={getTypeBadge}
               handleOpenDialog={handleOpenDialog}
@@ -201,10 +224,13 @@ export default function UnitsPage() {
               sortField={sortField}
               sortOrder={sortOrder}
               onSort={handleSort}
+              hasMore={isInfiniteScroll ? infiniteScrollData.hasMore : undefined}
+              onLoadMore={isInfiniteScroll ? infiniteScrollData.loadMore : undefined}
+              loadingMore={isInfiniteScroll ? infiniteScrollData.loadingMore : undefined}
             />
           )}
 
-          {totalPages > 0 && (
+          {!isInfiniteScroll && totalPages > 0 && (
             <DataTablePagination
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}

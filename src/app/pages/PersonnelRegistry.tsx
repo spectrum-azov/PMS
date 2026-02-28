@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router';
 import { usePersonnel } from '../context/PersonnelContext';
+import { useSettings } from '../context/SettingsContext';
 import { PersonnelFilters as PersonnelFiltersType } from '../types/personnel';
 import { PersonnelFilters } from '../components/personnel/PersonnelFilters';
 import { PersonnelTable } from '../components/personnel/PersonnelTable';
@@ -9,7 +10,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
 import { UserPlus, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect, useTransition, useCallback } from 'react';
 import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { Settings2 } from 'lucide-react';
 import {
@@ -20,13 +21,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import * as api from '../api/personnelApi';
+import { Person } from '../types/personnel';
 
 const STORAGE_KEY = 'personnel-table-columns';
 
 export default function PersonnelRegistry() {
   const navigate = useNavigate();
   const { filteredPersonnel, filters, setFilters, totalCount, loading, error, reload } = usePersonnel();
+  const { settings } = useSettings();
   const { t } = useLanguage();
+  const isInfiniteScroll = settings.tableDisplayMode === 'infiniteScroll';
 
   const currentPage = filters.page || 1;
   const pageSize = filters.pageSize || 25;
@@ -69,6 +75,25 @@ export default function PersonnelRegistry() {
     });
   };
 
+  // Infinite scroll fetch function
+  const fetchForInfiniteScroll = useCallback(async (page: number, ps: number) => {
+    const result = await api.getPersonnel({
+      ...filters,
+      page,
+      pageSize: ps,
+    });
+    if (result.success) {
+      return { data: result.data, total: result.total ?? result.data.length };
+    }
+    return { data: [] as Person[], total: 0 };
+  }, [filters.search, filters.unitId, filters.positionId, filters.status, filters.serviceType, filters.roleId, filters.sortBy, filters.sortOrder]);
+
+  const infiniteScroll = useInfiniteScroll<Person>({
+    fetchFn: fetchForInfiniteScroll,
+    pageSize,
+    deps: [fetchForInfiniteScroll],
+  });
+
   const [visibleColumns, setVisibleColumns] = useState<ColumnId[]>(() => {
     if (typeof window === 'undefined') return DEFAULT_COLUMNS;
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -103,16 +128,21 @@ export default function PersonnelRegistry() {
 
   const totalPages = Math.ceil(totalCount / pageSize);
 
+  // Choose data source based on display mode
+  const displayData = isInfiniteScroll ? infiniteScroll.items : filteredPersonnel;
+  const displayTotalCount = isInfiniteScroll ? infiniteScroll.totalCount : totalCount;
+  const isLoading = isInfiniteScroll ? (infiniteScroll.loadingMore && infiniteScroll.items.length === 0) : loading;
+
   return (
     <div className="flex flex-col p-6 gap-6">
       <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-semibold text-foreground">{t('registry_title')}</h2>
           <div className="text-muted-foreground mt-1">
-            {loading ? (
+            {isLoading ? (
               <Skeleton className="h-4 w-32 inline-block" />
             ) : (
-              <>{t('registry_found')} <span className="font-medium">{totalCount}</span> {t('registry_records')}</>
+              <>{t('registry_found')} <span className="font-medium">{displayTotalCount}</span> {t('registry_records')}</>
             )}
           </div>
         </div>
@@ -133,7 +163,7 @@ export default function PersonnelRegistry() {
         </CardContent>
       </Card>
 
-      {loading ? (
+      {isLoading ? (
         <Card>
           <CardContent className="py-8 space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
@@ -141,7 +171,7 @@ export default function PersonnelRegistry() {
             ))}
           </CardContent>
         </Card>
-      ) : error ? (
+      ) : error && !isInfiniteScroll ? (
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground mb-4">{error}</p>
@@ -155,49 +185,54 @@ export default function PersonnelRegistry() {
         <div className="flex flex-col gap-4" style={{ opacity: isPending ? 0.7 : 1, transition: 'opacity 0.2s' }}>
           <div className="w-full relative rounded-md border">
             <PersonnelTable
-              personnel={filteredPersonnel}
+              personnel={displayData}
               visibleColumns={visibleColumns}
               sortField={filters.sortBy}
               sortOrder={filters.sortOrder}
               onSort={handleSort}
+              hasMore={isInfiniteScroll ? infiniteScroll.hasMore : undefined}
+              onLoadMore={isInfiniteScroll ? infiniteScroll.loadMore : undefined}
+              loadingMore={isInfiniteScroll ? infiniteScroll.loadingMore : undefined}
             />
           </div>
 
-          <div className="shrink-0">
-            {totalPages > 0 && (
-              <DataTablePagination
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                pageSize={pageSize}
-                setPageSize={setPageSize}
-                totalPages={totalPages}
-                actions={
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="gap-2 h-9">
-                        <Settings2 className="w-4 h-4" />
-                        <span className="hidden sm:inline">{t('table_columns')}</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                      <DropdownMenuLabel>{t('table_columns_settings')}</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {columnOptions.map((column) => (
-                        <DropdownMenuCheckboxItem
-                          key={column.id}
-                          checked={isVisible(column.id)}
-                          onCheckedChange={() => toggleColumn(column.id)}
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          {column.label}
-                        </DropdownMenuCheckboxItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                }
-              />
-            )}
-          </div>
+          {!isInfiniteScroll && (
+            <div className="shrink-0">
+              {totalPages > 0 && (
+                <DataTablePagination
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  pageSize={pageSize}
+                  setPageSize={setPageSize}
+                  totalPages={totalPages}
+                  actions={
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="gap-2 h-9">
+                          <Settings2 className="w-4 h-4" />
+                          <span className="hidden sm:inline">{t('table_columns')}</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuLabel>{t('table_columns_settings')}</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {columnOptions.map((column) => (
+                          <DropdownMenuCheckboxItem
+                            key={column.id}
+                            checked={isVisible(column.id)}
+                            onCheckedChange={() => toggleColumn(column.id)}
+                            onSelect={(e) => e.preventDefault()}
+                          >
+                            {column.label}
+                          </DropdownMenuCheckboxItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  }
+                />
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

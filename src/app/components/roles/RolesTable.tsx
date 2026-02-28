@@ -16,6 +16,9 @@ interface RolesTableProps {
     sortField?: string;
     sortOrder?: 'asc' | 'desc';
     onSort?: (field: string) => void;
+    hasMore?: boolean;
+    onLoadMore?: () => void;
+    loadingMore?: boolean;
 }
 
 export function RolesTable({
@@ -27,6 +30,9 @@ export function RolesTable({
     sortField,
     sortOrder,
     onSort,
+    hasMore,
+    onLoadMore,
+    loadingMore,
 }: RolesTableProps) {
     const { t } = useLanguage();
 
@@ -107,6 +113,9 @@ export function RolesTable({
             sortField={sortField}
             sortOrder={sortOrder}
             onSort={onSort}
+            hasMore={hasMore}
+            onLoadMore={onLoadMore}
+            loadingMore={loadingMore}
         />
     );
 }

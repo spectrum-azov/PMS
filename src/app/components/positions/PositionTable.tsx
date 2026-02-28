@@ -14,6 +14,9 @@ interface PositionTableProps {
     sortField?: string;
     sortOrder?: 'asc' | 'desc';
     onSort?: (field: string) => void;
+    hasMore?: boolean;
+    onLoadMore?: () => void;
+    loadingMore?: boolean;
 }
 
 export function PositionTable({
@@ -24,6 +27,9 @@ export function PositionTable({
     sortField,
     sortOrder,
     onSort,
+    hasMore,
+    onLoadMore,
+    loadingMore,
 }: PositionTableProps) {
     const { t } = useLanguage();
 
@@ -108,6 +114,9 @@ export function PositionTable({
             sortField={sortField}
             sortOrder={sortOrder}
             onSort={onSort}
+            hasMore={hasMore}
+            onLoadMore={onLoadMore}
+            loadingMore={loadingMore}
         />
     );
 }

@@ -1,8 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+export type TableDisplayMode = 'pagination' | 'infiniteScroll';
+
 interface Settings {
   organizationName: string;
   organizationSubtitle: string;
+  tableDisplayMode: TableDisplayMode;
 }
 
 interface SettingsContextType {
@@ -13,6 +16,7 @@ interface SettingsContextType {
 const defaultSettings: Settings = {
   organizationName: 'Управління особовим складом',
   organizationSubtitle: "Вузол зв'язку 1-го корпусу",
+  tableDisplayMode: 'pagination',
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);

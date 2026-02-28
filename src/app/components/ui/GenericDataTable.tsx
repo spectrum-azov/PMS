@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { Button } from './button';
-import { Edit, Trash2, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
+import { Edit, Trash2, ChevronUp, ChevronDown, ChevronsUpDown, Loader2 } from 'lucide-react';
 import {
     Table,
     TableBody,
@@ -33,6 +33,9 @@ interface GenericDataTableProps<T> {
     sortField?: string;
     sortOrder?: 'asc' | 'desc';
     onSort?: (field: string) => void;
+    hasMore?: boolean;
+    onLoadMore?: () => void;
+    loadingMore?: boolean;
 }
 
 export function GenericDataTable<T>({
@@ -48,8 +51,35 @@ export function GenericDataTable<T>({
     sortField,
     sortOrder,
     onSort,
+    hasMore,
+    onLoadMore,
+    loadingMore,
 }: GenericDataTableProps<T>) {
     const { t } = useLanguage();
+    const sentinelRef = useRef<HTMLDivElement>(null);
+
+    // Stable callback ref for IntersectionObserver
+    const onLoadMoreRef = useRef(onLoadMore);
+    onLoadMoreRef.current = onLoadMore;
+    const hasMoreRef = useRef(hasMore);
+    hasMoreRef.current = hasMore;
+
+    useEffect(() => {
+        const sentinel = sentinelRef.current;
+        if (!sentinel || !onLoadMoreRef.current) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0]?.isIntersecting && hasMoreRef.current && onLoadMoreRef.current) {
+                    onLoadMoreRef.current();
+                }
+            },
+            { rootMargin: '200px' }
+        );
+
+        observer.observe(sentinel);
+        return () => observer.disconnect();
+    }, [data.length]);
 
     const renderSortIcon = (column: Column<T>) => {
         if (!column.sortable || !onSort) return null;
@@ -189,6 +219,18 @@ export function GenericDataTable<T>({
                     </TableBody>
                 </Table>
             </div>
+
+            {/* Infinite scroll sentinel & loader */}
+            {onLoadMore && (
+                <div ref={sentinelRef} className="flex justify-center py-4">
+                    {loadingMore && (
+                        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            {t('common_loading_more')}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

@@ -166,7 +166,7 @@ export function Layout() {
               </div>
             </div>
 
-            <Separator className="my-4" />
+            {/* <Separator className="my-4" />
 
             <div className="px-4 py-3">
               <Link to="/personnel/import" onClick={closeSidebar}>
@@ -178,7 +178,7 @@ export function Layout() {
                   {t('import_title')}
                 </Button>
               </Link>
-            </div>
+            </div> */}
 
           </div>
         </aside>
