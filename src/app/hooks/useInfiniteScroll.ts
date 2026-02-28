@@ -4,6 +4,7 @@ interface UseInfiniteScrollOptions<T> {
     fetchFn: (page: number, pageSize: number) => Promise<{ data: T[]; total: number }>;
     pageSize: number;
     deps: unknown[];
+    enabled?: boolean;
 }
 
 interface UseInfiniteScrollResult<T> {
@@ -14,10 +15,13 @@ interface UseInfiniteScrollResult<T> {
     totalCount: number;
 }
 
+const EMPTY_LOAD_MORE = () => { };
+
 export function useInfiniteScroll<T extends { id?: string }>({
     fetchFn,
     pageSize,
     deps,
+    enabled = true,
 }: UseInfiniteScrollOptions<T>): UseInfiniteScrollResult<T> {
     const [items, setItems] = useState<T[]>([]);
     const [page, setPage] = useState(1);
@@ -30,6 +34,7 @@ export function useInfiniteScroll<T extends { id?: string }>({
 
     // Reset when deps change (filters, sort, etc.) — skip on first mount
     useEffect(() => {
+        if (!enabled) return;
         if (isFirstMount.current) {
             isFirstMount.current = false;
             return;
@@ -40,10 +45,11 @@ export function useInfiniteScroll<T extends { id?: string }>({
         setInitialLoaded(false);
         setVersion(v => v + 1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, deps);
+    }, [...deps, enabled]);
 
     // Fetch data when page or version changes — single trigger per change
     useEffect(() => {
+        if (!enabled) return;
         if (isFetching.current) return;
 
         const doFetch = async () => {
@@ -51,7 +57,6 @@ export function useInfiniteScroll<T extends { id?: string }>({
             setLoadingMore(true);
             try {
                 const result = await fetchFn(page, pageSize);
-                // Guard against stale fetches after a reset
                 setItems(prev => {
                     if (page === 1) return result.data;
                     return [...prev, ...result.data];
@@ -66,7 +71,7 @@ export function useInfiniteScroll<T extends { id?: string }>({
 
         doFetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, version]);
+    }, [page, version, enabled]);
 
     const hasMore = initialLoaded && items.length < totalCount;
 
@@ -76,6 +81,10 @@ export function useInfiniteScroll<T extends { id?: string }>({
         }
     }, [hasMore]);
 
+    if (!enabled) {
+        return { items: [], hasMore: false, loadMore: EMPTY_LOAD_MORE, loadingMore: false, totalCount: 0 };
+    }
+
     return {
         items,
         hasMore,
@@ -84,3 +93,4 @@ export function useInfiniteScroll<T extends { id?: string }>({
         totalCount,
     };
 }
+

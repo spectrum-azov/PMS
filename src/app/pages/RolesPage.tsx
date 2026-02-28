@@ -69,6 +69,7 @@ export default function RolesPage() {
     fetchFn: fetchForInfiniteScroll,
     pageSize,
     deps: [fetchForInfiniteScroll],
+    enabled: isInfiniteScroll,
   });
 
   const totalPages = Math.ceil(totalCount / pageSize);

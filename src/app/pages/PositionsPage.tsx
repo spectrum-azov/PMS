@@ -73,6 +73,7 @@ export default function PositionsPage() {
     fetchFn: fetchForInfiniteScroll,
     pageSize,
     deps: [fetchForInfiniteScroll],
+    enabled: isInfiniteScroll,
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);

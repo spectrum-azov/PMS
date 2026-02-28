@@ -74,6 +74,7 @@ export default function UnitsPage() {
     fetchFn: fetchForInfiniteScroll,
     pageSize,
     deps: [fetchForInfiniteScroll],
+    enabled: isInfiniteScroll,
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);

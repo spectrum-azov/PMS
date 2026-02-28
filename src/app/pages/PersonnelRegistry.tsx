@@ -92,6 +92,7 @@ export default function PersonnelRegistry() {
     fetchFn: fetchForInfiniteScroll,
     pageSize,
     deps: [fetchForInfiniteScroll],
+    enabled: isInfiniteScroll,
   });
 
   const [visibleColumns, setVisibleColumns] = useState<ColumnId[]>(() => {
