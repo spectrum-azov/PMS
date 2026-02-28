@@ -24,7 +24,7 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center justify-between mb-1.5">
                         <Label htmlFor="serviceType">{t('form_service_type')}</Label>
                         {errors.serviceType && (
                             <span className="text-xs text-destructive font-medium">{errors.serviceType.message}</span>
@@ -58,7 +58,7 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                 </div>
 
                 <div>
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center justify-between mb-1.5">
                         <Label htmlFor="unitId">{t('form_unit')}</Label>
                         {errors.unitId && (
                             <span className="text-xs text-destructive font-medium">{errors.unitId.message}</span>
@@ -86,7 +86,7 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                 </div>
 
                 <div>
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center justify-between mb-1.5">
                         <Label htmlFor="positionId">{t('form_position')}</Label>
                         {errors.positionId && (
                             <span className="text-xs text-destructive font-medium">{errors.positionId.message}</span>

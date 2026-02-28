@@ -135,10 +135,14 @@
 
   label,
   [data-slot="label"] {
-    text-transform: none;
-    letter-spacing: normal;
-    color: var(--muted-foreground);
-    font-family: var(--font-sans);
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    color: var(--muted-foreground) !important;
+    font-family: var(--font-sans) !important;
+    font-weight: 400 !important;
+    font-size: 0.875rem !important;
+    /* text-sm */
+    line-height: 1.25rem !important;
   }
 
   input,
@@ -155,6 +159,10 @@
     text-transform: none !important;
     letter-spacing: normal !important;
     font-family: var(--font-sans) !important;
+    font-weight: 500 !important;
+    /* Match view card medium weight */
+    font-size: 0.875rem !important;
+    /* text-sm */
   }
 }
 
