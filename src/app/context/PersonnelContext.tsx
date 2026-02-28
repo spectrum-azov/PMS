@@ -46,18 +46,11 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
-  // Guard to prevent double execution in StrictMode
-  const isMounted = useRef(false);
-
   useEffect(() => {
-    // On first mount, we load immediately
-    if (!isMounted.current) {
-      isMounted.current = true;
-      loadPersonnel();
-      return;
-    }
-
-    // On filter updates, we debounce
+    // We fetch immediately on mount (since filters is initially {}/default)
+    // and then debounce subsequent filter changes.
+    // If it's the very first render, we could potentially skip the debounce, 
+    // but a 300ms wait on first load is usually acceptable and cleaner.
     const timer = setTimeout(() => {
       loadPersonnel();
     }, DEBOUNCE_MS);

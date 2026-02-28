@@ -1,256 +1,211 @@
 import { OrganizationalUnit, Position, Role, FunctionalDirection, RankItem } from '../types/personnel';
 import { ApiResult } from './types';
-import { db, maybeError } from './mockDb';
+
+const API_BASE = '/api';
+
+/** Utility to handle fetch responses */
+async function handleResponse<T>(response: Response): Promise<ApiResult<T>> {
+    if (!response.ok) {
+        try {
+            const err = await response.json();
+            return { success: false, message: err.message || 'Помилка сервера' };
+        } catch {
+            return { success: false, message: `Помилка сервера: ${response.status}` };
+        }
+    }
+    return await response.json();
+}
 
 // ═══════════════════════════════════════════
 // Organizational Units
 // ═══════════════════════════════════════════
 
-const UNITS_KEY = 'units-data';
-
 export async function getUnits(): Promise<ApiResult<OrganizationalUnit[]>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-    return { success: true, data: [...db.units] };
+    const response = await fetch(`${API_BASE}/units`);
+    return handleResponse<OrganizationalUnit[]>(response);
 }
 
 export async function createUnit(
     unit: Omit<OrganizationalUnit, 'id'>
 ): Promise<ApiResult<OrganizationalUnit>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const newUnit: OrganizationalUnit = { ...unit, id: db.nextId() };
-    db.units.push(newUnit);
-    db.persist(UNITS_KEY, db.units);
-    return { success: true, data: { ...newUnit } };
+    const response = await fetch(`${API_BASE}/units`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(unit),
+    });
+    return handleResponse<OrganizationalUnit>(response);
 }
 
 export async function updateUnit(
     id: string,
     updates: Partial<OrganizationalUnit>
 ): Promise<ApiResult<OrganizationalUnit>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const idx = db.units.findIndex((u) => u.id === id);
-    if (idx === -1) return { success: false, message: 'Підрозділ не знайдено', code: 404 };
-
-    db.units[idx] = { ...db.units[idx], ...updates, id } as OrganizationalUnit;
-    db.persist(UNITS_KEY, db.units);
-    return { success: true, data: { ...db.units[idx] } as OrganizationalUnit };
+    const response = await fetch(`${API_BASE}/units/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+    });
+    return handleResponse<OrganizationalUnit>(response);
 }
 
 export async function deleteUnit(id: string): Promise<ApiResult<{ id: string }>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const idx = db.units.findIndex((u) => u.id === id);
-    if (idx === -1) return { success: false, message: 'Підрозділ не знайдено', code: 404 };
-
-    db.units.splice(idx, 1);
-    db.persist(UNITS_KEY, db.units);
-    return { success: true, data: { id } };
+    const response = await fetch(`${API_BASE}/units/${id}`, {
+        method: 'DELETE',
+    });
+    return handleResponse<{ id: string }>(response);
 }
 
 // ═══════════════════════════════════════════
 // Positions
 // ═══════════════════════════════════════════
 
-const POSITIONS_KEY = 'positions-data';
-
 export async function getPositions(): Promise<ApiResult<Position[]>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-    return { success: true, data: [...db.positions] };
+    const response = await fetch(`${API_BASE}/positions`);
+    return handleResponse<Position[]>(response);
 }
 
 export async function createPosition(
     position: Omit<Position, 'id'>
 ): Promise<ApiResult<Position>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const newPos: Position = { ...position, id: db.nextId() };
-    db.positions.push(newPos);
-    db.persist(POSITIONS_KEY, db.positions);
-    return { success: true, data: { ...newPos } };
+    const response = await fetch(`${API_BASE}/positions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(position),
+    });
+    return handleResponse<Position>(response);
 }
 
 export async function updatePosition(
     id: string,
     updates: Partial<Position>
 ): Promise<ApiResult<Position>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const idx = db.positions.findIndex((p) => p.id === id);
-    if (idx === -1) return { success: false, message: 'Посаду не знайдено', code: 404 };
-
-    db.positions[idx] = { ...db.positions[idx], ...updates, id } as Position;
-    db.persist(POSITIONS_KEY, db.positions);
-    return { success: true, data: { ...db.positions[idx] } as Position };
+    const response = await fetch(`${API_BASE}/positions/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+    });
+    return handleResponse<Position>(response);
 }
 
 export async function deletePosition(id: string): Promise<ApiResult<{ id: string }>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const idx = db.positions.findIndex((p) => p.id === id);
-    if (idx === -1) return { success: false, message: 'Посаду не знайдено', code: 404 };
-
-    db.positions.splice(idx, 1);
-    db.persist(POSITIONS_KEY, db.positions);
-    return { success: true, data: { id } };
+    const response = await fetch(`${API_BASE}/positions/${id}`, {
+        method: 'DELETE',
+    });
+    return handleResponse<{ id: string }>(response);
 }
 
 // ═══════════════════════════════════════════
 // Roles
 // ═══════════════════════════════════════════
 
-const ROLES_KEY = 'roles-data';
-
 export async function getRoles(): Promise<ApiResult<Role[]>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-    return { success: true, data: [...db.roles] };
+    const response = await fetch(`${API_BASE}/roles`);
+    return handleResponse<Role[]>(response);
 }
 
 export async function createRole(role: Omit<Role, 'id'>): Promise<ApiResult<Role>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const newRole: Role = { ...role, id: db.nextId() };
-    db.roles.push(newRole);
-    db.persist(ROLES_KEY, db.roles);
-    return { success: true, data: { ...newRole } };
+    const response = await fetch(`${API_BASE}/roles`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(role),
+    });
+    return handleResponse<Role>(response);
 }
 
 export async function updateRole(
     id: string,
     updates: Partial<Role>
 ): Promise<ApiResult<Role>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const idx = db.roles.findIndex((r) => r.id === id);
-    if (idx === -1) return { success: false, message: 'Роль не знайдено', code: 404 };
-
-    db.roles[idx] = { ...db.roles[idx], ...updates, id } as Role;
-    db.persist(ROLES_KEY, db.roles);
-    return { success: true, data: { ...db.roles[idx] } as Role };
+    const response = await fetch(`${API_BASE}/roles/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+    });
+    return handleResponse<Role>(response);
 }
 
 export async function deleteRole(id: string): Promise<ApiResult<{ id: string }>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const idx = db.roles.findIndex((r) => r.id === id);
-    if (idx === -1) return { success: false, message: 'Роль не знайдено', code: 404 };
-
-    db.roles.splice(idx, 1);
-    db.persist(ROLES_KEY, db.roles);
-    return { success: true, data: { id } };
+    const response = await fetch(`${API_BASE}/roles/${id}`, {
+        method: 'DELETE',
+    });
+    return handleResponse<{ id: string }>(response);
 }
 
 // ═══════════════════════════════════════════
 // Functional Directions
 // ═══════════════════════════════════════════
 
-const DIRECTIONS_KEY = 'directions-data';
-
 export async function getDirections(): Promise<ApiResult<FunctionalDirection[]>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-    return { success: true, data: [...db.directions] };
+    const response = await fetch(`${API_BASE}/directions`);
+    return handleResponse<FunctionalDirection[]>(response);
 }
 
 export async function createDirection(
     direction: Omit<FunctionalDirection, 'id'>
 ): Promise<ApiResult<FunctionalDirection>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const newDir: FunctionalDirection = { ...direction, id: db.nextId() };
-    db.directions.push(newDir);
-    db.persist(DIRECTIONS_KEY, db.directions);
-    return { success: true, data: { ...newDir } };
+    const response = await fetch(`${API_BASE}/directions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(direction),
+    });
+    return handleResponse<FunctionalDirection>(response);
 }
 
 export async function updateDirection(
     id: string,
     updates: Partial<FunctionalDirection>
 ): Promise<ApiResult<FunctionalDirection>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const idx = db.directions.findIndex((d) => d.id === id);
-    if (idx === -1) return { success: false, message: 'Напрямок не знайдено', code: 404 };
-
-    db.directions[idx] = { ...db.directions[idx], ...updates, id } as FunctionalDirection;
-    db.persist(DIRECTIONS_KEY, db.directions);
-    return { success: true, data: { ...db.directions[idx] } as FunctionalDirection };
+    const response = await fetch(`${API_BASE}/directions/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+    });
+    return handleResponse<FunctionalDirection>(response);
 }
 
 export async function deleteDirection(id: string): Promise<ApiResult<{ id: string }>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const idx = db.directions.findIndex((d) => d.id === id);
-    if (idx === -1) return { success: false, message: 'Напрямок не знайдено', code: 404 };
-
-    db.directions.splice(idx, 1);
-    db.persist(DIRECTIONS_KEY, db.directions);
-    return { success: true, data: { id } };
+    const response = await fetch(`${API_BASE}/directions/${id}`, {
+        method: 'DELETE',
+    });
+    return handleResponse<{ id: string }>(response);
 }
 
 // ═══════════════════════════════════════════
 // Ranks
 // ═══════════════════════════════════════════
 
-const RANKS_KEY = 'ranks-data';
-
 export async function getRanks(): Promise<ApiResult<RankItem[]>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-    return { success: true, data: [...db.ranks] };
+    const response = await fetch(`${API_BASE}/ranks`);
+    return handleResponse<RankItem[]>(response);
 }
 
 export async function createRank(
     rank: Omit<RankItem, 'id'>
 ): Promise<ApiResult<RankItem>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const newRank: RankItem = { ...rank, id: db.nextId() };
-    db.ranks.push(newRank);
-    db.persist(RANKS_KEY, db.ranks);
-    return { success: true, data: { ...newRank } };
+    const response = await fetch(`${API_BASE}/ranks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rank),
+    });
+    return handleResponse<RankItem>(response);
 }
 
 export async function updateRank(
     id: string,
     updates: Partial<RankItem>
 ): Promise<ApiResult<RankItem>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const idx = db.ranks.findIndex((r) => r.id === id);
-    if (idx === -1) return { success: false, message: 'Звання не знайдено', code: 404 };
-
-    db.ranks[idx] = { ...db.ranks[idx], ...updates, id } as RankItem;
-    db.persist(RANKS_KEY, db.ranks);
-    return { success: true, data: { ...db.ranks[idx] } as RankItem };
+    const response = await fetch(`${API_BASE}/ranks/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+    });
+    return handleResponse<RankItem>(response);
 }
 
 export async function deleteRank(id: string): Promise<ApiResult<{ id: string }>> {
-    const err = maybeError();
-    if (err) return { success: false, message: err };
-
-    const idx = db.ranks.findIndex((r) => r.id === id);
-    if (idx === -1) return { success: false, message: 'Звання не знайдено', code: 404 };
-
-    db.ranks.splice(idx, 1);
-    db.persist(RANKS_KEY, db.ranks);
-    return { success: true, data: { id } };
+    const response = await fetch(`${API_BASE}/ranks/${id}`, {
+        method: 'DELETE',
+    });
+    return handleResponse<{ id: string }>(response);
 }
+
