@@ -56,9 +56,6 @@ export function DashboardCharts({ data }: DashboardChartsProps) {
                                         <span className="text-sm font-medium text-foreground">
                                             {stat.name}
                                         </span>
-                                        <span className="px-2 py-0.5 text-xs bg-muted text-muted-foreground rounded">
-                                            {stat.category}
-                                        </span>
                                     </div>
                                     <span className="text-sm font-bold text-foreground">{stat.count}</span>
                                 </div>
