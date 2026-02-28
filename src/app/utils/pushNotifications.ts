@@ -15,6 +15,7 @@ export const testPushNotification = async (t: (key: any) => string) => {
                     await registration.showNotification(t('push_test_title'), {
                         body: t('push_test_body'),
                         icon: logo,
+                        badge: logo,
                         tag: 'test-notification'
                     });
                     return;
@@ -27,7 +28,8 @@ export const testPushNotification = async (t: (key: any) => string) => {
         // Fallback to standard Notification API
         new Notification(t('push_test_title'), {
             body: t('push_test_body'),
-            icon: logo
+            icon: logo,
+            badge: logo
         });
     };
 
