@@ -25,7 +25,7 @@ export function PersonFormAdditionalTab({ register, control, errors }: PersonFor
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <Label htmlFor="bloodType" className="mb-2">{t('form_blood_type')}</Label>
+                            <Label htmlFor="bloodType" className="mb-0.5">{t('form_blood_type')}</Label>
                             <Input
                                 id="bloodType"
                                 {...register('bloodType')}
@@ -34,7 +34,7 @@ export function PersonFormAdditionalTab({ register, control, errors }: PersonFor
                         </div>
 
                         <div>
-                            <Label htmlFor="recruitedBy" className="mb-2">{t('form_recruited_by')}</Label>
+                            <Label htmlFor="recruitedBy" className="mb-0.5">{t('form_recruited_by')}</Label>
                             <Input
                                 id="recruitedBy"
                                 {...register('recruitedBy')}

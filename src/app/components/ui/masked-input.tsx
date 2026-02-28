@@ -19,7 +19,7 @@ const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
         return (
             <div className="w-full text-left">
                 {label && (
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between mb-1.5">
                         <Label htmlFor={id} className={cn(error && "text-destructive")}>{label}</Label>
                         {error && <span className="text-xs text-destructive font-medium">{error}</span>}
                     </div>
