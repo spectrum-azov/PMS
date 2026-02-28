@@ -11,7 +11,7 @@ import { DashboardCharts } from '../components/dashboard/DashboardCharts';
 import { DashboardQuickActions } from '../components/dashboard/DashboardQuickActions';
 import { DashboardLoading } from '../components/dashboard/DashboardLoading';
 
-export function Dashboard() {
+export default function Dashboard() {
   const { t } = useLanguage();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);

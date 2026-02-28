@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router';
-import { Users, Settings, Building2, Briefcase, UserCog, Menu, X, Languages, Upload } from 'lucide-react';
+import { Users, Settings, Building2, Briefcase, UserCog, Menu, X, Languages, Upload, LayoutDashboard } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Separator } from '../components/ui/separator';
 import { useSettings } from '../context/SettingsContext';
@@ -19,6 +19,7 @@ export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigation = [
+    { name: t('nav_overview'), path: '/', icon: LayoutDashboard },
     { name: t('nav_registry'), path: '/personnel', icon: Users },
   ];
 
@@ -26,9 +27,7 @@ export function Layout() {
     { name: t('nav_units'), path: '/units', icon: Building2 },
     { name: t('nav_positions'), path: '/positions', icon: Briefcase },
     { name: t('nav_roles'), path: '/roles', icon: UserCog },
-    { name: t('import_title'), path: '/personnel/import', icon: Upload },
   ];
-  8
   const closeSidebar = () => setSidebarOpen(false);
 
   const toggleLanguage = () => {
@@ -165,6 +164,20 @@ export function Layout() {
                   );
                 })}
               </div>
+            </div>
+
+            <Separator className="my-4" />
+
+            <div className="px-4 py-3">
+              <Link to="/personnel/import" onClick={closeSidebar}>
+                <Button
+                  variant={location.pathname === '/personnel/import' ? 'secondary' : 'ghost'}
+                  className="w-full justify-start"
+                >
+                  <Upload className="w-4 h-4 mr-3" />
+                  {t('import_title')}
+                </Button>
+              </Link>
             </div>
 
           </div>

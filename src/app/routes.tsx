@@ -1,5 +1,5 @@
-import { createHashRouter, Navigate, useRouteError } from 'react-router';
-import { Suspense } from 'react';
+import { createHashRouter, useRouteError } from 'react-router';
+
 import { Layout } from './pages/Layout';
 
 // ---------------------------------------------------------------------------
@@ -116,7 +116,8 @@ export const router = createHashRouter([
     children: [
       {
         index: true,
-        Component: () => <Navigate to="/personnel" replace />,
+        lazy: lazyRoute(() => import('./pages/Dashboard'), 'Dashboard'),
+        HydrateFallback: PageSpinner,
       },
       {
         path: 'personnel',
