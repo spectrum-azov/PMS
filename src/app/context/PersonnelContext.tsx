@@ -61,6 +61,8 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   // Debounce all filter changes (including initial mount).
   // StrictMode's cleanup cancels the first timer, so only one request fires.
   // Skip when in infinite scroll mode — PersonnelRegistry's useInfiniteScroll handles fetching.
+  // Note: isInfiniteScroll is intentionally NOT in deps — we don't want toggling
+  // the setting to trigger a fetch; only actual filter changes should.
   useEffect(() => {
     if (isInfiniteScroll) return;
 
@@ -70,7 +72,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, isInfiniteScroll]);
+  }, [filters]);
 
   const addPerson = async (person: Person): Promise<boolean> => {
     const { id: _id, createdAt: _c, updatedAt: _u, ...personData } = person;

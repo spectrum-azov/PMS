@@ -10,7 +10,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
 import { UserPlus, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { useState, useEffect, useTransition, useCallback } from 'react';
+import { useState, useEffect, useTransition, useCallback, useRef } from 'react';
 import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { Settings2 } from 'lucide-react';
 import {
@@ -33,6 +33,19 @@ export default function PersonnelRegistry() {
   const { settings } = useSettings();
   const { t } = useLanguage();
   const isInfiniteScroll = settings.tableDisplayMode === 'infiniteScroll';
+
+  // When mounting in pagination mode and context has no data, trigger a fetch.
+  // We use a ref to prevent StrictMode double-firing, and we update filters
+  // to leverage the context's debounce rather than calling reload() directly,
+  // which guarantees exactly 1 API call.
+  const isMountFiredInfo = useRef(false);
+  useEffect(() => {
+    if (!isMountFiredInfo.current && !isInfiniteScroll && filteredPersonnel.length === 0) {
+      isMountFiredInfo.current = true;
+      setFilters(prev => ({ ...prev }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInfiniteScroll]);
 
   const currentPage = filters.page || 1;
   const pageSize = filters.pageSize || 25;
