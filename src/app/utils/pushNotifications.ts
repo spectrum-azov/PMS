@@ -7,7 +7,7 @@ export const testPushNotification = async (t: (key: any) => string) => {
     // Use static paths from public/ so the Service Worker can resolve them
     const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
     const iconPath = `${basePath}/icons/icon-192.png`;
-    const badgePath = `${basePath}/icons/badge-72.png`;
+    const badgePath = `${basePath}/icons/badge-96.png`;
 
     const sendNotification = async () => {
         // Try to send via service worker first for mobile/PWA
