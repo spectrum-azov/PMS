@@ -31,7 +31,7 @@ export function useImportPersonnel() {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const { addPerson } = usePersonnel();
-    const { units, positions, ranks } = useDictionaries();
+    const { positions, ranks } = useDictionaries();
 
     const [data, setData] = useState<ImportRow[]>([]);
     const [isImporting, setIsImporting] = useState(false);
@@ -118,7 +118,7 @@ export function useImportPersonnel() {
             header: true,
             skipEmptyLines: true,
             complete: (results) => {
-                const parsedRows = results.data.map((row: any, index) => {
+                const parsedRows = (results.data as Record<string, string>[]).map((row, index) => {
                     const getVal = (keys: string[]) => {
                         for (const key of keys) {
                             if (row[key] !== undefined && row[key] !== null && row[key] !== '') {
@@ -227,10 +227,10 @@ export function useImportPersonnel() {
                     return parsedRow;
                 });
 
-                setData(checkDuplicates(parsedRows));
+                setData(checkDuplicates(parsedRows as ImportRow[]));
                 setDbChecked(false); // Reset DB check on new file upload
             },
-            error: (error: any) => {
+            error: (error: Error) => {
                 toast.error(`${t('import_err_parse')} ${error.message}`);
             }
         });
@@ -239,7 +239,7 @@ export function useImportPersonnel() {
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
-    const updateRowField = (id: string, field: keyof Person, value: any) => {
+    const updateRowField = (id: string, field: keyof Person, value: string) => {
         setData(prev => {
             const temp = prev.map(row => {
                 if (row._id === id) {

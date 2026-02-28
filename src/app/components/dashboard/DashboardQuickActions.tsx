@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Users, Award, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router';

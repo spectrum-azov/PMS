@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Role } from '../../types/personnel';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -19,7 +19,6 @@ interface RoleDialogProps {
     setIsOpen: (open: boolean) => void;
     roleFormData: Partial<Role>;
     setRoleFormData: (data: Partial<Role>) => void;
-    handleOpenDialog: () => void;
     directions: { id: string, name: string }[];
 }
 
@@ -30,7 +29,6 @@ export function RoleDialog({
     setIsOpen,
     roleFormData,
     setRoleFormData,
-    handleOpenDialog,
     directions
 }: RoleDialogProps) {
     const { t } = useLanguage();

@@ -8,7 +8,7 @@ import { Person } from '../../types/personnel';
 interface ImportPersonnelTableRowProps {
     row: ImportRow;
     toggleRowSelection: (id: string) => void;
-    updateRowField: (id: string, field: keyof Person, value: any) => void;
+    updateRowField: (id: string, field: keyof Person, value: string) => void;
 }
 
 export function ImportPersonnelTableRow({ row, toggleRowSelection, updateRowField }: ImportPersonnelTableRowProps) {
@@ -68,7 +68,7 @@ export function ImportPersonnelTableRow({ row, toggleRowSelection, updateRowFiel
                     className={`flex h-8 w-full min-w-[110px] rounded-md border border-input bg-background px-2 py-1 text-sm ${row._errors.includes('rank') ? 'border-destructive' : ''}`}
                 >
                     <option value="">{t('import_select_rank')}</option>
-                    {ranks.map((r: any) => (
+                    {ranks.map((r) => (
                         <option key={r.id} value={r.name}>{r.name}</option>
                     ))}
                 </select>
@@ -110,7 +110,7 @@ export function ImportPersonnelTableRow({ row, toggleRowSelection, updateRowFiel
                     className={`flex h-8 min-w-[140px] rounded-md border border-input bg-background px-2 py-1 text-sm ${row._errors.includes('unitId') ? 'border-destructive' : ''}`}
                 >
                     <option value="">{t('import_select_unit')}</option>
-                    {units.map((u: any) => (
+                    {units.map((u) => (
                         <option key={u.id} value={u.id}>{u.name}</option>
                     ))}
                 </select>
@@ -123,7 +123,7 @@ export function ImportPersonnelTableRow({ row, toggleRowSelection, updateRowFiel
                     className={`flex h-8 min-w-[140px] rounded-md border border-input bg-background px-2 py-1 text-sm ${row._errors.includes('positionId') ? 'border-destructive' : ''}`}
                 >
                     <option value="">{t('import_select_pos')}</option>
-                    {positions.map((p: any) => (
+                    {positions.map((p) => (
                         <option key={p.id} value={p.id}>{p.name}</option>
                     ))}
                 </select>

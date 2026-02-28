@@ -30,7 +30,6 @@ export function UnitDialog({
     units,
     formData,
     setFormData,
-    handleOpenDialog,
     handleSubmit,
 }: UnitDialogProps) {
     const { t } = useLanguage();
@@ -73,7 +72,7 @@ export function UnitDialog({
                     <Label htmlFor="type">{t('units_type')}</Label>
                     <Select
                         value={formData.type}
-                        onValueChange={(value: any) => setFormData({ ...formData, type: value })}
+                        onValueChange={(value) => setFormData({ ...formData, type: value as OrganizationalUnit['type'] })}
                     >
                         <SelectTrigger className="mt-1">
                             <SelectValue />

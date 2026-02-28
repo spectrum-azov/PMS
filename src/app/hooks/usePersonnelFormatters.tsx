@@ -1,7 +1,7 @@
 import { useDictionaries } from '../context/DictionariesContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Badge } from '../components/ui/badge';
-import React from 'react';
+
 
 export function usePersonnelFormatters() {
     const { units, positions, roles } = useDictionaries();

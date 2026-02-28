@@ -7,7 +7,6 @@ import { Button } from '../ui/button';
 import { Briefcase, Info, Edit, Trash2 } from 'lucide-react';
 
 interface PositionTableProps {
-    positions: Position[];
     paginatedPositions: Position[];
     getCategoryBadge: (category: string) => React.ReactNode;
     handleOpenDialog: (position: Position) => void;
@@ -15,7 +14,6 @@ interface PositionTableProps {
 }
 
 export function PositionTable({
-    positions,
     paginatedPositions,
     getCategoryBadge,
     handleOpenDialog,

@@ -36,9 +36,9 @@ export async function updateUnit(
     const idx = db.units.findIndex((u) => u.id === id);
     if (idx === -1) return { success: false, message: 'Підрозділ не знайдено', code: 404 };
 
-    db.units[idx] = { ...db.units[idx], ...updates, id };
+    db.units[idx] = { ...db.units[idx], ...updates, id } as OrganizationalUnit;
     db.persist(UNITS_KEY, db.units);
-    return { success: true, data: { ...db.units[idx] } };
+    return { success: true, data: { ...db.units[idx] } as OrganizationalUnit };
 }
 
 export async function deleteUnit(id: string): Promise<ApiResult<{ id: string }>> {
@@ -87,9 +87,9 @@ export async function updatePosition(
     const idx = db.positions.findIndex((p) => p.id === id);
     if (idx === -1) return { success: false, message: 'Посаду не знайдено', code: 404 };
 
-    db.positions[idx] = { ...db.positions[idx], ...updates, id };
+    db.positions[idx] = { ...db.positions[idx], ...updates, id } as Position;
     db.persist(POSITIONS_KEY, db.positions);
-    return { success: true, data: { ...db.positions[idx] } };
+    return { success: true, data: { ...db.positions[idx] } as Position };
 }
 
 export async function deletePosition(id: string): Promise<ApiResult<{ id: string }>> {
@@ -136,9 +136,9 @@ export async function updateRole(
     const idx = db.roles.findIndex((r) => r.id === id);
     if (idx === -1) return { success: false, message: 'Роль не знайдено', code: 404 };
 
-    db.roles[idx] = { ...db.roles[idx], ...updates, id };
+    db.roles[idx] = { ...db.roles[idx], ...updates, id } as Role;
     db.persist(ROLES_KEY, db.roles);
-    return { success: true, data: { ...db.roles[idx] } };
+    return { success: true, data: { ...db.roles[idx] } as Role };
 }
 
 export async function deleteRole(id: string): Promise<ApiResult<{ id: string }>> {
@@ -187,9 +187,9 @@ export async function updateDirection(
     const idx = db.directions.findIndex((d) => d.id === id);
     if (idx === -1) return { success: false, message: 'Напрямок не знайдено', code: 404 };
 
-    db.directions[idx] = { ...db.directions[idx], ...updates, id };
+    db.directions[idx] = { ...db.directions[idx], ...updates, id } as FunctionalDirection;
     db.persist(DIRECTIONS_KEY, db.directions);
-    return { success: true, data: { ...db.directions[idx] } };
+    return { success: true, data: { ...db.directions[idx] } as FunctionalDirection };
 }
 
 export async function deleteDirection(id: string): Promise<ApiResult<{ id: string }>> {
@@ -238,9 +238,9 @@ export async function updateRank(
     const idx = db.ranks.findIndex((r) => r.id === id);
     if (idx === -1) return { success: false, message: 'Звання не знайдено', code: 404 };
 
-    db.ranks[idx] = { ...db.ranks[idx], ...updates, id };
+    db.ranks[idx] = { ...db.ranks[idx], ...updates, id } as RankItem;
     db.persist(RANKS_KEY, db.ranks);
-    return { success: true, data: { ...db.ranks[idx] } };
+    return { success: true, data: { ...db.ranks[idx] } as RankItem };
 }
 
 export async function deleteRank(id: string): Promise<ApiResult<{ id: string }>> {

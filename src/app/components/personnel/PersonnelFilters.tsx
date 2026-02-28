@@ -8,7 +8,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../ui/select';
-import { PersonnelFilters as Filters } from '../../types/personnel';
+import { Person, PersonnelFilters as Filters } from '../../types/personnel';
 import { useDictionaries } from '../../context/DictionariesContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { PersonnelActiveFilters } from './PersonnelActiveFilters';
@@ -36,11 +36,11 @@ export function PersonnelFilters({ filters, onFiltersChange, actionSlot }: Perso
     };
 
     const handleStatusChange = (value: string) => {
-        onFiltersChange({ ...filters, status: value === 'all' ? undefined : value as any });
+        onFiltersChange({ ...filters, status: value === 'all' ? undefined : value as Person['status'] });
     };
 
     const handleServiceTypeChange = (value: string) => {
-        onFiltersChange({ ...filters, serviceType: value === 'all' ? undefined : value as any });
+        onFiltersChange({ ...filters, serviceType: value === 'all' ? undefined : value as Person['serviceType'] });
     };
 
     const handleClearFilter = (key: keyof Filters) => {

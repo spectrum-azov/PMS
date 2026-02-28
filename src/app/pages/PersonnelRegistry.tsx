@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router';
 import { usePersonnel } from '../context/PersonnelContext';
+import { PersonnelFilters as PersonnelFiltersType } from '../types/personnel';
 import { PersonnelFilters } from '../components/personnel/PersonnelFilters';
 import { PersonnelTable } from '../components/personnel/PersonnelTable';
 import { ColumnId, DEFAULT_COLUMNS } from '../components/personnel/types';
@@ -8,7 +9,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
 import { UserPlus, Download, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { Settings2 } from 'lucide-react';
 import {
@@ -32,6 +33,14 @@ export default function PersonnelRegistry() {
     const saved = localStorage.getItem('personnel-page-size');
     return saved ? parseInt(saved, 10) : 10;
   });
+
+  const [isPending, startTransition] = useTransition();
+
+  const handleFiltersChange = (newFilters: PersonnelFiltersType) => {
+    startTransition(() => {
+      setFilters(newFilters);
+    });
+  };
 
   useEffect(() => {
     localStorage.setItem('personnel-page-size', pageSize.toString());
@@ -109,7 +118,7 @@ export default function PersonnelRegistry() {
         <CardContent className="pt-6">
           <PersonnelFilters
             filters={filters}
-            onFiltersChange={setFilters}
+            onFiltersChange={handleFiltersChange}
           />
         </CardContent>
       </Card>
@@ -133,7 +142,7 @@ export default function PersonnelRegistry() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4" style={{ opacity: isPending ? 0.7 : 1, transition: 'opacity 0.2s' }}>
           <PersonnelTable personnel={paginatedPersonnel} visibleColumns={visibleColumns} />
 
           {totalPages > 0 && (

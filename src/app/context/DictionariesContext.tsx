@@ -269,39 +269,40 @@ export function DictionariesProvider({ children }: { children: React.ReactNode }
 
   const getRankById = (id: string) => ranks.find(r => r.id === id);
 
+  const contextValue = React.useMemo(() => ({
+    units,
+    addUnit,
+    updateUnit,
+    deleteUnit,
+    getUnitById,
+    positions,
+    addPosition,
+    updatePosition,
+    deletePosition,
+    getPositionById,
+    roles,
+    addRole,
+    updateRole,
+    deleteRole,
+    getRoleById,
+    directions,
+    addDirection,
+    updateDirection,
+    deleteDirection,
+    getDirectionById,
+    ranks,
+    addRank,
+    updateRank,
+    deleteRank,
+    getRankById,
+    loading,
+    error,
+    reload: loadAll,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [units, positions, roles, directions, ranks, loading, error, loadAll]);
+
   return (
-    <DictionariesContext.Provider
-      value={{
-        units,
-        addUnit,
-        updateUnit,
-        deleteUnit,
-        getUnitById,
-        positions,
-        addPosition,
-        updatePosition,
-        deletePosition,
-        getPositionById,
-        roles,
-        addRole,
-        updateRole,
-        deleteRole,
-        getRoleById,
-        directions,
-        addDirection,
-        updateDirection,
-        deleteDirection,
-        getDirectionById,
-        ranks,
-        addRank,
-        updateRank,
-        deleteRank,
-        getRankById,
-        loading,
-        error,
-        reload: loadAll,
-      }}
-    >
+    <DictionariesContext.Provider value={contextValue}>
       {children}
     </DictionariesContext.Provider>
   );

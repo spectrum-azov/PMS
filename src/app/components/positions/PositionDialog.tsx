@@ -29,7 +29,6 @@ export function PositionDialog({
     editingPosition,
     formData,
     setFormData,
-    handleOpenDialog,
     handleSubmit,
 }: PositionDialogProps) {
     const { t } = useLanguage();
@@ -61,7 +60,7 @@ export function PositionDialog({
                     <Label htmlFor="category">{t('positions_category')}</Label>
                     <Select
                         value={formData.category}
-                        onValueChange={(value: any) => setFormData({ ...formData, category: value })}
+                        onValueChange={(value) => setFormData({ ...formData, category: value as Position['category'] })}
                     >
                         <SelectTrigger className="mt-1">
                             <SelectValue />

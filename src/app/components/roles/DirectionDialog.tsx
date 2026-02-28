@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { useLanguage } from '../../context/LanguageContext';
@@ -11,7 +11,6 @@ interface DirectionDialogProps {
     setIsOpen: (open: boolean) => void;
     directionFormData: { name: string };
     setDirectionFormData: (data: { name: string }) => void;
-    handleOpenDialog: () => void;
 }
 
 export function DirectionDialog({
@@ -20,8 +19,7 @@ export function DirectionDialog({
     isOpen,
     setIsOpen,
     directionFormData,
-    setDirectionFormData,
-    handleOpenDialog
+    setDirectionFormData
 }: DirectionDialogProps) {
     const { t } = useLanguage();
 

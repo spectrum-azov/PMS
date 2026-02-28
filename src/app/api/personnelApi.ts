@@ -83,10 +83,10 @@ export async function updatePerson(
         ...updates,
         id, // prevent ID override
         updatedAt: new Date().toISOString(),
-    };
+    } as Person;
     db.persist(STORAGE_KEY, db.personnel);
 
-    return { success: true, data: { ...db.personnel[idx] } };
+    return { success: true, data: { ...db.personnel[idx] } as Person };
 }
 
 /** Delete a person by ID */

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Users, UserCheck, UserX, Award } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';

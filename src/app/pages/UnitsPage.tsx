@@ -143,7 +143,6 @@ export default function UnitsPage() {
         </CardHeader>
         <CardContent>
           <UnitTable
-            units={units}
             paginatedUnits={paginatedUnits}
             getParentName={getParentName}
             getTypeBadge={getTypeBadge}

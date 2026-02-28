@@ -7,7 +7,6 @@ import { Button } from '../ui/button';
 import { Shield, MapPin, Building2, Edit, Trash2 } from 'lucide-react';
 
 interface UnitTableProps {
-    units: OrganizationalUnit[];
     paginatedUnits: OrganizationalUnit[];
     getParentName: (parentId?: string) => string;
     getTypeBadge: (type?: string) => React.ReactNode;
@@ -16,7 +15,6 @@ interface UnitTableProps {
 }
 
 export function UnitTable({
-    units,
     paginatedUnits,
     getParentName,
     getTypeBadge,

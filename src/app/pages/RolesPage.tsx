@@ -164,7 +164,6 @@ export default function RolesPage() {
               editingDirection={editingDirection}
               directionFormData={directionFormData}
               setDirectionFormData={setDirectionFormData}
-              handleOpenDialog={() => handleOpenDirectionDialog()}
               onSave={handleSubmitDirection}
             />
           </div>
@@ -221,7 +220,6 @@ export default function RolesPage() {
                 editingRole={editingRole}
                 roleFormData={roleFormData}
                 setRoleFormData={setRoleFormData}
-                handleOpenDialog={() => handleOpenRoleDialog()}
                 onSave={handleSubmitRole}
                 directions={directions}
               />
@@ -230,7 +228,6 @@ export default function RolesPage() {
         </CardHeader>
         <CardContent>
           <RolesTable
-            roles={roles}
             paginatedRoles={paginatedRoles}
             getDirectionName={getDirectionName}
             getLevelBadge={getLevelBadge}

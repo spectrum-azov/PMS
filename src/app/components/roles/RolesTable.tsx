@@ -8,7 +8,6 @@ import { Button } from '../ui/button';
 import { Award, Layers, Edit, Trash2 } from 'lucide-react';
 
 interface RolesTableProps {
-    roles: Role[];
     paginatedRoles: Role[];
     getDirectionName: (id: string) => string;
     getLevelBadge: (level?: number) => React.ReactNode;
@@ -17,7 +16,6 @@ interface RolesTableProps {
 }
 
 export function RolesTable({
-    roles,
     paginatedRoles,
     getDirectionName,
     getLevelBadge,

@@ -59,7 +59,7 @@ export default function PositionsPage() {
       const newPosition: Position = {
         id: `pos-${Date.now()}`,
         name: formData.name!,
-        category: formData.category as any,
+        category: formData.category as Position['category'],
         description: formData.description,
       };
       const success = await addPosition(newPosition);
@@ -130,7 +130,6 @@ export default function PositionsPage() {
         </CardHeader>
         <CardContent>
           <PositionTable
-            positions={positions}
             paginatedPositions={paginatedPositions}
             getCategoryBadge={getCategoryBadge}
             handleOpenDialog={handleOpenDialog}

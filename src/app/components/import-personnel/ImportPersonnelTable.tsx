@@ -9,7 +9,7 @@ interface ImportPersonnelTableProps {
     selectedCount: number;
     toggleAll: (checked: boolean) => void;
     toggleRowSelection: (id: string) => void;
-    updateRowField: (id: string, field: keyof Person, value: any) => void;
+    updateRowField: (id: string, field: keyof Person, value: string) => void;
 }
 
 export function ImportPersonnelTable({
