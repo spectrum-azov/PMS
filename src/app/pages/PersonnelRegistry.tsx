@@ -90,7 +90,7 @@ export default function PersonnelRegistry() {
   );
 
   return (
-    <div className="flex flex-col h-full overflow-hidden p-6 gap-6">
+    <div className="flex flex-col p-6 gap-6">
       <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-semibold text-foreground">{t('registry_title')}</h2>
@@ -142,8 +142,8 @@ export default function PersonnelRegistry() {
           </CardContent>
         </Card>
       ) : (
-        <div className="flex flex-col flex-1 min-h-0 overflow-hidden gap-4" style={{ opacity: isPending ? 0.7 : 1, transition: 'opacity 0.2s' }}>
-          <div className="flex-1 overflow-y-auto min-h-0 relative rounded-md border">
+        <div className="flex flex-col gap-4" style={{ opacity: isPending ? 0.7 : 1, transition: 'opacity 0.2s' }}>
+          <div className="w-full relative rounded-md border">
             <PersonnelTable personnel={paginatedPersonnel} visibleColumns={visibleColumns} />
           </div>
 

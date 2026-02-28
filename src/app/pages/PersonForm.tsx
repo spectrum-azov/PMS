@@ -146,7 +146,7 @@ export default function PersonForm() {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden p-6 gap-6">
+    <div className="flex flex-col p-6 gap-6">
       {/* Header */}
       <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -171,15 +171,15 @@ export default function PersonForm() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 min-h-0 overflow-hidden">
-        <Tabs defaultValue="general" className="flex flex-col flex-1 min-h-0 w-full overflow-hidden">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+        <Tabs defaultValue="general" className="flex flex-col w-full">
           <TabsList className="shrink-0 flex w-full overflow-x-auto overflow-y-hidden justify-start sm:justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <TabsTrigger value="general">{t('form_tab_general')}</TabsTrigger>
             <TabsTrigger value="additional">{t('form_tab_additional')}</TabsTrigger>
             <TabsTrigger value="extended">{t('form_tab_extended')}</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="general" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
+          <TabsContent value="general" className="space-y-6 focus-visible:outline-none">
             <PersonFormGeneralTab
               register={register}
               control={control}
@@ -188,7 +188,7 @@ export default function PersonForm() {
             />
           </TabsContent>
 
-          <TabsContent value="additional" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
+          <TabsContent value="additional" className="space-y-6 focus-visible:outline-none">
             <PersonFormAdditionalTab
               register={register}
               control={control}
@@ -196,7 +196,7 @@ export default function PersonForm() {
             />
           </TabsContent>
 
-          <TabsContent value="extended" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
+          <TabsContent value="extended" className="space-y-6 focus-visible:outline-none">
             <PersonFormExtendedTab />
           </TabsContent>
         </Tabs>

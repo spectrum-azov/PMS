@@ -14,7 +14,7 @@ interface MaskedInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
 const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
     ({ className, mask, onAccept, label, id, error, value = "", ...props }, ref) => {
         return (
-            <div className="grid w-full items-center gap-2 text-left">
+            <div className="w-full text-left">
                 {label && (
                     <div className="flex items-center justify-between mb-2">
                         <Label htmlFor={id} className={cn(error && "text-destructive")}>{label}</Label>

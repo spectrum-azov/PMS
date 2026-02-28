@@ -88,7 +88,7 @@ export default function PersonCard() {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden p-6 gap-6">
+    <div className="flex flex-col p-6 gap-6">
       {/* Header */}
       <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 min-w-0">
@@ -120,7 +120,7 @@ export default function PersonCard() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="general" className="flex flex-col flex-1 min-h-0 w-full overflow-hidden">
+      <Tabs defaultValue="general" className="flex flex-col w-full">
         <TabsList className="shrink-0 flex w-full overflow-x-auto overflow-y-hidden justify-start md:justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <TabsTrigger value="general">{t('card_tab_general')}</TabsTrigger>
           <TabsTrigger value="education">{t('card_tab_education')}</TabsTrigger>
@@ -129,7 +129,7 @@ export default function PersonCard() {
           <TabsTrigger value="awards">{t('card_tab_awards')}</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="general" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
+        <TabsContent value="general" className="space-y-6 focus-visible:outline-none">
           <PersonCardGeneralTab
             person={person}
             formatDate={formatDate}
@@ -140,19 +140,19 @@ export default function PersonCard() {
           />
         </TabsContent>
 
-        <TabsContent value="education" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
+        <TabsContent value="education" className="space-y-6 focus-visible:outline-none">
           <PersonCardEducationTab person={person} />
         </TabsContent>
 
-        <TabsContent value="family" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
+        <TabsContent value="family" className="space-y-6 focus-visible:outline-none">
           <PersonCardFamilyTab person={person} />
         </TabsContent>
 
-        <TabsContent value="documents" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
+        <TabsContent value="documents" className="space-y-6 focus-visible:outline-none">
           <PersonCardDocumentsTab person={person} />
         </TabsContent>
 
-        <TabsContent value="awards" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
+        <TabsContent value="awards" className="space-y-6 focus-visible:outline-none">
           <PersonCardAwardsTab person={person} formatDate={formatDate} />
         </TabsContent>
       </Tabs>

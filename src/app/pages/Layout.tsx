@@ -28,7 +28,7 @@ export function Layout() {
     { name: t('nav_roles'), path: '/roles', icon: UserCog },
     { name: t('import_title'), path: '/personnel/import', icon: Upload },
   ];
-
+  8
   const closeSidebar = () => setSidebarOpen(false);
 
   const toggleLanguage = () => {
@@ -38,7 +38,7 @@ export function Layout() {
   return (
     <div className="h-[100dvh] overflow-hidden flex flex-col bg-background text-foreground">
       {/* Header */}
-      <header className="bg-background border-b border-border sticky top-0 z-50">
+      <header className="shrink-0 bg-background border-b border-border z-50">
         <div className="px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -90,7 +90,7 @@ export function Layout() {
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden relative">
+      <div className="flex flex-1 relative overflow-hidden">
         {/* Mobile overlay */}
         {sidebarOpen && (
           <div
@@ -102,8 +102,8 @@ export function Layout() {
         {/* Sidebar */}
         <aside
           className={`
-            fixed md:static top-0 left-0 z-40 md:z-auto
-            w-64 bg-background border-r border-border
+            fixed md:relative z-40 md:z-auto
+            w-64 shrink-0 bg-background border-r border-border
             h-full
             transition-transform duration-200 ease-in-out
             ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -187,7 +187,7 @@ export function Layout() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex flex-col flex-1 min-w-0 overflow-hidden">
+        <main className="flex flex-col flex-1 min-w-0 overflow-y-auto">
           <Outlet />
         </main>
       </div>
