@@ -36,7 +36,7 @@ export function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       {/* Header */}
       <header className="bg-background border-b border-border sticky top-0 z-50">
         <div className="px-4 sm:px-6 py-4">
@@ -90,7 +90,7 @@ export function Layout() {
         </div>
       </header>
 
-      <div className="flex relative">
+      <div className="flex flex-1 relative">
         {/* Mobile overlay */}
         {sidebarOpen && (
           <div
@@ -104,7 +104,6 @@ export function Layout() {
           className={`
             fixed md:static top-0 left-0 z-40 md:z-auto
             w-64 bg-background border-r border-border
-            h-full md:min-h-[calc(100vh-73px)]
             transition-transform duration-200 ease-in-out
             ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             md:translate-x-0
