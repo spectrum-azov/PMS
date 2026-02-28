@@ -14,8 +14,8 @@ export default function App() {
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange
-      themes={["light", "dark", "spectrum", "system"]}
-      value={{ light: "light", dark: "dark", spectrum: "spectrum" }}
+      themes={["light", "dark", "spectrum", "spectrum-contrast", "system"]}
+      value={{ light: "light", dark: "dark", spectrum: "spectrum", "spectrum-contrast": "spectrum-contrast" }}
     >
       <LanguageProvider>
         <SettingsProvider>
