@@ -127,7 +127,7 @@ export default function PersonCard() {
                 {getStatusBadge(person.status)}
               </div>
             </div>
-            <p className="text-muted-foreground mt-1 truncate text-xs sm:text-sm hidden sm:block">{person.fullName}</p>
+            <p className="text-muted-foreground mt-1 truncate text-xs sm:text-sm hidden sm:block">{`${person.lastName} ${person.firstName} ${person.middleName}`}</p>
           </div>
         </div>
         <Button

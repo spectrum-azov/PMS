@@ -6,7 +6,9 @@ export const ServiceTypeSchema = z.enum(['Контракт', 'Мобілізов
 export const PersonSchema = z.object({
     id: z.string().uuid().optional().or(z.string()), // Handles both UUID and custom IDs for mock
     callsign: z.string().min(2, 'Позивний занадто короткий'),
-    fullName: z.string().min(3, 'ПІБ занадто коротке'),
+    lastName: z.string().min(2, 'Прізвище занадто коротке'),
+    firstName: z.string().min(2, 'Ім\'я занадто коротке'),
+    middleName: z.string().min(2, 'По батькові занадто коротке'),
     rank: z.string(),
     birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Невірний формат дати (РРРР-ММ-ДД)'),
     serviceType: ServiceTypeSchema,

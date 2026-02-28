@@ -47,7 +47,9 @@ export interface Person {
 
   // Основні дані (P0)
   callsign: string;
-  fullName: string;
+  lastName: string;
+  firstName: string;
+  middleName: string;
   rank: Rank;
   birthDate: string;
   serviceType: ServiceType;

@@ -19,7 +19,6 @@ export function PersonFormGeneralTab({ register, control, errors, validateBirthD
                 <div className="h-full">
                     <PersonFormPersonalInfoCard
                         register={register}
-                        control={control}
                         errors={errors}
                         validateBirthDate={validateBirthDate}
                     />

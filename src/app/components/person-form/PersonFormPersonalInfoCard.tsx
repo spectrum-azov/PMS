@@ -1,21 +1,21 @@
-import { UseFormRegister, Control, FieldErrors, Controller } from 'react-hook-form';
+import { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { Person } from '../../types/personnel';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useDictionaries } from '../../context/DictionariesContext';
+
+
 import { useLanguage } from '../../context/LanguageContext';
 
 interface PersonFormPersonalInfoCardProps {
     register: UseFormRegister<Person>;
-    control: Control<Person>;
+
     errors: FieldErrors<Person>;
     validateBirthDate: (value: string) => true | string;
 }
 
-export function PersonFormPersonalInfoCard({ register, control, errors, validateBirthDate }: PersonFormPersonalInfoCardProps) {
-    const { ranks } = useDictionaries();
+export function PersonFormPersonalInfoCard({ register, errors, validateBirthDate }: PersonFormPersonalInfoCardProps) {
+
     const { t } = useLanguage();
 
     return (
@@ -43,49 +43,53 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
 
                 <div>
                     <div className="flex items-center justify-between mb-[3px]">
-                        <Label htmlFor="fullName">{t('form_fullname')}</Label>
-                        {errors.fullName && (
-                            <span className="text-xs text-destructive font-medium">{errors.fullName.message}</span>
+                        <Label htmlFor="lastName">Прізвище</Label>
+                        {errors.lastName && (
+                            <span className="text-xs text-destructive font-medium">{errors.lastName.message}</span>
                         )}
                     </div>
                     <Input
-                        id="fullName"
-                        {...register('fullName', {
+                        id="lastName"
+                        {...register('lastName', {
                             required: t('common_required_field'),
-                            validate: (v) =>
-                                v.trim().split(/\s+/).length >= 2 || t('form_val_fullname'),
                         })}
-                        placeholder="Іваненко Іван Іванович"
+                        placeholder="Іваненко"
                     />
                 </div>
 
                 <div>
                     <div className="flex items-center justify-between mb-[3px]">
-                        <Label htmlFor="rank">{t('form_rank')}</Label>
-                        {errors.rank && (
-                            <span className="text-xs text-destructive font-medium">{errors.rank.message}</span>
+                        <Label htmlFor="firstName">Ім'я</Label>
+                        {errors.firstName && (
+                            <span className="text-xs text-destructive font-medium">{errors.firstName.message}</span>
                         )}
                     </div>
-                    <Controller
-                        name="rank"
-                        control={control}
-                        rules={{ required: t('common_required_field') }}
-                        render={({ field }) => (
-                            <Select value={field.value} onValueChange={field.onChange}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder={t('form_select_rank')} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {ranks.map((rank) => (
-                                        <SelectItem key={rank.id} value={rank.name}>
-                                            {rank.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        )}
+                    <Input
+                        id="firstName"
+                        {...register('firstName', {
+                            required: t('common_required_field'),
+                        })}
+                        placeholder="Іван"
                     />
                 </div>
+
+                <div>
+                    <div className="flex items-center justify-between mb-[3px]">
+                        <Label htmlFor="middleName">По батькові</Label>
+                        {errors.middleName && (
+                            <span className="text-xs text-destructive font-medium">{errors.middleName.message}</span>
+                        )}
+                    </div>
+                    <Input
+                        id="middleName"
+                        {...register('middleName', {
+                            required: t('common_required_field'),
+                        })}
+                        placeholder="Іванович"
+                    />
+                </div>
+
+
 
                 <div>
                     <div className="flex items-center justify-between mb-[3px]">

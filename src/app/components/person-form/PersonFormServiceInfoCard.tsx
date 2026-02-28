@@ -14,7 +14,7 @@ interface PersonFormServiceInfoCardProps {
 }
 
 export function PersonFormServiceInfoCard({ register, control, errors }: PersonFormServiceInfoCardProps) {
-    const { units, positions } = useDictionaries();
+    const { units, positions, ranks } = useDictionaries();
     const { t } = useLanguage();
 
     return (
@@ -23,6 +23,34 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                 <CardTitle>{t('form_service')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+                <div>
+                    <div className="flex items-center justify-between mb-[3px]">
+                        <Label htmlFor="rank">{t('form_rank')}</Label>
+                        {errors.rank && (
+                            <span className="text-xs text-destructive font-medium">{errors.rank.message}</span>
+                        )}
+                    </div>
+                    <Controller
+                        name="rank"
+                        control={control}
+                        rules={{ required: t('common_required_field') }}
+                        render={({ field }) => (
+                            <Select value={field.value} onValueChange={field.onChange}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t('form_select_rank')} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {ranks.map((rank) => (
+                                        <SelectItem key={rank.id} value={rank.name}>
+                                            {rank.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                </div>
+
                 <div>
                     <div className="flex items-center justify-between mb-[3px]">
                         <Label htmlFor="serviceType">{t('form_service_type')}</Label>

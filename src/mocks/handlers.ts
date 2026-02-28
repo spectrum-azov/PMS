@@ -41,7 +41,9 @@ export const handlers = [
             result = result.filter(
                 (p) =>
                     p.callsign.toLowerCase().includes(s) ||
-                    p.fullName.toLowerCase().includes(s) ||
+                    p.lastName.toLowerCase().includes(s) ||
+                    p.firstName.toLowerCase().includes(s) ||
+                    p.middleName.toLowerCase().includes(s) ||
                     p.phone.includes(s) ||
                     p.militaryId?.toLowerCase().includes(s)
             )

@@ -36,7 +36,7 @@ export function PersonCardGeneralTab({
                     <CardContent className="space-y-2">
                         <div>
                             <p className="text-sm text-muted-foreground">{t('card_fullname')}</p>
-                            <p className="font-medium">{person.fullName}</p>
+                            <p className="font-medium">{`${person.lastName} ${person.firstName} ${person.middleName}`}</p>
                         </div>
                         <Separator />
                         <div>

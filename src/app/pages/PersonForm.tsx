@@ -77,7 +77,9 @@ export default function PersonForm() {
     : {
       id: '',
       callsign: '',
-      fullName: '',
+      lastName: '',
+      firstName: '',
+      middleName: '',
       rank: 'Солдат',
       birthDate: '',
       serviceType: 'Контракт',

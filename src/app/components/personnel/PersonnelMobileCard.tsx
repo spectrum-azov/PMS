@@ -75,7 +75,7 @@ export function PersonnelMobileCard({ person }: PersonnelMobileCardProps) {
                 <div>
                     <div className="flex items-center gap-2 text-foreground font-semibold mb-1">
                         <User className="w-4 h-4 text-muted-foreground" />
-                        {person.fullName}
+                        {person.lastName} {person.firstName} {person.middleName}
                     </div>
                     {person.militaryId && (
                         <div className="text-xs text-muted-foreground ml-6">

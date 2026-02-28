@@ -133,7 +133,9 @@ export function useImportPersonnel() {
         const importPromises = toImport.map(async (row) => {
             const personToCreate = {
                 callsign: row.callsign!,
-                fullName: row.fullName!,
+                lastName: row.lastName!,
+                firstName: row.firstName!,
+                middleName: row.middleName!,
                 rank: row.rank!,
                 birthDate: row.birthDate!,
                 serviceType: row.serviceType as ServiceType,

@@ -3,7 +3,7 @@ import { ServiceStatus, ServiceType, OrganizationalUnit, Position, RankItem } fr
 import { ImportRow } from '../hooks/useImportPersonnel';
 import { TranslationKey } from '../i18n';
 
-const requiredFields = ['callsign', 'fullName', 'rank', 'birthDate', 'serviceType', 'unitId', 'positionId', 'status', 'phone'];
+const requiredFields = ['callsign', 'lastName', 'firstName', 'middleName', 'rank', 'birthDate', 'serviceType', 'unitId', 'positionId', 'status', 'phone'];
 
 export function cleanString(str: string): string {
     if (!str) return '';
@@ -112,6 +112,15 @@ export function parsePersonnelCsv(
 
                 const rawCallsign = getVal(['callsign', 'Позивний', 'позивний', 'Callsign']);
                 const rawFullName = getVal(['fullName', 'fullname', 'ПІБ', 'Піб', 'ПіБ', 'Full Name', 'Fullname', 'Name', 'Ім\'я']);
+                let rawLastName = '';
+                let rawFirstName = '';
+                let rawMiddleName = '';
+                if (rawFullName) {
+                    const parts = rawFullName.split(/\s+/);
+                    rawLastName = parts[0] || '';
+                    rawFirstName = parts[1] || '';
+                    rawMiddleName = parts.slice(2).join(' ') || '';
+                }
                 const rawRank = getVal(['rank', 'Звання', 'звання', 'Rank']);
                 const rawBirthDate = getVal(['birthDate', 'birthdate', 'Дата народження', 'дата народження', 'DOB', 'dob', 'Дата нар.']);
                 const rawUnit = getVal(['unit', 'unitId', 'Підрозділ', 'підрозділ', 'Unit', 'Організаційний підрозділ']);
@@ -190,7 +199,9 @@ export function parsePersonnelCsv(
                     positionId: matchedPosition,
                     rank: matchedRank,
                     callsign: rawCallsign,
-                    fullName: rawFullName,
+                    lastName: rawLastName,
+                    firstName: rawFirstName,
+                    middleName: rawMiddleName,
                     birthDate: rawBirthDate,
                     serviceType: matchedServiceType as ServiceType,
                     status: matchedStatus as ServiceStatus,

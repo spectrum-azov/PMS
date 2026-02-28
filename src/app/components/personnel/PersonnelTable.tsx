@@ -51,7 +51,7 @@ export function PersonnelTable({ personnel, visibleColumns, sortField, sortOrder
             sortable: true,
             render: (person: Person) => (
                 <div>
-                    <div className="font-medium text-foreground">{person.fullName}</div>
+                    <div className="font-medium text-foreground">{person.lastName} {person.firstName} {person.middleName}</div>
                     {person.militaryId && (
                         <div className="text-xs text-muted-foreground">{person.militaryId}</div>
                     )}
