@@ -9,10 +9,13 @@ interface MaskedInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
     onAccept?: (value: string, mask: unknown) => void;
     label?: string;
     error?: string;
+    definitions?: any;
+    prepare?: (value: string, masked: any) => string;
+    unmask?: boolean | 'typed';
 }
 
 const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
-    ({ className, mask, onAccept, label, id, error, value = "", ...props }, ref) => {
+    ({ className, mask, onAccept, label, id, error, value = "", unmask = true, ...props }, ref) => {
         return (
             <div className="w-full text-left">
                 {label && (
@@ -23,7 +26,7 @@ const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
                 )}
                 <IMaskInput
                     mask={mask}
-                    unmask={true}
+                    unmask={unmask}
                     value={value}
                     onAccept={onAccept}
                     id={id}

@@ -86,52 +86,71 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                 </CardHeader>
                 <CardContent className="space-y-4   ">
                     <div>
-                        <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="militaryId">{t('form_military_id')}</Label>
-                            {errors.militaryId && (
-                                <span className="text-xs text-destructive font-medium">{errors.militaryId.message}</span>
+                        <Controller
+                            name="militaryId"
+                            control={control}
+                            rules={{
+                                validate: (v) => !v || docPattern.test(v) || t('form_val_doc_format'),
+                            }}
+                            render={({ field }) => (
+                                <MaskedInput
+                                    id="militaryId"
+                                    label={t('form_military_id')}
+                                    mask="@@ 000000"
+                                    definitions={{ '@': /[А-ЯҐЄІЇA-Zа-яґєіїa-z]/ }}
+                                    prepare={(str) => str.toUpperCase()}
+                                    unmask={false}
+                                    value={field.value}
+                                    onAccept={(value) => field.onChange(value)}
+                                    error={errors.militaryId?.message}
+                                    placeholder="АА 123456"
+                                />
                             )}
-                        </div>
-                        <Input
-                            id="militaryId"
-                            {...register('militaryId', {
-                                validate: (v) =>
-                                    !v || docPattern.test(v) || t('form_val_doc_format'),
-                            })}
-                            placeholder="АА 123456"
                         />
                     </div>
 
                     <div>
-                        <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="passport">{t('form_passport')}</Label>
-                            {errors.passport && (
-                                <span className="text-xs text-destructive font-medium">{errors.passport.message}</span>
+                        <Controller
+                            name="passport"
+                            control={control}
+                            rules={{
+                                validate: (v) => !v || docPattern.test(v) || t('form_val_doc_format'),
+                            }}
+                            render={({ field }) => (
+                                <MaskedInput
+                                    id="passport"
+                                    label={t('form_passport')}
+                                    mask="@@ 000000"
+                                    definitions={{ '@': /[А-ЯҐЄІЇA-Zа-яґєіїa-z]/ }}
+                                    prepare={(str) => str.toUpperCase()}
+                                    unmask={false}
+                                    value={field.value}
+                                    onAccept={(value) => field.onChange(value)}
+                                    error={errors.passport?.message}
+                                    placeholder="КВ 987654"
+                                />
                             )}
-                        </div>
-                        <Input
-                            id="passport"
-                            {...register('passport', {
-                                validate: (v) =>
-                                    !v || docPattern.test(v) || t('form_val_doc_format'),
-                            })}
-                            placeholder="КВ 987654"
                         />
                     </div>
 
                     <div>
-                        <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="taxId">{t('form_tax_id')}</Label>
-                            {errors.taxId && (
-                                <span className="text-xs text-destructive font-medium">{errors.taxId.message}</span>
-                            )}
-                        </div>
-                        <Input
-                            id="taxId"
-                            {...register('taxId', {
+                        <Controller
+                            name="taxId"
+                            control={control}
+                            rules={{
                                 validate: (v) => !v || /^\d{10}$/.test(v) || t('form_val_taxid_format'),
-                            })}
-                            placeholder="1231231230"
+                            }}
+                            render={({ field }) => (
+                                <MaskedInput
+                                    id="taxId"
+                                    label={t('form_tax_id')}
+                                    mask="0000000000"
+                                    value={field.value}
+                                    onAccept={(value) => field.onChange(value)}
+                                    error={errors.taxId?.message}
+                                    placeholder="1231231230"
+                                />
+                            )}
                         />
                     </div>
                 </CardContent>
