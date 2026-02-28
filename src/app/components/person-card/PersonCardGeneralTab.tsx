@@ -32,7 +32,7 @@ export function PersonCardGeneralTab({
                 <CardHeader>
                     <CardTitle>{t('card_personal_info')}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-2">
                     <div>
                         <p className="text-sm text-muted-foreground">{t('card_fullname')}</p>
                         <p className="font-medium">{person.fullName}</p>
@@ -69,7 +69,7 @@ export function PersonCardGeneralTab({
                 <CardHeader>
                     <CardTitle>{t('card_service')}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-2">
                     <div>
                         <p className="text-sm text-muted-foreground">{t('card_military_rank')}</p>
                         <p className="font-medium">{person.rank}</p>
@@ -112,7 +112,7 @@ export function PersonCardGeneralTab({
                 <CardHeader>
                     <CardTitle>{t('card_org')}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-2">
                     <div>
                         <p className="text-sm text-muted-foreground">{t('card_unit_label')}</p>
                         <p className="font-medium">{getUnitName(person.unitId)}</p>
@@ -144,7 +144,7 @@ export function PersonCardGeneralTab({
                 <CardHeader>
                     <CardTitle>{t('card_contact')}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-2">
                     <div className="flex items-center gap-3">
                         <Phone className="w-4 h-4 text-muted-foreground" />
                         <div>
