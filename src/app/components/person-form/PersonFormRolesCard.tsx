@@ -16,8 +16,11 @@ export function PersonFormRolesCard({ control, errors }: PersonFormRolesCardProp
 
     return (
         <Card className="shrink-0 w-full">
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle>{t('form_roles')}</CardTitle>
+                {errors.roleIds && (
+                    <span className="text-xs text-destructive font-medium">{errors.roleIds.message}</span>
+                )}
             </CardHeader>
             <CardContent>
                 <Controller
@@ -52,9 +55,6 @@ export function PersonFormRolesCard({ control, errors }: PersonFormRolesCardProp
                         </div>
                     )}
                 />
-                {errors.roleIds && (
-                    <p className="text-sm text-red-600 mt-2">{errors.roleIds.message}</p>
-                )}
             </CardContent>
         </Card>
     );

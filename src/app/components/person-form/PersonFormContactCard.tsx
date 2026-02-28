@@ -24,7 +24,7 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                 <CardHeader>
                     <CardTitle>{t('form_contact')}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-5">
+                <CardContent className="space-y-4">
                     <div>
                         <Controller
                             name="phone"
@@ -80,9 +80,14 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                 <CardHeader>
                     <CardTitle>{t('form_documents')}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-5">
+                <CardContent className="space-y-4   ">
                     <div>
-                        <Label htmlFor="militaryId" className="mb-2">{t('form_military_id')}</Label>
+                        <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="militaryId">{t('form_military_id')}</Label>
+                            {errors.militaryId && (
+                                <span className="text-xs text-destructive font-medium">{errors.militaryId.message}</span>
+                            )}
+                        </div>
                         <Input
                             id="militaryId"
                             {...register('militaryId', {
@@ -91,13 +96,15 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                             })}
                             placeholder="АА 123456"
                         />
-                        {errors.militaryId && (
-                            <p className="text-sm text-red-600 mt-1">{errors.militaryId.message}</p>
-                        )}
                     </div>
 
                     <div>
-                        <Label htmlFor="passport" className="mb-2">{t('form_passport')}</Label>
+                        <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="passport">{t('form_passport')}</Label>
+                            {errors.passport && (
+                                <span className="text-xs text-destructive font-medium">{errors.passport.message}</span>
+                            )}
+                        </div>
                         <Input
                             id="passport"
                             {...register('passport', {
@@ -106,13 +113,15 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                             })}
                             placeholder="КВ 987654"
                         />
-                        {errors.passport && (
-                            <p className="text-sm text-red-600 mt-1">{errors.passport.message}</p>
-                        )}
                     </div>
 
                     <div>
-                        <Label htmlFor="taxId" className="mb-2">{t('form_tax_id')}</Label>
+                        <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="taxId">{t('form_tax_id')}</Label>
+                            {errors.taxId && (
+                                <span className="text-xs text-destructive font-medium">{errors.taxId.message}</span>
+                            )}
+                        </div>
                         <Input
                             id="taxId"
                             {...register('taxId', {
@@ -120,9 +129,6 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                             })}
                             placeholder="1231231230"
                         />
-                        {errors.taxId && (
-                            <p className="text-sm text-red-600 mt-1">{errors.taxId.message}</p>
-                        )}
                     </div>
                 </CardContent>
             </Card>

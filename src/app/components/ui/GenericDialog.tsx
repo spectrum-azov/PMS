@@ -53,7 +53,7 @@ export function GenericDialog({
                     <DialogTitle className="text-2xl font-semibold">{title}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
-                    <div className="space-y-5 py-4">
+                    <div className="space-y-4 py-4">
                         {children}
                     </div>
                     <DialogFooter className="gap-2 sm:gap-0">

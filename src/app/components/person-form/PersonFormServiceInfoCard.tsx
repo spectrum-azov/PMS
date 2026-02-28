@@ -22,9 +22,14 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
             <CardHeader>
                 <CardTitle>{t('form_service')}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
+            <CardContent className="space-y-4">
                 <div>
-                    <Label htmlFor="serviceType" className="mb-2">{t('form_service_type')}</Label>
+                    <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="serviceType">{t('form_service_type')}</Label>
+                        {errors.serviceType && (
+                            <span className="text-xs text-destructive font-medium">{errors.serviceType.message}</span>
+                        )}
+                    </div>
                     <Controller
                         name="serviceType"
                         control={control}
@@ -41,9 +46,6 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                             </Select>
                         )}
                     />
-                    {errors.serviceType && (
-                        <p className="text-sm text-red-600 mt-1">{errors.serviceType.message}</p>
-                    )}
                 </div>
 
                 <div>
@@ -56,7 +58,12 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                 </div>
 
                 <div>
-                    <Label htmlFor="unitId" className="mb-2">{t('form_unit')}</Label>
+                    <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="unitId">{t('form_unit')}</Label>
+                        {errors.unitId && (
+                            <span className="text-xs text-destructive font-medium">{errors.unitId.message}</span>
+                        )}
+                    </div>
                     <Controller
                         name="unitId"
                         control={control}
@@ -76,13 +83,15 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                             </Select>
                         )}
                     />
-                    {errors.unitId && (
-                        <p className="text-sm text-red-600 mt-1">{errors.unitId.message}</p>
-                    )}
                 </div>
 
                 <div>
-                    <Label htmlFor="positionId" className="mb-2">{t('form_position')}</Label>
+                    <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="positionId">{t('form_position')}</Label>
+                        {errors.positionId && (
+                            <span className="text-xs text-destructive font-medium">{errors.positionId.message}</span>
+                        )}
+                    </div>
                     <Controller
                         name="positionId"
                         control={control}
@@ -102,9 +111,6 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                             </Select>
                         )}
                     />
-                    {errors.positionId && (
-                        <p className="text-sm text-red-600 mt-1">{errors.positionId.message}</p>
-                    )}
                 </div>
 
                 <div>

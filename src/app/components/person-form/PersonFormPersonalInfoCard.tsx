@@ -23,9 +23,14 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
             <CardHeader>
                 <CardTitle>{t('form_personal_info')}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
+            <CardContent className="space-y-4">
                 <div>
-                    <Label htmlFor="callsign" className="mb-2">{t('form_callsign')}</Label>
+                    <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="callsign">{t('form_callsign')}</Label>
+                        {errors.callsign && (
+                            <span className="text-xs text-destructive font-medium">{errors.callsign.message}</span>
+                        )}
+                    </div>
                     <Input
                         id="callsign"
                         {...register('callsign', {
@@ -34,13 +39,15 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                         })}
                         placeholder="Сатурн"
                     />
-                    {errors.callsign && (
-                        <p className="text-sm text-red-600 mt-1">{errors.callsign.message}</p>
-                    )}
                 </div>
 
                 <div>
-                    <Label htmlFor="fullName" className="mb-2">{t('form_fullname')}</Label>
+                    <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="fullName">{t('form_fullname')}</Label>
+                        {errors.fullName && (
+                            <span className="text-xs text-destructive font-medium">{errors.fullName.message}</span>
+                        )}
+                    </div>
                     <Input
                         id="fullName"
                         {...register('fullName', {
@@ -50,13 +57,15 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                         })}
                         placeholder="Іваненко Іван Іванович"
                     />
-                    {errors.fullName && (
-                        <p className="text-sm text-red-600 mt-1">{errors.fullName.message}</p>
-                    )}
                 </div>
 
                 <div>
-                    <Label htmlFor="rank" className="mb-2">{t('form_rank')}</Label>
+                    <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="rank">{t('form_rank')}</Label>
+                        {errors.rank && (
+                            <span className="text-xs text-destructive font-medium">{errors.rank.message}</span>
+                        )}
+                    </div>
                     <Controller
                         name="rank"
                         control={control}
@@ -76,13 +85,15 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                             </Select>
                         )}
                     />
-                    {errors.rank && (
-                        <p className="text-sm text-red-600 mt-1">{errors.rank.message}</p>
-                    )}
                 </div>
 
                 <div>
-                    <Label htmlFor="birthDate" className="mb-2">{t('form_birthdate')}</Label>
+                    <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="birthDate">{t('form_birthdate')}</Label>
+                        {errors.birthDate && (
+                            <span className="text-xs text-destructive font-medium">{errors.birthDate.message}</span>
+                        )}
+                    </div>
                     <Input
                         id="birthDate"
                         type="date"
@@ -91,9 +102,6 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                             validate: validateBirthDate,
                         })}
                     />
-                    {errors.birthDate && (
-                        <p className="text-sm text-red-600 mt-1">{errors.birthDate.message}</p>
-                    )}
                 </div>
 
                 <div>

@@ -15,7 +15,12 @@ const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
     ({ className, mask, onAccept, label, id, error, value = "", ...props }, ref) => {
         return (
             <div className="grid w-full items-center gap-2 text-left">
-                {label && <Label htmlFor={id} className={cn(error && "text-destructive")}>{label}</Label>}
+                {label && (
+                    <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor={id} className={cn(error && "text-destructive")}>{label}</Label>
+                        {error && <span className="text-xs text-destructive font-medium">{error}</span>}
+                    </div>
+                )}
                 <IMaskInput
                     mask={mask}
                     unmask={true}
@@ -38,7 +43,6 @@ const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
                     }}
                     {...(props as any)}
                 />
-                {error && <p className="text-sm text-destructive mt-1">{error}</p>}
             </div>
         );
     }
