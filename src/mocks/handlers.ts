@@ -2,7 +2,7 @@ import { http, HttpResponse, delay } from 'msw'
 import { db, maybeError } from '../app/api/mockDb'
 import { PersonSchema, PersonnelFiltersSchema } from '../app/schemas/personnel'
 
-const API_BASE = '/api'
+const API_BASE = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/api'
 
 export const handlers = [
     // GET all personnel with filters

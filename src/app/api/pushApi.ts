@@ -1,6 +1,6 @@
 import { ApiResult } from './types';
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/api';
 
 /** Convert a VAPID public key from base64url to Uint8Array */
 export function urlBase64ToUint8Array(base64String: string): Uint8Array {

@@ -1,7 +1,7 @@
 import { Person, PersonnelFilters } from '../types/personnel';
 import { ApiResult } from './types';
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/api';
 
 /** Utility to handle fetch responses */
 async function handleResponse<T>(response: Response): Promise<ApiResult<T>> {
