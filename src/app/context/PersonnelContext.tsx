@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Person, PersonnelFilters } from '../types/personnel';
 import * as api from '../api/personnelApi';
 import { toast } from 'sonner';
@@ -38,16 +38,12 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Keep a ref of the latest filters so the debounced callback always sees them
-  const filtersRef = useRef(filters);
-  filtersRef.current = filters;
-
   // Load personnel from mock API with current filters (backend-side filtering, pagination and sorting)
-  const loadPersonnel = useCallback(async () => {
+  const loadPersonnel = useCallback(async (currentFilters: PersonnelFilters) => {
     setLoading(true);
     setError(null);
 
-    const result = await api.getPersonnel(filtersRef.current);
+    const result = await api.getPersonnel(currentFilters);
     if (result.success) {
       setPersonnel(result.data);
       // If server provides total, use it, otherwise use local data length
@@ -59,18 +55,11 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
-  // Guard to prevent double execution in StrictMode
-  const isMounted = useRef(false);
-
+  // Always debounce so StrictMode's cleanup cancels the first timer,
+  // leaving exactly one request per filter change (including initial load).
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-      loadPersonnel();
-      return;
-    }
-
     const timer = setTimeout(() => {
-      loadPersonnel();
+      loadPersonnel(filters);
     }, DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
@@ -81,7 +70,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     const { id: _id, createdAt: _c, updatedAt: _u, ...personData } = person;
     const result = await api.createPerson(personData);
     if (result.success) {
-      await loadPersonnel();
+      await loadPersonnel(filters);
       return true;
     }
     toast.error(result.message);
@@ -91,7 +80,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const updatePerson = async (id: string, updates: Partial<Person>): Promise<boolean> => {
     const result = await api.updatePerson(id, updates);
     if (result.success) {
-      await loadPersonnel();
+      await loadPersonnel(filters);
       return true;
     }
     toast.error(result.message);
@@ -101,7 +90,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const deletePerson = async (id: string): Promise<boolean> => {
     const result = await api.deletePerson(id);
     if (result.success) {
-      await loadPersonnel();
+      await loadPersonnel(filters);
       return true;
     }
     toast.error(result.message);
@@ -128,7 +117,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
         totalCount,
         loading,
         error,
-        reload: loadPersonnel,
+        reload: () => loadPersonnel(filters),
       }}
     >
       {children}
