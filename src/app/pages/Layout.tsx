@@ -7,6 +7,8 @@ import { useSettings } from '../context/SettingsContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ThemeToggle } from '../components/theme-toggle';
 
+import logo from '../../assets/logo.png';
+
 export function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -49,8 +51,8 @@ export function Layout() {
                 {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </Button>
 
-              <div className="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-lg shrink-0">
-                <Shield className="w-6 h-6 text-white" />
+              <div className="flex items-center justify-center w-10 h-10 shrink-0 overflow-hidden rounded-lg">
+                <img src={logo} alt="Logo" className="w-full h-full object-contain" />
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-xl font-semibold text-foreground">{settings.organizationName}</h1>
