@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
-import { ServiceStatus, ServiceType, OrganizationalUnit, Position } from '../types/personnel';
+import { ServiceStatus, ServiceType, OrganizationalUnit, Position, RankItem } from '../types/personnel';
 import { ImportRow } from '../hooks/useImportPersonnel';
+import { TranslationKey } from '../i18n';
 
 const requiredFields = ['callsign', 'fullName', 'rank', 'birthDate', 'serviceType', 'unitId', 'positionId', 'status', 'phone'];
 
@@ -24,7 +25,7 @@ export function validateRow(row: ImportRow): ImportRow {
     };
 }
 
-export function checkDuplicates(rows: ImportRow[], t: (key: string) => string): ImportRow[] {
+export function checkDuplicates(rows: ImportRow[], t: (key: TranslationKey) => string): ImportRow[] {
     const seenCallsign = new Set<string>();
     const seenMilitaryId = new Set<string>();
     const seenPassport = new Set<string>();
@@ -75,7 +76,7 @@ export function checkDuplicates(rows: ImportRow[], t: (key: string) => string): 
         if (isDuplicate) {
             row._isValid = false;
             row._selected = false; // Deselect duplicates by default
-            row._errors.push(`${t('import_duplicate') || 'Дублікат'}: ${duplicateFields.join(', ')}`);
+            row._errors.push(`${t('import_duplicate')}: ${duplicateFields.join(', ')}`);
         }
 
         return row;
@@ -87,9 +88,9 @@ export function parsePersonnelCsv(
     dictionaries: {
         units: OrganizationalUnit[];
         positions: Position[];
-        ranks: any[];
+        ranks: RankItem[];
     },
-    t: (key: string) => string,
+    t: (key: TranslationKey) => string,
     onComplete: (data: ImportRow[]) => void,
     onError: (error: Error) => void
 ) {

@@ -46,7 +46,7 @@ export function useImportPersonnel() {
         parsePersonnelCsv(
             file,
             { units: organizationalUnits, positions, ranks },
-            t as any, // Cast t to match expected (key: string) => string
+            t,
             (parsedData) => {
                 setData(parsedData);
                 setDbChecked(false); // Reset DB check on new file upload
@@ -65,7 +65,7 @@ export function useImportPersonnel() {
         // We still need to run deduplication over the whole new dataset asynchronously
         // or by reading the latest state. The old logic checked duplicates inline.
         // Let's rely on the `updateField` and then trigger a duplicate check.
-        setData(prev => checkDuplicates(prev, t as any));
+        setData(prev => checkDuplicates(prev, t));
     };
 
     const handleCheckDb = async () => {
@@ -121,7 +121,6 @@ export function useImportPersonnel() {
             return;
         }
         setIsImporting(true);
-        let successCount = 0;
         const toImport = data.filter(d => d._selected && d._isValid);
 
         if (toImport.length === 0) {
@@ -130,8 +129,8 @@ export function useImportPersonnel() {
             return;
         }
 
-        // Process one by one sequentially 
-        for (const row of toImport) {
+        // Process in parallel for significantly better performance
+        const importPromises = toImport.map(async (row) => {
             const personToCreate = {
                 callsign: row.callsign!,
                 fullName: row.fullName!,
@@ -153,10 +152,11 @@ export function useImportPersonnel() {
                 roleIds: row.roleIds || [],
             } as Person;
 
-            // Attempt creation
-            const ok = await addPerson(personToCreate);
-            if (ok) successCount++;
-        }
+            return await addPerson(personToCreate);
+        });
+
+        const results = await Promise.all(importPromises);
+        const successCount = results.filter(Boolean).length;
 
         setIsImporting(false);
 
