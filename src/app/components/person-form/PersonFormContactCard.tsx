@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { MaskedInput } from '../ui/masked-input';
 import { useLanguage } from '../../context/LanguageContext';
 
-const phonePattern = /^(?:\+?38)?0\d{9}$/;
+const phonePattern = /^\+38 \(\d{3}\) \d{3}-\d{2}-\d{2}$/;
 const docPattern = /^[А-ЯҐЄІЇA-Z]{2}\s\d{6}$/i;
 
 interface PersonFormContactCardProps {
