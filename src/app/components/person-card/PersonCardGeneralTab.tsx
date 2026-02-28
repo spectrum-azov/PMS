@@ -26,9 +26,9 @@ export function PersonCardGeneralTab({
     const { t } = useLanguage();
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Personal Info */}
-            <Card>
+            <Card className="h-fit">
                 <CardHeader>
                     <CardTitle>{t('card_personal_info')}</CardTitle>
                 </CardHeader>
@@ -65,7 +65,7 @@ export function PersonCardGeneralTab({
             </Card>
 
             {/* Service Info */}
-            <Card>
+            <Card className="h-fit">
                 <CardHeader>
                     <CardTitle>{t('card_service')}</CardTitle>
                 </CardHeader>
@@ -107,91 +107,93 @@ export function PersonCardGeneralTab({
                 </CardContent>
             </Card>
 
-            {/* Organization */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>{t('card_org')}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    <div>
-                        <p className="text-sm text-muted-foreground">{t('card_unit_label')}</p>
-                        <p className="font-medium">{getUnitName(person.unitId)}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            {getUnitPath(person.unitId)}
-                        </p>
-                    </div>
-                    <Separator />
-                    <div>
-                        <p className="text-sm text-muted-foreground">{t('card_position_label')}</p>
-                        <p className="font-medium">{getPositionName(person.positionId)}</p>
-                    </div>
-                    <Separator />
-                    <div>
-                        <p className="text-sm text-muted-foreground">{t('card_roles')}</p>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                            {person.roleIds.map((roleId: string) => (
-                                <Badge key={roleId} variant="outline">
-                                    {getRoleName(roleId)}
-                                </Badge>
-                            ))}
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Contact Info */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>{t('card_contact')}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    <div className="flex items-center gap-3">
-                        <Phone className="w-4 h-4 text-muted-foreground" />
+            <div className="flex flex-col gap-6">
+                {/* Organization */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{t('card_org')}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
                         <div>
-                            <p className="text-sm text-muted-foreground">{t('card_primary_phone')}</p>
-                            <p className="font-medium font-mono">{formatPhoneNumber(person.phone)}</p>
+                            <p className="text-sm text-muted-foreground">{t('card_unit_label')}</p>
+                            <p className="font-medium">{getUnitName(person.unitId)}</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                {getUnitPath(person.unitId)}
+                            </p>
                         </div>
-                    </div>
-                    {person.additionalPhones && person.additionalPhones.length > 0 && (
-                        <>
-                            <Separator />
-                            <div className="flex items-center gap-3">
-                                <Phone className="w-4 h-4 text-muted-foreground" />
-                                <div>
-                                    <p className="text-sm text-muted-foreground">{t('card_additional_phones')}</p>
-                                    {person.additionalPhones.map((phone: string, idx: number) => (
-                                        <p key={idx} className="font-medium font-mono">{formatPhoneNumber(phone)}</p>
-                                    ))}
-                                </div>
+                        <Separator />
+                        <div>
+                            <p className="text-sm text-muted-foreground">{t('card_position_label')}</p>
+                            <p className="font-medium">{getPositionName(person.positionId)}</p>
+                        </div>
+                        <Separator />
+                        <div>
+                            <p className="text-sm text-muted-foreground">{t('card_roles')}</p>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {person.roleIds.map((roleId: string) => (
+                                    <Badge key={roleId} variant="outline">
+                                        {getRoleName(roleId)}
+                                    </Badge>
+                                ))}
                             </div>
-                        </>
-                    )}
-                    {person.address && (
-                        <>
-                            <Separator />
-                            <div className="flex items-start gap-3">
-                                <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
-                                <div>
-                                    <p className="text-sm text-muted-foreground">{t('card_address')}</p>
-                                    <p className="font-medium">{person.address}</p>
-                                </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Contact Info */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{t('card_contact')}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        <div className="flex items-center gap-3">
+                            <Phone className="w-4 h-4 text-muted-foreground" />
+                            <div>
+                                <p className="text-sm text-muted-foreground">{t('card_primary_phone')}</p>
+                                <p className="font-medium font-mono">{formatPhoneNumber(person.phone)}</p>
                             </div>
-                        </>
-                    )}
-                    {person.registrationAddress && (
-                        <>
-                            <Separator />
-                            <div className="flex items-start gap-3">
-                                <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
-                                <div>
-                                    <p className="text-sm text-muted-foreground">{t('card_reg_address')}</p>
-                                    <p className="font-medium">{person.registrationAddress}</p>
+                        </div>
+                        {person.additionalPhones && person.additionalPhones.length > 0 && (
+                            <>
+                                <Separator />
+                                <div className="flex items-center gap-3">
+                                    <Phone className="w-4 h-4 text-muted-foreground" />
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">{t('card_additional_phones')}</p>
+                                        {person.additionalPhones.map((phone: string, idx: number) => (
+                                            <p key={idx} className="font-medium font-mono">{formatPhoneNumber(phone)}</p>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        </>
-                    )}
-                </CardContent>
-            </Card>
+                            </>
+                        )}
+                        {person.address && (
+                            <>
+                                <Separator />
+                                <div className="flex items-start gap-3">
+                                    <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">{t('card_address')}</p>
+                                        <p className="font-medium">{person.address}</p>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        {person.registrationAddress && (
+                            <>
+                                <Separator />
+                                <div className="flex items-start gap-3">
+                                    <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">{t('card_reg_address')}</p>
+                                        <p className="font-medium">{person.registrationAddress}</p>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     );
 }
