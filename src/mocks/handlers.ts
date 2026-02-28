@@ -322,4 +322,17 @@ export const handlers = [
         db.persist('ranks-data', db.ranks)
         return HttpResponse.json({ success: true, data: { id } })
     }),
+
+    // Push subscription
+    http.post(`${API_BASE}/push/subscribe`, async () => {
+        await delay(100)
+        const err = maybeError()
+        if (err) return HttpResponse.json({ success: false, message: err }, { status: 500 })
+        return HttpResponse.json({ success: true, data: { subscribed: true } })
+    }),
+
+    http.post(`${API_BASE}/push/unsubscribe`, async () => {
+        await delay(100)
+        return HttpResponse.json({ success: true, data: { unsubscribed: true } })
+    }),
 ]

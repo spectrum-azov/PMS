@@ -436,4 +436,12 @@ export const en: Record<TranslationKey, string> = {
     push_test_body: 'This is a test push notification from your PMS App!',
     push_not_granted: 'Push notifications are not granted.',
     push_denied: 'Push notifications have been denied before. Please enable them in your browser settings.',
+
+    // Notification Center
+    notif_center_title: 'Notifications',
+    notif_mark_all_read: 'Mark all as read',
+    notif_clear_all: 'Clear all',
+    notif_empty: 'No new notifications',
+    notif_enable_push: 'Enable push notifications',
+    notif_push_enabled: 'Push notifications enabled',
 };

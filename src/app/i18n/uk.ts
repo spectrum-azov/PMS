@@ -433,6 +433,14 @@ export const uk = {
     push_test_body: 'Це тестове push-сповіщення з вашого додатку PMS!',
     push_not_granted: 'Push-сповіщення не дозволено.',
     push_denied: 'Push-сповіщення були заборонені раніше. Будь ласка, увімкніть їх у налаштуваннях вашого браузера.',
+
+    // Notification Center
+    notif_center_title: 'Сповіщення',
+    notif_mark_all_read: 'Позначити всі як прочитані',
+    notif_clear_all: 'Очистити всі',
+    notif_empty: 'Немає нових сповіщень',
+    notif_enable_push: 'Увімкнути push-сповіщення',
+    notif_push_enabled: 'Push-сповіщення увімкнено',
 };
 
 export type TranslationKey = keyof typeof uk;

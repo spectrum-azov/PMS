@@ -6,6 +6,7 @@ import { Separator } from '../components/ui/separator';
 import { useSettings } from '../context/SettingsContext';
 import { useLanguage } from '../context/LanguageContext';
 import { ThemeToggle } from '../components/theme-toggle';
+import { NotificationCenter } from '../components/NotificationCenter';
 import { testPushNotification } from '../utils/pushNotifications';
 
 import logo from '../../assets/logo.png';
@@ -75,6 +76,7 @@ export function Layout() {
                   {lang === 'uk' ? 'UA' : 'EN'}
                 </span>
               </Button>
+              <NotificationCenter />
               <Button
                 variant="outline"
                 size="sm"

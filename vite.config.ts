@@ -88,6 +88,7 @@ export default defineConfig({
           'vendor-csv': ['papaparse'],
           'vendor-dnd': ['react-dnd', 'react-dnd-html5-backend'],
           'vendor-utils': ['date-fns', 'lucide-react', 'clsx', 'tailwind-merge'],
+          'vendor-signalr': ['@microsoft/signalr'],
         },
       },
     },

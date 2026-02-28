@@ -4,6 +4,7 @@ import { PersonnelProvider } from './context/PersonnelContext';
 import { DictionariesProvider } from './context/DictionariesContext';
 import { SettingsProvider } from './context/SettingsContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { SignalRProvider } from './context/SignalRContext';
 import { Toaster } from './components/ui/sonner';
 import { ThemeProvider } from './components/theme-provider';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -22,10 +23,12 @@ export default function App() {
         <SettingsProvider>
           <DictionariesProvider>
             <PersonnelProvider>
-              <ErrorBoundary>
-                <RouterProvider router={router} />
-              </ErrorBoundary>
-              <Toaster />
+              <SignalRProvider>
+                <ErrorBoundary>
+                  <RouterProvider router={router} />
+                </ErrorBoundary>
+                <Toaster />
+              </SignalRProvider>
             </PersonnelProvider>
           </DictionariesProvider>
         </SettingsProvider>
