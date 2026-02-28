@@ -45,24 +45,23 @@ export function PositionDialog({
         >
             <div className="space-y-4">
                 <div>
-                    <Label htmlFor="name">{t('positions_name')}</Label>
+                    <Label htmlFor="name" className="mb-2">{t('positions_name')}</Label>
                     <Input
                         id="name"
                         value={formData.name || ''}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder=""
                         required
-                        className="mt-1"
                     />
                 </div>
 
                 <div>
-                    <Label htmlFor="category">{t('positions_category')}</Label>
+                    <Label htmlFor="category" className="mb-2">{t('positions_category')}</Label>
                     <Select
                         value={formData.category}
                         onValueChange={(value) => setFormData({ ...formData, category: value as Position['category'] })}
                     >
-                        <SelectTrigger className="mt-1">
+                        <SelectTrigger>
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -75,14 +74,14 @@ export function PositionDialog({
                 </div>
 
                 <div>
-                    <Label htmlFor="description">{t('positions_description')}</Label>
+                    <Label htmlFor="description" className="mb-2">{t('positions_description')}</Label>
                     <Textarea
                         id="description"
                         value={formData.description || ''}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         placeholder=""
                         rows={3}
-                        className="mt-1"
+                        className=""
                     />
                 </div>
             </div>

@@ -46,7 +46,7 @@ export function UnitDialog({
         >
             <div className="space-y-4">
                 <div>
-                    <Label htmlFor="name">{t('units_name')}</Label>
+                    <Label htmlFor="name" className="mb-2">{t('units_name')}</Label>
                     <Input
                         id="name"
                         value={formData.name || ''}
@@ -58,7 +58,7 @@ export function UnitDialog({
                 </div>
 
                 <div>
-                    <Label htmlFor="abbreviation">{t('units_abbreviation')}</Label>
+                    <Label htmlFor="abbreviation" className="mb-2">{t('units_abbreviation')}</Label>
                     <Input
                         id="abbreviation"
                         value={formData.abbreviation || ''}
@@ -69,7 +69,7 @@ export function UnitDialog({
                 </div>
 
                 <div>
-                    <Label htmlFor="type">{t('units_type')}</Label>
+                    <Label htmlFor="type" className="mb-2">{t('units_type')}</Label>
                     <Select
                         value={formData.type}
                         onValueChange={(value) => setFormData({ ...formData, type: value as OrganizationalUnit['type'] })}
@@ -86,7 +86,7 @@ export function UnitDialog({
                 </div>
 
                 <div>
-                    <Label htmlFor="location">{t('units_location')}</Label>
+                    <Label htmlFor="location" className="mb-2">{t('units_location')}</Label>
                     <Input
                         id="location"
                         value={formData.location || ''}
@@ -97,7 +97,7 @@ export function UnitDialog({
                 </div>
 
                 <div>
-                    <Label htmlFor="parentId">{t('units_parent')}</Label>
+                    <Label htmlFor="parentId" className="mb-2">{t('units_parent')}</Label>
                     <Select
                         value={formData.parentId || 'none'}
                         onValueChange={(value) =>

@@ -24,7 +24,7 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>
-                    <Label htmlFor="serviceType">{t('form_service_type')}</Label>
+                    <Label htmlFor="serviceType" className="mb-2">{t('form_service_type')}</Label>
                     <Controller
                         name="serviceType"
                         control={control}
@@ -47,7 +47,7 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                 </div>
 
                 <div>
-                    <Label htmlFor="tagNumber">{t('form_tag_number')}</Label>
+                    <Label htmlFor="tagNumber" className="mb-2">{t('form_tag_number')}</Label>
                     <Input
                         id="tagNumber"
                         {...register('tagNumber')}
@@ -56,7 +56,7 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                 </div>
 
                 <div>
-                    <Label htmlFor="unitId">{t('form_unit')}</Label>
+                    <Label htmlFor="unitId" className="mb-2">{t('form_unit')}</Label>
                     <Controller
                         name="unitId"
                         control={control}
@@ -82,7 +82,7 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                 </div>
 
                 <div>
-                    <Label htmlFor="positionId">{t('form_position')}</Label>
+                    <Label htmlFor="positionId" className="mb-2">{t('form_position')}</Label>
                     <Controller
                         name="positionId"
                         control={control}
@@ -108,7 +108,7 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
                 </div>
 
                 <div>
-                    <Label htmlFor="status">{t('form_status')}</Label>
+                    <Label htmlFor="status" className="mb-2">{t('form_status')}</Label>
                     <Controller
                         name="status"
                         control={control}

@@ -25,7 +25,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>
-                    <Label htmlFor="callsign">{t('form_callsign')}</Label>
+                    <Label htmlFor="callsign" className="mb-2">{t('form_callsign')}</Label>
                     <Input
                         id="callsign"
                         {...register('callsign', {
@@ -40,7 +40,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                 </div>
 
                 <div>
-                    <Label htmlFor="fullName">{t('form_fullname')}</Label>
+                    <Label htmlFor="fullName" className="mb-2">{t('form_fullname')}</Label>
                     <Input
                         id="fullName"
                         {...register('fullName', {
@@ -56,7 +56,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                 </div>
 
                 <div>
-                    <Label htmlFor="rank">{t('form_rank')}</Label>
+                    <Label htmlFor="rank" className="mb-2">{t('form_rank')}</Label>
                     <Controller
                         name="rank"
                         control={control}
@@ -82,7 +82,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                 </div>
 
                 <div>
-                    <Label htmlFor="birthDate">{t('form_birthdate')}</Label>
+                    <Label htmlFor="birthDate" className="mb-2">{t('form_birthdate')}</Label>
                     <Input
                         id="birthDate"
                         type="date"
@@ -97,7 +97,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
                 </div>
 
                 <div>
-                    <Label htmlFor="citizenship">{t('form_citizenship')}</Label>
+                    <Label htmlFor="citizenship" className="mb-2">{t('form_citizenship')}</Label>
                     <Input
                         id="citizenship"
                         {...register('citizenship')}

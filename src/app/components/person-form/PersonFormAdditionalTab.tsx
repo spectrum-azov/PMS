@@ -26,7 +26,7 @@ export function PersonFormAdditionalTab({ register, control, errors }: PersonFor
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <Label htmlFor="bloodType">{t('form_blood_type')}</Label>
+                            <Label htmlFor="bloodType" className="mb-2">{t('form_blood_type')}</Label>
                             <Input
                                 id="bloodType"
                                 {...register('bloodType')}
@@ -35,7 +35,7 @@ export function PersonFormAdditionalTab({ register, control, errors }: PersonFor
                         </div>
 
                         <div>
-                            <Label htmlFor="recruitedBy">{t('form_recruited_by')}</Label>
+                            <Label htmlFor="recruitedBy" className="mb-2">{t('form_recruited_by')}</Label>
                             <Input
                                 id="recruitedBy"
                                 {...register('recruitedBy')}
@@ -44,7 +44,7 @@ export function PersonFormAdditionalTab({ register, control, errors }: PersonFor
                         </div>
 
                         <div>
-                            <Label htmlFor="recruitedDate">{t('form_recruited_date')}</Label>
+                            <Label htmlFor="recruitedDate" className="mb-2">{t('form_recruited_date')}</Label>
                             <Input
                                 id="recruitedDate"
                                 type="date"
@@ -60,7 +60,7 @@ export function PersonFormAdditionalTab({ register, control, errors }: PersonFor
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <Label htmlFor="emergencyContactName">{t('form_ec_name')}</Label>
+                            <Label htmlFor="emergencyContactName" className="mb-2">{t('form_ec_name')}</Label>
                             <Input
                                 id="emergencyContactName"
                                 {...register('family.emergencyContact.name')}
@@ -93,7 +93,7 @@ export function PersonFormAdditionalTab({ register, control, errors }: PersonFor
                         </div>
 
                         <div>
-                            <Label htmlFor="emergencyContactRelation">{t('form_ec_relation')}</Label>
+                            <Label htmlFor="emergencyContactRelation" className="mb-2">{t('form_ec_relation')}</Label>
                             <Input
                                 id="emergencyContactRelation"
                                 {...register('family.emergencyContact.relation')}

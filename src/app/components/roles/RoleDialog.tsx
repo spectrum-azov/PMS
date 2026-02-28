@@ -45,24 +45,23 @@ export function RoleDialog({
         >
             <div className="space-y-4">
                 <div>
-                    <Label htmlFor="roleName">{t('roles_role_name')}</Label>
+                    <Label htmlFor="roleName" className="mb-2">{t('roles_role_name')}</Label>
                     <Input
                         id="roleName"
                         value={roleFormData.name || ''}
                         onChange={(e) => setRoleFormData({ ...roleFormData, name: e.target.value })}
                         placeholder=""
                         required
-                        className="mt-1"
                     />
                 </div>
 
                 <div>
-                    <Label htmlFor="directionId">{t('roles_functional_direction')}</Label>
+                    <Label htmlFor="directionId" className="mb-2">{t('roles_functional_direction')}</Label>
                     <Select
                         value={roleFormData.directionId}
                         onValueChange={(value) => setRoleFormData({ ...roleFormData, directionId: value })}
                     >
-                        <SelectTrigger className="mt-1">
+                        <SelectTrigger>
                             <SelectValue placeholder={t('roles_select_direction')} />
                         </SelectTrigger>
                         <SelectContent>
@@ -76,12 +75,12 @@ export function RoleDialog({
                 </div>
 
                 <div>
-                    <Label htmlFor="level">{t('roles_expertise_level')}</Label>
+                    <Label htmlFor="level" className="mb-2">{t('roles_expertise_level')}</Label>
                     <Select
                         value={roleFormData.level?.toString()}
                         onValueChange={(value) => setRoleFormData({ ...roleFormData, level: parseInt(value) as 1 | 2 | 3 })}
                     >
-                        <SelectTrigger className="mt-1">
+                        <SelectTrigger>
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>

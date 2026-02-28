@@ -54,7 +54,7 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                     </div>
 
                     <div>
-                        <Label htmlFor="address">{t('form_address')}</Label>
+                        <Label htmlFor="address" className="mb-2">{t('form_address')}</Label>
                         <Input
                             id="address"
                             {...register('address')}
@@ -63,7 +63,7 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                     </div>
 
                     <div>
-                        <Label htmlFor="registrationAddress">{t('form_reg_address')}</Label>
+                        <Label htmlFor="registrationAddress" className="mb-2">{t('form_reg_address')}</Label>
                         <Input
                             id="registrationAddress"
                             {...register('registrationAddress')}
@@ -80,7 +80,7 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <Label htmlFor="militaryId">{t('form_military_id')}</Label>
+                        <Label htmlFor="militaryId" className="mb-2">{t('form_military_id')}</Label>
                         <Input
                             id="militaryId"
                             {...register('militaryId', {
@@ -95,7 +95,7 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                     </div>
 
                     <div>
-                        <Label htmlFor="passport">{t('form_passport')}</Label>
+                        <Label htmlFor="passport" className="mb-2">{t('form_passport')}</Label>
                         <Input
                             id="passport"
                             {...register('passport', {
@@ -110,7 +110,7 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                     </div>
 
                     <div>
-                        <Label htmlFor="taxId">{t('form_tax_id')}</Label>
+                        <Label htmlFor="taxId" className="mb-2">{t('form_tax_id')}</Label>
                         <Input
                             id="taxId"
                             {...register('taxId', {

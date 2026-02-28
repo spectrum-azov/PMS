@@ -34,14 +34,13 @@ export function DirectionDialog({
             saveLabel={editingDirection ? t('common_update') : t('common_create')}
         >
             <div>
-                <Label htmlFor="directionName">{t('roles_direction_name')}</Label>
+                <Label htmlFor="directionName" className="mb-2">{t('roles_direction_name')}</Label>
                 <Input
                     id="directionName"
                     value={directionFormData.name}
                     onChange={(e) => setDirectionFormData({ name: e.target.value })}
                     placeholder=""
                     required
-                    className="mt-1"
                 />
             </div>
         </GenericDialog>
