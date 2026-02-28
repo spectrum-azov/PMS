@@ -26,90 +26,90 @@ export function PersonCardGeneralTab({
     const { t } = useLanguage();
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Personal Info */}
-            <Card className="h-fit">
-                <CardHeader>
-                    <CardTitle>{t('card_personal_info')}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    <div>
-                        <p className="text-sm text-muted-foreground">{t('card_fullname')}</p>
-                        <p className="font-medium">{person.fullName}</p>
-                    </div>
-                    <Separator />
-                    <div>
-                        <p className="text-sm text-muted-foreground">{t('card_callsign')}</p>
-                        <p className="font-medium font-mono text-primary">{person.callsign}</p>
-                    </div>
-                    <Separator />
-                    <div>
-                        <p className="text-sm text-muted-foreground">{t('card_birthdate')}</p>
-                        <p className="font-medium">{formatDate(person.birthDate)}</p>
-                    </div>
-                    <Separator />
-                    {person.bloodType && (
-                        <>
-                            <div>
-                                <p className="text-sm text-muted-foreground">{t('card_blood_type')}</p>
-                                <p className="font-medium">{person.bloodType}</p>
-                            </div>
-                            <Separator />
-                        </>
-                    )}
-                    <div>
-                        <p className="text-sm text-muted-foreground">{t('card_citizenship')}</p>
-                        <p className="font-medium">{person.citizenship || t('card_not_specified')}</p>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Service Info */}
-            <Card className="h-fit">
-                <CardHeader>
-                    <CardTitle>{t('card_service')}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    <div>
-                        <p className="text-sm text-muted-foreground">{t('card_military_rank')}</p>
-                        <p className="font-medium">{person.rank}</p>
-                    </div>
-                    <Separator />
-                    <div>
-                        <p className="text-sm text-muted-foreground">{t('card_service_type_label')}</p>
-                        <Badge variant={person.serviceType === 'Контракт' ? 'default' : 'secondary'}>{person.serviceType}</Badge>
-                    </div>
-                    <Separator />
-                    {person.tagNumber && (
-                        <>
-                            <div>
-                                <p className="text-sm text-muted-foreground">{t('card_tag_number')}</p>
-                                <p className="font-medium font-mono">{person.tagNumber}</p>
-                            </div>
-                            <Separator />
-                        </>
-                    )}
-                    {person.recruitedBy && (
-                        <>
-                            <div>
-                                <p className="text-sm text-muted-foreground">{t('card_recruited_by')}</p>
-                                <p className="font-medium">{person.recruitedBy}</p>
-                            </div>
-                            <Separator />
-                        </>
-                    )}
-                    {person.recruitedDate && (
+        <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Personal Info */}
+                <Card className="h-full">
+                    <CardHeader>
+                        <CardTitle>{t('card_personal_info')}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
                         <div>
-                            <p className="text-sm text-muted-foreground">{t('card_recruited_date')}</p>
-                            <p className="font-medium">{formatDate(person.recruitedDate)}</p>
+                            <p className="text-sm text-muted-foreground">{t('card_fullname')}</p>
+                            <p className="font-medium">{person.fullName}</p>
                         </div>
-                    )}
-                </CardContent>
-            </Card>
+                        <Separator />
+                        <div>
+                            <p className="text-sm text-muted-foreground">{t('card_callsign')}</p>
+                            <p className="font-medium font-mono text-primary">{person.callsign}</p>
+                        </div>
+                        <Separator />
+                        <div>
+                            <p className="text-sm text-muted-foreground">{t('card_birthdate')}</p>
+                            <p className="font-medium">{formatDate(person.birthDate)}</p>
+                        </div>
+                        <Separator />
+                        {person.bloodType && (
+                            <>
+                                <div>
+                                    <p className="text-sm text-muted-foreground">{t('card_blood_type')}</p>
+                                    <p className="font-medium">{person.bloodType}</p>
+                                </div>
+                                <Separator />
+                            </>
+                        )}
+                        <div>
+                            <p className="text-sm text-muted-foreground">{t('card_citizenship')}</p>
+                            <p className="font-medium">{person.citizenship || t('card_not_specified')}</p>
+                        </div>
+                    </CardContent>
+                </Card>
 
-            <div className="flex flex-col gap-6">
+                {/* Service Info */}
+                <Card className="h-full">
+                    <CardHeader>
+                        <CardTitle>{t('card_service')}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        <div>
+                            <p className="text-sm text-muted-foreground">{t('card_military_rank')}</p>
+                            <p className="font-medium">{person.rank}</p>
+                        </div>
+                        <Separator />
+                        <div>
+                            <p className="text-sm text-muted-foreground">{t('card_service_type_label')}</p>
+                            <Badge variant={person.serviceType === 'Контракт' ? 'default' : 'secondary'}>{person.serviceType}</Badge>
+                        </div>
+                        <Separator />
+                        {person.tagNumber && (
+                            <>
+                                <div>
+                                    <p className="text-sm text-muted-foreground">{t('card_tag_number')}</p>
+                                    <p className="font-medium font-mono">{person.tagNumber}</p>
+                                </div>
+                                <Separator />
+                            </>
+                        )}
+                        {person.recruitedBy && (
+                            <>
+                                <div>
+                                    <p className="text-sm text-muted-foreground">{t('card_recruited_by')}</p>
+                                    <p className="font-medium">{person.recruitedBy}</p>
+                                </div>
+                                <Separator />
+                            </>
+                        )}
+                        {person.recruitedDate && (
+                            <div>
+                                <p className="text-sm text-muted-foreground">{t('card_recruited_date')}</p>
+                                <p className="font-medium">{formatDate(person.recruitedDate)}</p>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
                 {/* Organization */}
-                <Card>
+                <Card className="h-full">
                     <CardHeader>
                         <CardTitle>{t('card_org')}</CardTitle>
                     </CardHeader>
@@ -139,13 +139,16 @@ export function PersonCardGeneralTab({
                         </div>
                     </CardContent>
                 </Card>
+            </div>
 
-                {/* Contact Info */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{t('card_contact')}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
+            {/* Contact Info */}
+            <Card className="w-full shrink-0">
+                <CardHeader>
+                    <CardTitle>{t('card_contact')}</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Phones Col */}
+                    <div className="space-y-4">
                         <div className="flex items-center gap-3">
                             <Phone className="w-4 h-4 text-muted-foreground" />
                             <div>
@@ -167,21 +170,22 @@ export function PersonCardGeneralTab({
                                 </div>
                             </>
                         )}
+                    </div>
+
+                    {/* Addresses Col */}
+                    <div className="space-y-4">
                         {person.address && (
-                            <>
-                                <Separator />
-                                <div className="flex items-start gap-3">
-                                    <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
-                                    <div>
-                                        <p className="text-sm text-muted-foreground">{t('card_address')}</p>
-                                        <p className="font-medium">{person.address}</p>
-                                    </div>
+                            <div className="flex items-start gap-3">
+                                <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
+                                <div>
+                                    <p className="text-sm text-muted-foreground">{t('card_address')}</p>
+                                    <p className="font-medium">{person.address}</p>
                                 </div>
-                            </>
+                            </div>
                         )}
                         {person.registrationAddress && (
                             <>
-                                <Separator />
+                                {person.address && <Separator />}
                                 <div className="flex items-start gap-3">
                                     <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
                                     <div>
@@ -191,9 +195,9 @@ export function PersonCardGeneralTab({
                                 </div>
                             </>
                         )}
-                    </CardContent>
-                </Card>
-            </div>
+                    </div>
+                </CardContent>
+            </Card>
         </div>
     );
 }

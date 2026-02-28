@@ -14,29 +14,24 @@ interface PersonFormGeneralTabProps {
 
 export function PersonFormGeneralTab({ register, control, errors, validateBirthDate }: PersonFormGeneralTabProps) {
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="h-fit">
-                <PersonFormPersonalInfoCard
-                    register={register}
-                    control={control}
-                    errors={errors}
-                    validateBirthDate={validateBirthDate}
-                />
-            </div>
+        <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div className="h-full">
+                    <PersonFormPersonalInfoCard
+                        register={register}
+                        control={control}
+                        errors={errors}
+                        validateBirthDate={validateBirthDate}
+                    />
+                </div>
 
-            <div className="h-fit">
-                <PersonFormServiceInfoCard
-                    register={register}
-                    control={control}
-                    errors={errors}
-                />
-            </div>
-
-            <div className="flex flex-col gap-6">
-                <PersonFormRolesCard
-                    control={control}
-                    errors={errors}
-                />
+                <div className="h-full">
+                    <PersonFormServiceInfoCard
+                        register={register}
+                        control={control}
+                        errors={errors}
+                    />
+                </div>
 
                 <PersonFormContactCard
                     register={register}
@@ -44,6 +39,11 @@ export function PersonFormGeneralTab({ register, control, errors, validateBirthD
                     errors={errors}
                 />
             </div>
+
+            <PersonFormRolesCard
+                control={control}
+                errors={errors}
+            />
         </div>
     );
 }

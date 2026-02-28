@@ -15,7 +15,7 @@ export function PersonFormRolesCard({ control, errors }: PersonFormRolesCardProp
     const { t } = useLanguage();
 
     return (
-        <Card className="lg:col-span-2">
+        <Card className="shrink-0 w-full">
             <CardHeader>
                 <CardTitle>{t('form_roles')}</CardTitle>
             </CardHeader>
