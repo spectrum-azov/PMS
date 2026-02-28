@@ -90,24 +90,39 @@ export default function PersonCard() {
   return (
     <div className="flex flex-col p-6 gap-6">
       {/* Header */}
-      <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 min-w-0">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/personnel')} className="shrink-0">
-            <ArrowLeft className="w-4 h-4 mr-2" />
+      <div className="shrink-0 flex items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/personnel')} className="shrink-0 sm:w-auto sm:px-3 sm:gap-2">
+            <ArrowLeft className="w-5 h-5 sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">{t('card_back')}</span>
           </Button>
-          <Separator orientation="vertical" className="h-8 hidden sm:block" />
-          <div className="min-w-0">
-            <div className="flex flex-col sm:flex-row items-center gap-3 flex-wrap">
-              <h2 className="text-2xl sm:text-3xl font-semibold text-foreground">{person.callsign}</h2>
-              {getStatusBadge(person.status)}
+          <Separator orientation="vertical" className="h-8 shrink-0" />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-foreground uppercase truncate leading-none">
+                {person.callsign}
+              </h2>
+              <div className="shrink-0">
+                {getStatusBadge(person.status)}
+              </div>
             </div>
-            <p className="text-muted-foreground mt-1 truncate">{person.fullName}</p>
+            <p className="text-muted-foreground mt-1 truncate text-xs sm:text-sm hidden sm:block">{person.fullName}</p>
           </div>
         </div>
-        <Button onClick={() => navigate(`/personnel/${id}/edit`)} className="shrink-0">
-          <Edit className="w-4 h-4 sm:mr-2" />
-          <span className="hidden sm:inline">{t('card_edit')}</span>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => navigate(`/personnel/${id}/edit`)}
+          className="shrink-0 sm:hidden"
+        >
+          <Edit className="w-4 h-4" />
+        </Button>
+        <Button
+          onClick={() => navigate(`/personnel/${id}/edit`)}
+          className="shrink-0 hidden sm:flex"
+        >
+          <Edit className="w-4 h-4 mr-2" />
+          <span>{t('card_edit')}</span>
         </Button>
       </div>
 
