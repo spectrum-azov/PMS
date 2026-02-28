@@ -1,54 +1,67 @@
 import { createHashRouter, Navigate, useRouteError } from 'react-router';
-import { lazy, Suspense, type ComponentType } from 'react';
+import { Suspense } from 'react';
 import { Layout } from './pages/Layout';
 
+// ---------------------------------------------------------------------------
+// Chunk-load error recovery
+// ---------------------------------------------------------------------------
+// After a new GitHub Pages deployment the hashed chunk filenames change, but
+// a visitor's browser may have cached the old index.html that still references
+// the *old* hashes → 404 on every dynamic import.
+//
+// Strategy:
+//   1. Each lazy route gets a single automatic reload attempt (sessionStorage
+//      flag prevents an infinite loop).
+//   2. RouteErrorFallback (the React Router errorElement) catches any error
+//      that escapes the lazy loader – including the Suspense rejection – and
+//      also triggers one reload before rendering a user-facing error screen.
+// ---------------------------------------------------------------------------
+
 /**
- * Wraps a dynamic import with a single-retry mechanism.
- * After a new deployment the chunk hashes change, but a cached index.html
- * still references the old ones → 404.  On failure we reload the page once
- * so the browser fetches the new index.html with the correct hashes.
- * sessionStorage guards against an infinite reload loop.
+ * Returns a React Router `lazy` route record.
+ * On failure it attempts one page reload (guarded by sessionStorage).
  */
-function lazyRetry(
-  factory: () => Promise<{ default: ComponentType<unknown> }>,
+function lazyRoute(
+  factory: () => Promise<{ default: React.ComponentType<unknown> }>,
   chunkName: string,
 ) {
-  return lazy(() =>
-    factory().catch(() => {
-      const key = `chunk-retry-${chunkName}`;
+  return async (): Promise<{ Component: React.ComponentType<unknown> }> => {
+    const key = `chunk-retry-${chunkName}`;
+    try {
+      const mod = await factory();
+      // If we previously set a retry flag for this chunk and it now succeeded,
+      // clean up so future navigations can retry again if needed.
+      sessionStorage.removeItem(key);
+      return { Component: mod.default };
+    } catch (err) {
       if (!sessionStorage.getItem(key)) {
         sessionStorage.setItem(key, '1');
         window.location.reload();
+        // The reload will interrupt execution, but we still need to return
+        // something valid – return a never-resolving promise to keep React
+        // in the loading state until the reload happens.
+        return new Promise(() => { });
       }
-      // If we already reloaded once and it still fails – surface the error
-      return Promise.reject(
-        new Error(`Failed to load chunk "${chunkName}" after retry.`),
-      );
-    }),
-  );
+      // Already retried – surface the error so errorElement can catch it.
+      throw err;
+    }
+  };
 }
 
-const PersonnelRegistry = lazyRetry(() => import('./pages/PersonnelRegistry'), 'PersonnelRegistry');
-const PersonCard = lazyRetry(() => import('./pages/PersonCard'), 'PersonCard');
-const PersonForm = lazyRetry(() => import('./pages/PersonForm'), 'PersonForm');
-const UnitsPage = lazyRetry(() => import('./pages/UnitsPage'), 'UnitsPage');
-const PositionsPage = lazyRetry(() => import('./pages/PositionsPage'), 'PositionsPage');
-const RolesPage = lazyRetry(() => import('./pages/RolesPage'), 'RolesPage');
-const SettingsPage = lazyRetry(() => import('./pages/SettingsPage'), 'SettingsPage');
-const ImportPersonnel = lazyRetry(() => import('./pages/ImportPersonnel'), 'ImportPersonnel');
-
-function LazyPage({ children }: { children: React.ReactNode }) {
+// ---------------------------------------------------------------------------
+// Loading spinner (shared Suspense fallback)
+// ---------------------------------------------------------------------------
+function PageSpinner() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    }>
-      {children}
-    </Suspense>
+    <div className="flex items-center justify-center min-h-[50vh]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+    </div>
   );
 }
 
+// ---------------------------------------------------------------------------
+// Route error boundary
+// ---------------------------------------------------------------------------
 /**
  * Shown by React Router when a route (or its lazy component) throws.
  * Detects stale-chunk errors and auto-reloads once; otherwise renders
@@ -57,7 +70,6 @@ function LazyPage({ children }: { children: React.ReactNode }) {
 function RouteErrorFallback() {
   const error = useRouteError() as Error | undefined;
 
-  // If this looks like a chunk-load failure and we haven't retried yet
   const isChunkError =
     error?.message?.includes('Failed to fetch dynamically imported module') ||
     error?.message?.includes('Loading chunk') ||
@@ -93,6 +105,9 @@ function RouteErrorFallback() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Router
+// ---------------------------------------------------------------------------
 export const router = createHashRouter([
   {
     path: '/',
@@ -105,39 +120,48 @@ export const router = createHashRouter([
       },
       {
         path: 'personnel',
-        Component: () => <LazyPage><PersonnelRegistry /></LazyPage>,
+        lazy: lazyRoute(() => import('./pages/PersonnelRegistry'), 'PersonnelRegistry'),
+        HydrateFallback: PageSpinner,
       },
       {
         path: 'personnel/new',
-        Component: () => <LazyPage><PersonForm /></LazyPage>,
+        lazy: lazyRoute(() => import('./pages/PersonForm'), 'PersonForm'),
+        HydrateFallback: PageSpinner,
       },
       {
         path: 'personnel/import',
-        Component: () => <LazyPage><ImportPersonnel /></LazyPage>,
+        lazy: lazyRoute(() => import('./pages/ImportPersonnel'), 'ImportPersonnel'),
+        HydrateFallback: PageSpinner,
       },
       {
         path: 'personnel/:id',
-        Component: () => <LazyPage><PersonCard /></LazyPage>,
+        lazy: lazyRoute(() => import('./pages/PersonCard'), 'PersonCard'),
+        HydrateFallback: PageSpinner,
       },
       {
         path: 'personnel/:id/edit',
-        Component: () => <LazyPage><PersonForm /></LazyPage>,
+        lazy: lazyRoute(() => import('./pages/PersonForm'), 'PersonForm-edit'),
+        HydrateFallback: PageSpinner,
       },
       {
         path: 'units',
-        Component: () => <LazyPage><UnitsPage /></LazyPage>,
+        lazy: lazyRoute(() => import('./pages/UnitsPage'), 'UnitsPage'),
+        HydrateFallback: PageSpinner,
       },
       {
         path: 'positions',
-        Component: () => <LazyPage><PositionsPage /></LazyPage>,
+        lazy: lazyRoute(() => import('./pages/PositionsPage'), 'PositionsPage'),
+        HydrateFallback: PageSpinner,
       },
       {
         path: 'roles',
-        Component: () => <LazyPage><RolesPage /></LazyPage>,
+        lazy: lazyRoute(() => import('./pages/RolesPage'), 'RolesPage'),
+        HydrateFallback: PageSpinner,
       },
       {
         path: 'settings',
-        Component: () => <LazyPage><SettingsPage /></LazyPage>,
+        lazy: lazyRoute(() => import('./pages/SettingsPage'), 'SettingsPage'),
+        HydrateFallback: PageSpinner,
       },
     ],
   },
