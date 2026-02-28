@@ -7,7 +7,7 @@ import { ColumnId, DEFAULT_COLUMNS } from '../components/personnel/types';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
-import { UserPlus, Download, RefreshCw } from 'lucide-react';
+import { UserPlus, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useState, useEffect, useTransition } from 'react';
 import { DataTablePagination } from '../components/ui/DataTablePagination';
@@ -103,10 +103,6 @@ export default function PersonnelRegistry() {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Download className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">{t('common_export')}</span>
-          </Button>
           <Button onClick={() => navigate('/personnel/new')}>
             <UserPlus className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">{t('registry_add_person')}</span>

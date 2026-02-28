@@ -7,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Separator } from '../components/ui/separator';
-import { Save, Download, RefreshCw, Info } from 'lucide-react';
+import { Save, RefreshCw, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -25,23 +25,6 @@ export default function SettingsPage() {
     toast.success(t('settings_saved'));
   };
 
-  const handleExportData = () => {
-    const data = {
-      personnel,
-      units,
-      positions,
-      roles,
-      exportedAt: new Date().toISOString(),
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `pms-export-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success(t('settings_exported'));
-  };
 
   const handleResetData = () => {
     if (window.confirm(t('settings_reset_confirm'))) {
@@ -105,10 +88,6 @@ export default function SettingsPage() {
             {t('settings_current')} {personnel.length} {t('settings_persons')} · {units.length} {t('settings_units')} · {positions.length} {t('settings_positions')} · {roles.length} {t('settings_roles')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button variant="outline" onClick={handleExportData}>
-              <Download className="w-4 h-4 mr-2" />
-              {t('settings_export')}
-            </Button>
             <Button variant="destructive" onClick={handleResetData}>
               <RefreshCw className="w-4 h-4 mr-2" />
               {t('settings_reset')}
