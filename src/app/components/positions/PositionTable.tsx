@@ -11,6 +11,9 @@ interface PositionTableProps {
     getCategoryBadge: (category: string) => React.ReactNode;
     handleOpenDialog: (position: Position) => void;
     handleDelete: (id: string) => void;
+    sortField?: string;
+    sortOrder?: 'asc' | 'desc';
+    onSort?: (field: string) => void;
 }
 
 export function PositionTable({
@@ -18,22 +21,31 @@ export function PositionTable({
     getCategoryBadge,
     handleOpenDialog,
     handleDelete,
+    sortField,
+    sortOrder,
+    onSort,
 }: PositionTableProps) {
     const { t } = useLanguage();
 
     const columns = [
         {
+            id: 'name',
             header: t('positions_col_name'),
+            sortable: true,
             render: (position: Position) => (
                 <span className="font-medium">{position.name}</span>
             ),
         },
         {
+            id: 'category',
             header: t('positions_col_category'),
+            sortable: true,
             render: (position: Position) => getCategoryBadge(position.category),
         },
         {
+            id: 'description',
             header: t('positions_col_description'),
+            sortable: false,
             render: (position: Position) => (
                 <span className="text-sm text-muted-foreground">
                     {position.description || '—'}
@@ -93,6 +105,9 @@ export function PositionTable({
             renderMobileCard={renderMobileCard}
             emptyMessage={t('positions_empty')}
             idField="id"
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onSort={onSort}
         />
     );
 }

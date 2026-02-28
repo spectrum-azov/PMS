@@ -12,6 +12,9 @@ interface UnitTableProps {
     getTypeBadge: (type?: string) => React.ReactNode;
     handleOpenDialog: (unit: OrganizationalUnit) => void;
     handleDelete: (id: string) => void;
+    sortField?: string;
+    sortOrder?: 'asc' | 'desc';
+    onSort?: (field: string) => void;
 }
 
 export function UnitTable({
@@ -20,12 +23,17 @@ export function UnitTable({
     getTypeBadge,
     handleOpenDialog,
     handleDelete,
+    sortField,
+    sortOrder,
+    onSort,
 }: UnitTableProps) {
     const { t } = useLanguage();
 
     const columns = [
         {
+            id: 'abbreviation',
             header: t('units_col_abbrev'),
+            sortable: true,
             render: (unit: OrganizationalUnit) => (
                 <span className="font-medium text-primary font-mono">
                     {unit.abbreviation || '—'}
@@ -33,17 +41,23 @@ export function UnitTable({
             ),
         },
         {
+            id: 'name',
             header: t('units_col_name'),
+            sortable: true,
             render: (unit: OrganizationalUnit) => (
                 <span className="font-medium">{unit.name}</span>
             ),
         },
         {
+            id: 'type',
             header: t('units_col_type'),
+            sortable: true,
             render: (unit: OrganizationalUnit) => getTypeBadge(unit.type),
         },
         {
+            id: 'parentId',
             header: t('units_col_parent'),
+            sortable: true,
             render: (unit: OrganizationalUnit) => (
                 <span className="text-sm text-muted-foreground">
                     {getParentName(unit.parentId)}
@@ -51,14 +65,14 @@ export function UnitTable({
             ),
         },
         {
+            id: 'location',
             header: t('units_col_location'),
+            sortable: true,
             render: (unit: OrganizationalUnit) => (
                 <span className="text-sm">{unit.location || '—'}</span>
             ),
         },
     ];
-
-    // ... inside UnitTable component ...
 
     const renderMobileCard = (unit: OrganizationalUnit) => (
         <Card className="overflow-hidden border-border bg-card hover:border-primary/50 transition-colors">
@@ -115,6 +129,9 @@ export function UnitTable({
             renderMobileCard={renderMobileCard}
             emptyMessage={t('units_empty')}
             idField="id"
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onSort={onSort}
         />
     );
 }

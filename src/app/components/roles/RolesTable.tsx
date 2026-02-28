@@ -13,6 +13,9 @@ interface RolesTableProps {
     getLevelBadge: (level?: number) => React.ReactNode;
     handleOpenRoleDialog: (role: Role) => void;
     handleDeleteRole: (id: string) => void;
+    sortField?: string;
+    sortOrder?: 'asc' | 'desc';
+    onSort?: (field: string) => void;
 }
 
 export function RolesTable({
@@ -20,25 +23,34 @@ export function RolesTable({
     getDirectionName,
     getLevelBadge,
     handleOpenRoleDialog,
-    handleDeleteRole
+    handleDeleteRole,
+    sortField,
+    sortOrder,
+    onSort,
 }: RolesTableProps) {
     const { t } = useLanguage();
 
     const columns = [
         {
+            id: 'name',
             header: t('roles_col_name'),
+            sortable: true,
             render: (role: Role) => (
                 <span className="font-medium">{role.name}</span>
             ),
         },
         {
+            id: 'directionId',
             header: t('roles_col_direction'),
+            sortable: true,
             render: (role: Role) => (
                 <Badge variant="outline">{getDirectionName(role.directionId)}</Badge>
             ),
         },
         {
+            id: 'level',
             header: t('roles_col_level'),
+            sortable: true,
             render: (role: Role) => getLevelBadge(role.level),
         },
     ];
@@ -92,6 +104,9 @@ export function RolesTable({
             renderMobileCard={renderMobileCard}
             emptyMessage={t('roles_empty')}
             idField="id"
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onSort={onSort}
         />
     );
 }

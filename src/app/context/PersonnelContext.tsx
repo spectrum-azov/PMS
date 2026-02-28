@@ -26,11 +26,13 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const [personnel, setPersonnel] = useState<Person[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [filters, setFilters] = useState<PersonnelFilters>(() => {
-    if (typeof window === 'undefined') return { page: 1, pageSize: 25 };
+    if (typeof window === 'undefined') return { page: 1, pageSize: 25, sortBy: 'callsign', sortOrder: 'asc' };
     const savedSize = localStorage.getItem('personnel-page-size');
     return {
       page: 1,
-      pageSize: savedSize ? parseInt(savedSize, 10) : 25
+      pageSize: savedSize ? parseInt(savedSize, 10) : 25,
+      sortBy: 'callsign',
+      sortOrder: 'asc',
     };
   });
   const [loading, setLoading] = useState(true);

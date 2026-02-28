@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useDictionaries } from '../context/DictionariesContext';
 import { Role } from '../types/personnel';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { UserCog, Layers } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '../components/ui/badge';
+import { Skeleton } from '../components/ui/skeleton';
 import { useLanguage } from '../context/LanguageContext';
 import { RolesTable } from '../components/roles/RolesTable';
 import { DirectionDialog } from '../components/roles/DirectionDialog';
@@ -12,18 +13,46 @@ import { RoleDialog } from '../components/roles/RoleDialog';
 import { DataTablePagination } from '../components/ui/DataTablePagination';
 import { Button } from '../components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
+import { getRoles } from '../api/dictionariesApi';
 
 export default function RolesPage() {
-  const { roles, addRole, updateRole, deleteRole, directions, addDirection, updateDirection, deleteDirection } = useDictionaries();
+  const { roles, addRole, updateRole, deleteRole, directions, addDirection, updateDirection, deleteDirection, reload: reloadAll } = useDictionaries();
   const { t } = useLanguage();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
+  const [sortField, setSortField] = useState<string | undefined>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  const totalPages = Math.ceil(roles.length / pageSize);
-  const paginatedRoles = roles.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  const [paginatedRoles, setPaginatedRoles] = useState<Role[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loadingRoles, setLoadingRoles] = useState(false);
+
+  const fetchRoles = useCallback(async () => {
+    setLoadingRoles(true);
+    const result = await getRoles({ page: currentPage, pageSize, sortBy: sortField, sortOrder });
+    if (result.success) {
+      setPaginatedRoles(result.data);
+      setTotalCount(result.total !== undefined ? result.total : result.data.length);
+    } else {
+      toast.error(result.message);
+    }
+    setLoadingRoles(false);
+  }, [currentPage, pageSize, sortField, sortOrder]);
+
+  useEffect(() => { fetchRoles(); }, [fetchRoles]);
+
+  const handleSort = (field: string) => {
+    if (sortField === field) {
+      setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+    setCurrentPage(1);
+  };
+
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
   const [isDirectionDialogOpen, setIsDirectionDialogOpen] = useState(false);
@@ -68,8 +97,9 @@ export default function RolesPage() {
       return;
     }
 
+    let success = false;
     if (editingRole) {
-      const success = await updateRole(editingRole.id, formData);
+      success = await updateRole(editingRole.id, formData);
       if (success) toast.success(t('roles_updated'));
     } else {
       const newRole: Role = {
@@ -78,11 +108,15 @@ export default function RolesPage() {
         directionId: formData.directionId!,
         level: formData.level,
       };
-      const success = await addRole(newRole);
+      success = await addRole(newRole);
       if (success) toast.success(t('roles_added'));
     }
 
-    setIsRoleDialogOpen(false);
+    if (success) {
+      setIsRoleDialogOpen(false);
+      fetchRoles();
+      reloadAll();
+    }
   };
 
   const handleSubmitDirection = async (formData: { name: string }) => {
@@ -108,7 +142,11 @@ export default function RolesPage() {
   const handleDeleteRole = async (id: string) => {
     if (confirm(t('roles_confirm_delete_role'))) {
       const success = await deleteRole(id);
-      if (success) toast.success(t('roles_deleted'));
+      if (success) {
+        toast.success(t('roles_deleted'));
+        fetchRoles();
+        reloadAll();
+      }
     }
   };
 
@@ -225,13 +263,22 @@ export default function RolesPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <RolesTable
-            paginatedRoles={paginatedRoles}
-            getDirectionName={getDirectionName}
-            getLevelBadge={getLevelBadge}
-            handleOpenRoleDialog={handleOpenRoleDialog}
-            handleDeleteRole={handleDeleteRole}
-          />
+          {loadingRoles ? (
+            <div className="space-y-3 py-4">
+              {[1, 2, 3, 4, 5].map(i => <Skeleton key={i} className="h-12 w-full" />)}
+            </div>
+          ) : (
+            <RolesTable
+              paginatedRoles={paginatedRoles}
+              getDirectionName={getDirectionName}
+              getLevelBadge={getLevelBadge}
+              handleOpenRoleDialog={handleOpenRoleDialog}
+              handleDeleteRole={handleDeleteRole}
+              sortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
+          )}
 
           {totalPages > 0 && (
             <DataTablePagination
