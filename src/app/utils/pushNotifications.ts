@@ -1,10 +1,13 @@
-import logo from '../../assets/logo.png';
-
 export const testPushNotification = async (t: (key: any) => string) => {
     if (!('Notification' in window)) {
         alert(t('push_not_supported'));
         return;
     }
+
+    // Use static paths from public/ so the Service Worker can resolve them
+    const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+    const iconPath = `${basePath}/icons/icon-192.png`;
+    const badgePath = `${basePath}/icons/badge-72.png`;
 
     const sendNotification = async () => {
         // Try to send via service worker first for mobile/PWA
@@ -14,9 +17,12 @@ export const testPushNotification = async (t: (key: any) => string) => {
                 if (registration && registration.showNotification) {
                     await registration.showNotification(t('push_test_title'), {
                         body: t('push_test_body'),
-                        icon: logo,
-                        badge: logo,
-                        tag: 'test-notification'
+                        icon: iconPath,
+                        badge: badgePath,
+                        tag: 'test-notification',
+                        data: {
+                            url: window.location.origin + basePath + '/'
+                        }
                     });
                     return;
                 }
@@ -25,12 +31,17 @@ export const testPushNotification = async (t: (key: any) => string) => {
             }
         }
 
-        // Fallback to standard Notification API
-        new Notification(t('push_test_title'), {
+        // Fallback to standard Notification API (desktop browsers)
+        const notification = new Notification(t('push_test_title'), {
             body: t('push_test_body'),
-            icon: logo,
-            badge: logo
+            icon: iconPath,
+            badge: badgePath
         });
+
+        notification.onclick = () => {
+            window.focus();
+            notification.close();
+        };
     };
 
     if (Notification.permission === 'granted') {

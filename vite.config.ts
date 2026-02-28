@@ -23,6 +23,10 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icons/*.png'],
+      workbox: {
+        // Inject a notificationclick handler so tapping the notification opens the app
+        importScripts: ['sw-custom.js'],
+      },
       manifest: {
         name: 'Personnel Management System',
         short_name: 'PMS',
@@ -44,6 +48,12 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable',
+          },
+          {
+            src: 'icons/badge-72.png',
+            sizes: '72x72',
+            type: 'image/png',
+            purpose: 'monochrome',
           },
         ],
       },
