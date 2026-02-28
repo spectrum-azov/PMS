@@ -125,18 +125,20 @@
   h1,
   h2,
   h3,
-  h4 {
+  h4,
+  [data-slot="card-title"] {
     font-family: var(--font-display);
     text-transform: uppercase;
     letter-spacing: 1px;
+    color: var(--primary);
   }
 
   label,
-  [data-slot="label"],
-  [data-slot="card-title"] {
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--primary);
+  [data-slot="label"] {
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--muted-foreground);
+    font-family: var(--font-sans);
   }
 
   input,
@@ -152,6 +154,7 @@
     color: var(--foreground) !important;
     text-transform: none !important;
     letter-spacing: normal !important;
+    font-family: var(--font-sans) !important;
   }
 }
 
