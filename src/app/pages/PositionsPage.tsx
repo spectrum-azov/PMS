@@ -14,7 +14,7 @@ export default function PositionsPage() {
   const { positions, addPosition, updatePosition, deletePosition } = useDictionaries();
   const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(25);
 
   const totalPages = Math.ceil(positions.length / pageSize);
   const paginatedPositions = positions.slice(

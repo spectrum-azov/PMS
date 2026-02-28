@@ -14,7 +14,7 @@ export default function UnitsPage() {
   const { units, addUnit, updateUnit, deleteUnit } = useDictionaries();
   const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(25);
 
   const totalPages = Math.ceil(units.length / pageSize);
   const paginatedUnits = units.slice(

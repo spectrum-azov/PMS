@@ -17,7 +17,7 @@ export default function RolesPage() {
   const { roles, addRole, updateRole, deleteRole, directions, addDirection, updateDirection, deleteDirection } = useDictionaries();
   const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(25);
 
   const totalPages = Math.ceil(roles.length / pageSize);
   const paginatedRoles = roles.slice(

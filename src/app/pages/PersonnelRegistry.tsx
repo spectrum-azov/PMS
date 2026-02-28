@@ -29,9 +29,9 @@ export default function PersonnelRegistry() {
   const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(() => {
-    if (typeof window === 'undefined') return 10;
+    if (typeof window === 'undefined') return 25;
     const saved = localStorage.getItem('personnel-page-size');
-    return saved ? parseInt(saved, 10) : 10;
+    return saved ? parseInt(saved, 10) : 25;
   });
 
   const [isPending, startTransition] = useTransition();
