@@ -50,8 +50,8 @@ export default defineConfig({
             purpose: 'any maskable',
           },
           {
-            src: 'icons/badge-v2.png',
-            sizes: '96x96',
+            src: 'icons/badge-72-2.png',
+            sizes: '72x72',
             type: 'image/png',
             purpose: 'monochrome',
           },
