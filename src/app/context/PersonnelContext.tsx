@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { Person, PersonnelFilters } from '../types/personnel';
 import * as api from '../api/personnelApi';
 import { toast } from 'sonner';
+import { useSettings } from './SettingsContext';
 
 interface PersonnelContextType {
   personnel: Person[];
@@ -23,6 +24,9 @@ const PersonnelContext = createContext<PersonnelContextType | undefined>(undefin
 const DEBOUNCE_MS = 300;
 
 export function PersonnelProvider({ children }: { children: React.ReactNode }) {
+  const { settings } = useSettings();
+  const isInfiniteScroll = settings.tableDisplayMode === 'infiniteScroll';
+
   const [personnel, setPersonnel] = useState<Person[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [filters, setFilters] = useState<PersonnelFilters>(() => {
@@ -35,7 +39,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
       sortOrder: 'asc',
     };
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Load personnel from mock API with current filters (backend-side filtering, pagination and sorting)
@@ -54,25 +58,11 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     }
     setLoading(false);
   }, []);
-
-  // ── Initial load (guarded against StrictMode double-mount) ──
-  const isMounted = React.useRef(false);
-  const prevFiltersRef = React.useRef(filters);
-
+  // Debounce all filter changes (including initial mount).
+  // StrictMode's cleanup cancels the first timer, so only one request fires.
+  // Skip when in infinite scroll mode — PersonnelRegistry's useInfiniteScroll handles fetching.
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-      loadPersonnel(filters);
-      return;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // ── Debounced re-fetch on every subsequent filter change ──
-  useEffect(() => {
-    // Skip if this is the initial render (already handled above)
-    if (prevFiltersRef.current === filters) return;
-    prevFiltersRef.current = filters;
+    if (isInfiniteScroll) return;
 
     const timer = setTimeout(() => {
       loadPersonnel(filters);
@@ -80,7 +70,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters]);
+  }, [filters, isInfiniteScroll]);
 
   const addPerson = async (person: Person): Promise<boolean> => {
     const { id: _id, createdAt: _c, updatedAt: _u, ...personData } = person;
