@@ -1,6 +1,6 @@
 import { http, HttpResponse, delay } from 'msw'
 import { db, maybeError } from '../app/api/mockDb'
-import { PersonnelFilters } from '../app/types/personnel'
+import { PersonSchema, PersonnelFiltersSchema } from '../app/schemas/personnel'
 
 const API_BASE = '/api'
 
@@ -13,14 +13,20 @@ export const handlers = [
         if (err) return HttpResponse.json({ success: false, message: err }, { status: 500 })
 
         const url = new URL(request.url)
-        const filters: PersonnelFilters = {
+        const rawFilters = {
             search: url.searchParams.get('search') || undefined,
             unitId: url.searchParams.get('unitId') || undefined,
             positionId: url.searchParams.get('positionId') || undefined,
-            status: url.searchParams.get('status') as any || undefined,
-            serviceType: url.searchParams.get('serviceType') as any || undefined,
+            status: url.searchParams.get('status') || undefined,
+            serviceType: url.searchParams.get('serviceType') || undefined,
             roleId: url.searchParams.get('roleId') || undefined,
         }
+
+        const filterResult = PersonnelFiltersSchema.safeParse(rawFilters)
+        if (!filterResult.success) {
+            return HttpResponse.json({ success: false, message: 'Invalid filters', errors: filterResult.error.format() }, { status: 400 })
+        }
+        const filters = filterResult.data
 
         let result = [...db.personnel]
 
@@ -60,10 +66,16 @@ export const handlers = [
     // POST create person
     http.post(`${API_BASE}/personnel`, async ({ request }) => {
         await delay(200)
-        const personData = await request.json() as any
+        const body = await request.json()
 
         const err = maybeError()
         if (err) return HttpResponse.json({ success: false, message: err }, { status: 500 })
+
+        const validation = PersonSchema.safeParse(body)
+        if (!validation.success) {
+            return HttpResponse.json({ success: false, message: 'Invalid person data', errors: validation.error.format() }, { status: 400 })
+        }
+        const personData = validation.data
 
         const now = new Date().toISOString()
         const newPerson = {
@@ -83,10 +95,16 @@ export const handlers = [
     http.patch(`${API_BASE}/personnel/:id`, async ({ params, request }) => {
         await delay(200)
         const { id } = params
-        const updates = await request.json() as any
+        const body = await request.json()
 
         const err = maybeError()
         if (err) return HttpResponse.json({ success: false, message: err }, { status: 500 })
+
+        const validation = PersonSchema.partial().safeParse(body)
+        if (!validation.success) {
+            return HttpResponse.json({ success: false, message: 'Invalid update data', errors: validation.error.format() }, { status: 400 })
+        }
+        const updates = validation.data
 
         const idx = db.personnel.findIndex((p) => p.id === id)
         if (idx === -1) return HttpResponse.json({ success: false, message: 'Особу не знайдено' }, { status: 404 })
@@ -96,7 +114,7 @@ export const handlers = [
             ...updates,
             id,
             updatedAt: new Date().toISOString(),
-        }
+        } as any
         db.persist('personnel-data', db.personnel)
 
         return HttpResponse.json({ success: true, data: db.personnel[idx] })
