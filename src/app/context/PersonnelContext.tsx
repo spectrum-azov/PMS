@@ -46,22 +46,25 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
-  // Consolidated load effect with debounce
+  // Guard to prevent double execution in StrictMode
+  const isMounted = useRef(false);
+
   useEffect(() => {
-    // Initial fetch happens immediately
-    if (loading && personnel.length === 0) {
+    // On first mount, we load immediately
+    if (!isMounted.current) {
+      isMounted.current = true;
       loadPersonnel();
       return;
     }
 
-    // Subsequent fetches are debounced
+    // On filter updates, we debounce
     const timer = setTimeout(() => {
       loadPersonnel();
     }, DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, loadPersonnel]);
+  }, [filters]);
 
   const addPerson = async (person: Person): Promise<boolean> => {
     const { id: _id, createdAt: _c, updatedAt: _u, ...personData } = person;

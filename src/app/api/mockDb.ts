@@ -9,7 +9,7 @@ import {
 } from '../data/mockData';
 
 // Error simulation rate (0.0 to 1.0). Set to 0 to disable.
-const MOCK_ERROR_RATE = 0.01;
+const MOCK_ERROR_RATE = 0;
 
 // In-memory database
 class MockDatabase {
