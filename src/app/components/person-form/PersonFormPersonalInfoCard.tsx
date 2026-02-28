@@ -43,7 +43,7 @@ export function PersonFormPersonalInfoCard({ register, errors, validateBirthDate
 
                 <div>
                     <div className="flex items-center justify-between mb-[3px]">
-                        <Label htmlFor="lastName">Прізвище</Label>
+                        <Label htmlFor="lastName">{t('form_lastname')}</Label>
                         {errors.lastName && (
                             <span className="text-xs text-destructive font-medium">{errors.lastName.message}</span>
                         )}
@@ -59,7 +59,7 @@ export function PersonFormPersonalInfoCard({ register, errors, validateBirthDate
 
                 <div>
                     <div className="flex items-center justify-between mb-[3px]">
-                        <Label htmlFor="firstName">Ім'я</Label>
+                        <Label htmlFor="firstName">{t('form_firstname')}</Label>
                         {errors.firstName && (
                             <span className="text-xs text-destructive font-medium">{errors.firstName.message}</span>
                         )}
@@ -75,7 +75,7 @@ export function PersonFormPersonalInfoCard({ register, errors, validateBirthDate
 
                 <div>
                     <div className="flex items-center justify-between mb-[3px]">
-                        <Label htmlFor="middleName">По батькові</Label>
+                        <Label htmlFor="middleName">{t('form_middlename')}</Label>
                         {errors.middleName && (
                             <span className="text-xs text-destructive font-medium">{errors.middleName.message}</span>
                         )}
