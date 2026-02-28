@@ -90,8 +90,8 @@ export default function PersonnelRegistry() {
   );
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="flex flex-col h-full overflow-hidden p-6 gap-6">
+      <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-semibold text-foreground">{t('registry_title')}</h2>
           <div className="text-muted-foreground mt-1">
@@ -114,7 +114,7 @@ export default function PersonnelRegistry() {
         </div>
       </div>
 
-      <Card>
+      <Card className="shrink-0">
         <CardContent className="pt-6">
           <PersonnelFilters
             filters={filters}
@@ -142,42 +142,46 @@ export default function PersonnelRegistry() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4" style={{ opacity: isPending ? 0.7 : 1, transition: 'opacity 0.2s' }}>
-          <PersonnelTable personnel={paginatedPersonnel} visibleColumns={visibleColumns} />
+        <div className="flex flex-col flex-1 min-h-0 overflow-hidden gap-4" style={{ opacity: isPending ? 0.7 : 1, transition: 'opacity 0.2s' }}>
+          <div className="flex-1 overflow-y-auto min-h-0 relative rounded-md border">
+            <PersonnelTable personnel={paginatedPersonnel} visibleColumns={visibleColumns} />
+          </div>
 
-          {totalPages > 0 && (
-            <DataTablePagination
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              pageSize={pageSize}
-              setPageSize={setPageSize}
-              totalPages={totalPages}
-              actions={
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-2 h-9">
-                      <Settings2 className="w-4 h-4" />
-                      <span className="hidden sm:inline">{t('table_columns')}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>{t('table_columns_settings')}</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {columnOptions.map((column) => (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        checked={isVisible(column.id)}
-                        onCheckedChange={() => toggleColumn(column.id)}
-                        onSelect={(e) => e.preventDefault()}
-                      >
-                        {column.label}
-                      </DropdownMenuCheckboxItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              }
-            />
-          )}
+          <div className="shrink-0">
+            {totalPages > 0 && (
+              <DataTablePagination
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                pageSize={pageSize}
+                setPageSize={setPageSize}
+                totalPages={totalPages}
+                actions={
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-2 h-9">
+                        <Settings2 className="w-4 h-4" />
+                        <span className="hidden sm:inline">{t('table_columns')}</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuLabel>{t('table_columns_settings')}</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {columnOptions.map((column) => (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          checked={isVisible(column.id)}
+                          onCheckedChange={() => toggleColumn(column.id)}
+                          onSelect={(e) => e.preventDefault()}
+                        >
+                          {column.label}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                }
+              />
+            )}
+          </div>
         </div>
       )}
     </div>

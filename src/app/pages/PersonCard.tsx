@@ -88,9 +88,9 @@ export default function PersonCard() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="flex flex-col h-full overflow-hidden p-6 gap-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 min-w-0">
           <Button variant="ghost" size="sm" onClick={() => navigate('/personnel')} className="shrink-0">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -111,15 +111,17 @@ export default function PersonCard() {
         </Button>
       </div>
 
-      <PersonCardQuickInfo
-        person={person}
-        getUnitName={getUnitName}
-        getPositionName={getPositionName}
-      />
+      <div className="shrink-0">
+        <PersonCardQuickInfo
+          person={person}
+          getUnitName={getUnitName}
+          getPositionName={getPositionName}
+        />
+      </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="general" className="w-full">
-        <TabsList className="flex w-full overflow-x-auto overflow-y-hidden justify-start md:justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <Tabs defaultValue="general" className="flex flex-col flex-1 min-h-0 w-full overflow-hidden">
+        <TabsList className="shrink-0 flex w-full overflow-x-auto overflow-y-hidden justify-start md:justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <TabsTrigger value="general">{t('card_tab_general')}</TabsTrigger>
           <TabsTrigger value="education">{t('card_tab_education')}</TabsTrigger>
           <TabsTrigger value="family">{t('card_tab_family')}</TabsTrigger>
@@ -127,7 +129,7 @@ export default function PersonCard() {
           <TabsTrigger value="awards">{t('card_tab_awards')}</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="general" className="space-y-6">
+        <TabsContent value="general" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
           <PersonCardGeneralTab
             person={person}
             formatDate={formatDate}
@@ -138,19 +140,19 @@ export default function PersonCard() {
           />
         </TabsContent>
 
-        <TabsContent value="education" className="space-y-6">
+        <TabsContent value="education" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
           <PersonCardEducationTab person={person} />
         </TabsContent>
 
-        <TabsContent value="family" className="space-y-6">
+        <TabsContent value="family" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
           <PersonCardFamilyTab person={person} />
         </TabsContent>
 
-        <TabsContent value="documents" className="space-y-6">
+        <TabsContent value="documents" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
           <PersonCardDocumentsTab person={person} />
         </TabsContent>
 
-        <TabsContent value="awards" className="space-y-6">
+        <TabsContent value="awards" className="flex-1 overflow-y-auto min-h-0 space-y-6 focus-visible:outline-none">
           <PersonCardAwardsTab person={person} formatDate={formatDate} />
         </TabsContent>
       </Tabs>

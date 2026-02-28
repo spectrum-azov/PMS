@@ -36,7 +36,7 @@ export function Layout() {
   };
 
   return (
-    <div className="h-screen overflow-hidden flex flex-col bg-background text-foreground">
+    <div className="h-[100dvh] overflow-hidden flex flex-col bg-background text-foreground">
       {/* Header */}
       <header className="bg-background border-b border-border sticky top-0 z-50">
         <div className="px-4 sm:px-6 py-4">
@@ -187,7 +187,7 @@ export function Layout() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0 overflow-y-auto">
+        <main className="flex flex-col flex-1 min-w-0 overflow-hidden">
           <Outlet />
         </main>
       </div>
