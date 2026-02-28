@@ -26,7 +26,23 @@ class MockDatabase {
 
     /** Seed from mockData or localStorage cache */
     seed() {
-        this.personnel = this._loadOrDefault<Person[]>('personnel-data', mockPersonnel);
+        let loadedPersonnel = this._loadOrDefault<Person[]>('personnel-data', mockPersonnel);
+
+        // Migrate old personnel records that have fullName but missing new fields
+        loadedPersonnel = loadedPersonnel.map((p: any) => {
+            if (p.fullName && (!p.lastName || !p.firstName)) {
+                const parts = p.fullName.trim().split(/\s+/);
+                p.lastName = parts[0] || '';
+                p.firstName = parts[1] || '';
+                p.middleName = parts.slice(2).join(' ') || '';
+                delete p.fullName;
+            }
+            return p;
+        });
+
+        this.personnel = loadedPersonnel;
+        this.persist('personnel-data', this.personnel); // Save migrated data back
+
         this.units = this._loadOrDefault<OrganizationalUnit[]>('units-data', organizationalUnits);
         this.positions = this._loadOrDefault<Position[]>('positions-data', seedPositions);
         this.roles = this._loadOrDefault<Role[]>('roles-data', seedRoles);
