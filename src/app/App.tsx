@@ -6,6 +6,7 @@ import { SettingsProvider } from './context/SettingsContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { Toaster } from './components/ui/sonner';
 import { ThemeProvider } from './components/theme-provider';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 export default function App() {
   return (
@@ -21,7 +22,9 @@ export default function App() {
         <SettingsProvider>
           <DictionariesProvider>
             <PersonnelProvider>
-              <RouterProvider router={router} />
+              <ErrorBoundary>
+                <RouterProvider router={router} />
+              </ErrorBoundary>
               <Toaster />
             </PersonnelProvider>
           </DictionariesProvider>
