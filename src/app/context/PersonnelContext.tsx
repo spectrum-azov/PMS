@@ -46,27 +46,22 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
-  // Initial load
+  // Consolidated load effect with debounce
   useEffect(() => {
-    loadPersonnel();
-  }, [loadPersonnel]);
-
-  // Re-fetch when filters change (debounced)
-  const isFirstRender = useRef(true);
-  useEffect(() => {
-    // Skip the initial render – already handled above
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
+    // Initial fetch happens immediately
+    if (loading && personnel.length === 0) {
+      loadPersonnel();
       return;
     }
 
+    // Subsequent fetches are debounced
     const timer = setTimeout(() => {
       loadPersonnel();
     }, DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters]);
+  }, [filters, loadPersonnel]);
 
   const addPerson = async (person: Person): Promise<boolean> => {
     const { id: _id, createdAt: _c, updatedAt: _u, ...personData } = person;
