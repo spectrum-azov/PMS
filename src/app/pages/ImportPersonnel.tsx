@@ -43,7 +43,7 @@ export default function ImportPersonnel() {
                     <CardDescription>{t('import_upload_desc')}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
                         <input
                             type="file"
                             accept=".csv"

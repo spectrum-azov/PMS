@@ -90,8 +90,13 @@ export function DictionariesProvider({ children }: { children: React.ReactNode }
     setLoading(false);
   }, []);
 
+  const isMounted = React.useRef(false);
+
   useEffect(() => {
-    loadAll();
+    if (!isMounted.current) {
+      isMounted.current = true;
+      loadAll();
+    }
   }, [loadAll]);
 
   // ─── Units ────────────────────────────────

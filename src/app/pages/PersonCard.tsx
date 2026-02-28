@@ -90,15 +90,15 @@ export default function PersonCard() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 min-w-0">
           <Button variant="ghost" size="sm" onClick={() => navigate('/personnel')} className="shrink-0">
             <ArrowLeft className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline">{t('card_back')}</span>
           </Button>
           <Separator orientation="vertical" className="h-8 hidden sm:block" />
           <div className="min-w-0">
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex flex-col sm:flex-row items-center gap-3 flex-wrap">
               <h2 className="text-2xl sm:text-3xl font-semibold text-foreground">{person.callsign}</h2>
               {getStatusBadge(person.status)}
             </div>
