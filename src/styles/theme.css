@@ -160,11 +160,11 @@
   --accent-foreground: #0b0c0d;
   --destructive: #db4437;
   --destructive-foreground: #ffffff;
-  --border: #f2d244;
-  --input: #f2d244;
-  --input-background: rgba(242, 210, 68, 0.05);
-  --switch-background: #1a1c1f;
-  --ring: #f2d244;
+  --border: #353a41;
+  --input: #353a41;
+  --input-background: rgba(47, 51, 57, 0.5);
+  --switch-background: #3b4048;
+  --ring: #f8d73c;
   --font-weight-medium: 600;
   --font-weight-normal: 400;
   --font-sans: "Play", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -181,8 +181,8 @@
   --sidebar-primary-foreground: #0b0c0d;
   --sidebar-accent: #111214;
   --sidebar-accent-foreground: #f2d244;
-  --sidebar-border: #f2d244;
-  --sidebar-ring: #f2d244;
+  --sidebar-border: #353a41;
+  --sidebar-ring: #f8d73c;
 
   font-family: var(--font-sans);
   letter-spacing: 0.5px;
