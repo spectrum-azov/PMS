@@ -19,9 +19,12 @@ import { formatPhoneNumber } from '../../utils/formatters';
 interface PersonnelTableProps {
     personnel: Person[];
     visibleColumns: ColumnId[];
+    sortField?: string;
+    sortOrder?: 'asc' | 'desc';
+    onSort?: (field: string) => void;
 }
 
-export function PersonnelTable({ personnel, visibleColumns }: PersonnelTableProps) {
+export function PersonnelTable({ personnel, visibleColumns, sortField, sortOrder, onSort }: PersonnelTableProps) {
     const { t } = useLanguage();
     const navigate = useNavigate();
     const { getUnitName, getPositionName, getRoleName, getStatusBadge, getServiceTypeBadge } = usePersonnelFormatters();
@@ -32,6 +35,7 @@ export function PersonnelTable({ personnel, visibleColumns }: PersonnelTableProp
         {
             id: 'callsign',
             header: t('table_col_callsign'),
+            sortable: true,
             render: (person: Person) => (
                 <span className="font-mono font-medium text-primary">
                     {person.callsign}
@@ -39,8 +43,9 @@ export function PersonnelTable({ personnel, visibleColumns }: PersonnelTableProp
             ),
         },
         {
-            id: 'fullname',
+            id: 'fullName',
             header: t('table_col_fullname'),
+            sortable: true,
             render: (person: Person) => (
                 <div>
                     <div className="font-medium text-foreground">{person.fullName}</div>
@@ -53,16 +58,19 @@ export function PersonnelTable({ personnel, visibleColumns }: PersonnelTableProp
         {
             id: 'rank',
             header: t('table_col_rank'),
+            sortable: true,
             render: (person: Person) => <span className="text-sm">{person.rank}</span>,
         },
         {
-            id: 'unit',
+            id: 'unitId',
             header: t('table_col_unit'),
+            sortable: true,
             render: (person: Person) => <span className="text-sm">{getUnitName(person.unitId)}</span>,
         },
         {
-            id: 'position',
+            id: 'positionId',
             header: t('table_col_position'),
+            sortable: true,
             render: (person: Person) => <span className="text-sm">{getPositionName(person.positionId)}</span>,
         },
         {
@@ -84,23 +92,35 @@ export function PersonnelTable({ personnel, visibleColumns }: PersonnelTableProp
             ),
         },
         {
-            id: 'service_type',
+            id: 'serviceType',
             header: t('table_col_service_type'),
+            sortable: true,
             render: (person: Person) => getServiceTypeBadge(person.serviceType),
         },
         {
             id: 'status',
             header: t('table_col_status'),
+            sortable: true,
             render: (person: Person) => getStatusBadge(person.status),
         },
         {
             id: 'phone',
             header: t('table_col_phone'),
+            sortable: true,
             render: (person: Person) => (
                 <span className="text-sm font-mono">{formatPhoneNumber(person.phone)}</span>
             ),
         },
-    ].filter(col => isVisible(col.id as ColumnId));
+    ].filter(col => isVisible(col.id as ColumnId) || col.id === 'fullName' || col.id === 'unitId' || col.id === 'positionId' || col.id === 'serviceType');
+
+    // Adjust filter to match column IDs in PersonnelRegistry
+    const filteredColumns = columns.filter(col => {
+        if (col.id === 'fullName') return isVisible('fullname' as any);
+        if (col.id === 'unitId') return isVisible('unit' as any);
+        if (col.id === 'positionId') return isVisible('position' as any);
+        if (col.id === 'serviceType') return isVisible('service_type' as any);
+        return isVisible(col.id as any);
+    });
 
     const renderActions = (person: Person) => (
         <DropdownMenu>
@@ -131,12 +151,15 @@ export function PersonnelTable({ personnel, visibleColumns }: PersonnelTableProp
     return (
         <GenericDataTable
             data={personnel}
-            columns={columns}
+            columns={filteredColumns}
             onRowClick={(person) => navigate(`/personnel/${person.id}`)}
             renderMobileCard={(person) => <PersonnelMobileCard person={person} />}
             renderActions={renderActions}
             emptyMessage={t('table_no_results')}
             idField="id"
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onSort={onSort}
         />
     );
 }

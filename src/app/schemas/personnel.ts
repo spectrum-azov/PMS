@@ -37,6 +37,10 @@ export const PersonnelFiltersSchema = z.object({
     status: ServiceStatusSchema.optional(),
     serviceType: ServiceTypeSchema.optional(),
     roleId: z.string().optional(),
+    page: z.number().int().positive().optional(),
+    pageSize: z.number().int().positive().optional(),
+    sortBy: z.string().optional(),
+    sortOrder: z.enum(['asc', 'desc']).optional(),
 });
 
 export type PersonType = z.infer<typeof PersonSchema>;

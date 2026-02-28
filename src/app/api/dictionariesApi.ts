@@ -1,4 +1,4 @@
-import { OrganizationalUnit, Position, Role, FunctionalDirection, RankItem } from '../types/personnel';
+import { OrganizationalUnit, Position, Role, FunctionalDirection, RankItem, PaginationParams, SortParams } from '../types/personnel';
 import { ApiResult } from './types';
 
 const API_BASE = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/api';
@@ -20,8 +20,19 @@ async function handleResponse<T>(response: Response): Promise<ApiResult<T>> {
 // Organizational Units
 // ═══════════════════════════════════════════
 
-export async function getUnits(): Promise<ApiResult<OrganizationalUnit[]>> {
-    const response = await fetch(`${API_BASE}/units`);
+export async function getUnits(params?: PaginationParams & SortParams): Promise<ApiResult<OrganizationalUnit[]>> {
+    const query = new URLSearchParams();
+    if (params) {
+        if (params.page) query.append('page', params.page.toString());
+        if (params.pageSize) query.append('pageSize', params.pageSize.toString());
+        if (params.sortBy) query.append('sortBy', params.sortBy);
+        if (params.sortOrder) query.append('sortOrder', params.sortOrder);
+    }
+
+    const queryString = query.toString();
+    const url = queryString ? `${API_BASE}/units?${queryString}` : `${API_BASE}/units`;
+
+    const response = await fetch(url);
     return handleResponse<OrganizationalUnit[]>(response);
 }
 
@@ -59,8 +70,18 @@ export async function deleteUnit(id: string): Promise<ApiResult<{ id: string }>>
 // Positions
 // ═══════════════════════════════════════════
 
-export async function getPositions(): Promise<ApiResult<Position[]>> {
-    const response = await fetch(`${API_BASE}/positions`);
+export async function getPositions(params?: PaginationParams & SortParams): Promise<ApiResult<Position[]>> {
+    const query = new URLSearchParams();
+    if (params) {
+        if (params.page) query.append('page', params.page.toString());
+        if (params.pageSize) query.append('pageSize', params.pageSize.toString());
+        if (params.sortBy) query.append('sortBy', params.sortBy);
+        if (params.sortOrder) query.append('sortOrder', params.sortOrder);
+    }
+    const queryString = query.toString();
+    const url = queryString ? `${API_BASE}/positions?${queryString}` : `${API_BASE}/positions`;
+
+    const response = await fetch(url);
     return handleResponse<Position[]>(response);
 }
 
@@ -98,8 +119,18 @@ export async function deletePosition(id: string): Promise<ApiResult<{ id: string
 // Roles
 // ═══════════════════════════════════════════
 
-export async function getRoles(): Promise<ApiResult<Role[]>> {
-    const response = await fetch(`${API_BASE}/roles`);
+export async function getRoles(params?: PaginationParams & SortParams): Promise<ApiResult<Role[]>> {
+    const query = new URLSearchParams();
+    if (params) {
+        if (params.page) query.append('page', params.page.toString());
+        if (params.pageSize) query.append('pageSize', params.pageSize.toString());
+        if (params.sortBy) query.append('sortBy', params.sortBy);
+        if (params.sortOrder) query.append('sortOrder', params.sortOrder);
+    }
+    const queryString = query.toString();
+    const url = queryString ? `${API_BASE}/roles?${queryString}` : `${API_BASE}/roles`;
+
+    const response = await fetch(url);
     return handleResponse<Role[]>(response);
 }
 
@@ -135,8 +166,18 @@ export async function deleteRole(id: string): Promise<ApiResult<{ id: string }>>
 // Functional Directions
 // ═══════════════════════════════════════════
 
-export async function getDirections(): Promise<ApiResult<FunctionalDirection[]>> {
-    const response = await fetch(`${API_BASE}/directions`);
+export async function getDirections(params?: PaginationParams & SortParams): Promise<ApiResult<FunctionalDirection[]>> {
+    const query = new URLSearchParams();
+    if (params) {
+        if (params.page) query.append('page', params.page.toString());
+        if (params.pageSize) query.append('pageSize', params.pageSize.toString());
+        if (params.sortBy) query.append('sortBy', params.sortBy);
+        if (params.sortOrder) query.append('sortOrder', params.sortOrder);
+    }
+    const queryString = query.toString();
+    const url = queryString ? `${API_BASE}/directions?${queryString}` : `${API_BASE}/directions`;
+
+    const response = await fetch(url);
     return handleResponse<FunctionalDirection[]>(response);
 }
 
@@ -174,8 +215,18 @@ export async function deleteDirection(id: string): Promise<ApiResult<{ id: strin
 // Ranks
 // ═══════════════════════════════════════════
 
-export async function getRanks(): Promise<ApiResult<RankItem[]>> {
-    const response = await fetch(`${API_BASE}/ranks`);
+export async function getRanks(params?: PaginationParams & SortParams): Promise<ApiResult<RankItem[]>> {
+    const query = new URLSearchParams();
+    if (params) {
+        if (params.page) query.append('page', params.page.toString());
+        if (params.pageSize) query.append('pageSize', params.pageSize.toString());
+        if (params.sortBy) query.append('sortBy', params.sortBy);
+        if (params.sortOrder) query.append('sortOrder', params.sortOrder);
+    }
+    const queryString = query.toString();
+    const url = queryString ? `${API_BASE}/ranks?${queryString}` : `${API_BASE}/ranks`;
+
+    const response = await fetch(url);
     return handleResponse<RankItem[]>(response);
 }
 

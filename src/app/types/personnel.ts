@@ -159,8 +159,20 @@ export interface Award {
   comment?: string;
 }
 
+// Параметри пагінації
+export interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+}
+
+// Параметри сортування
+export interface SortParams {
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
 // Фільтри для реєстру
-export interface PersonnelFilters {
+export interface PersonnelFilters extends PaginationParams, SortParams {
   search?: string;
   unitId?: string;
   positionId?: string;

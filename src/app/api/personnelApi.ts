@@ -26,6 +26,14 @@ export async function getPersonnel(filters?: PersonnelFilters): Promise<ApiResul
         if (filters.status) params.append('status', filters.status);
         if (filters.serviceType) params.append('serviceType', filters.serviceType);
         if (filters.roleId) params.append('roleId', filters.roleId);
+
+        // Pagination
+        if (filters.page) params.append('page', filters.page.toString());
+        if (filters.pageSize) params.append('pageSize', filters.pageSize.toString());
+
+        // Sorting
+        if (filters.sortBy) params.append('sortBy', filters.sortBy);
+        if (filters.sortOrder) params.append('sortOrder', filters.sortOrder);
     }
 
     const response = await fetch(`${API_BASE}/personnel?${params.toString()}`);

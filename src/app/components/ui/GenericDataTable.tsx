@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { Button } from './button';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
 import {
     Table,
     TableBody,
@@ -13,9 +13,11 @@ import {
 import { Card, CardContent } from './card';
 
 interface Column<T> {
+    id?: string;
     header: string;
     render: (item: T) => React.ReactNode;
     className?: string;
+    sortable?: boolean;
 }
 
 interface GenericDataTableProps<T> {
@@ -28,6 +30,9 @@ interface GenericDataTableProps<T> {
     renderActions?: (item: T) => React.ReactNode;
     emptyMessage?: string;
     idField?: keyof T;
+    sortField?: string;
+    sortOrder?: 'asc' | 'desc';
+    onSort?: (field: string) => void;
 }
 
 export function GenericDataTable<T>({
@@ -40,12 +45,22 @@ export function GenericDataTable<T>({
     renderActions,
     emptyMessage,
     idField = 'id' as keyof T,
+    sortField,
+    sortOrder,
+    onSort,
 }: GenericDataTableProps<T>) {
     const { t } = useLanguage();
 
+    const renderSortIcon = (column: Column<T>) => {
+        if (!column.sortable || !onSort) return null;
+        if (sortField !== column.id) return <ChevronsUpDown className="w-3 h-3 ml-1 opacity-50" />;
+        return sortOrder === 'asc'
+            ? <ChevronUp className="w-3 h-3 ml-1 text-primary" />
+            : <ChevronDown className="w-3 h-3 ml-1 text-primary" />;
+    };
+
     return (
         <div className="space-y-4">
-            {/* Mobile View - Cards */}
             <div className="grid grid-cols-1 gap-4 md:hidden">
                 {data.length === 0 ? (
                     <Card className="bg-card">
@@ -98,11 +113,21 @@ export function GenericDataTable<T>({
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            {columns.map((column, index) => (
-                                <TableHead key={index} className={column.className}>
-                                    {column.header}
-                                </TableHead>
-                            ))}
+                            {columns.map((column, index) => {
+                                const isSortable = column.sortable && !!onSort && !!column.id;
+                                return (
+                                    <TableHead
+                                        key={index}
+                                        className={`${column.className} ${isSortable ? 'cursor-pointer select-none hover:bg-muted/50' : ''}`}
+                                        onClick={() => isSortable && onSort(column.id!)}
+                                    >
+                                        <div className="flex items-center">
+                                            {column.header}
+                                            {renderSortIcon(column)}
+                                        </div>
+                                    </TableHead>
+                                );
+                            })}
                             {(onEdit || onDelete || renderActions) && (
                                 <TableHead className="text-right">{t('common_actions')}</TableHead>
                             )}

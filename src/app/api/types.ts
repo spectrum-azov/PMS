@@ -3,6 +3,7 @@
 export interface ApiResponse<T> {
     data: T;
     success: true;
+    total?: number;
 }
 
 export interface ApiError {

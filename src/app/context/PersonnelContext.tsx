@@ -6,12 +6,13 @@ import { toast } from 'sonner';
 interface PersonnelContextType {
   personnel: Person[];
   filters: PersonnelFilters;
-  setFilters: (filters: PersonnelFilters) => void;
+  setFilters: (filters: PersonnelFilters | ((prev: PersonnelFilters) => PersonnelFilters)) => void;
   addPerson: (person: Person) => Promise<boolean>;
   updatePerson: (id: string, person: Partial<Person>) => Promise<boolean>;
   deletePerson: (id: string) => Promise<boolean>;
   getPersonById: (id: string) => Person | undefined;
   filteredPersonnel: Person[];
+  totalCount: number;
   loading: boolean;
   error: string | null;
   reload: () => Promise<void>;
@@ -23,7 +24,15 @@ const DEBOUNCE_MS = 300;
 
 export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const [personnel, setPersonnel] = useState<Person[]>([]);
-  const [filters, setFilters] = useState<PersonnelFilters>({});
+  const [totalCount, setTotalCount] = useState(0);
+  const [filters, setFilters] = useState<PersonnelFilters>(() => {
+    if (typeof window === 'undefined') return { page: 1, pageSize: 25 };
+    const savedSize = localStorage.getItem('personnel-page-size');
+    return {
+      page: 1,
+      pageSize: savedSize ? parseInt(savedSize, 10) : 25
+    };
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +40,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const filtersRef = useRef(filters);
   filtersRef.current = filters;
 
-  // Load personnel from mock API with current filters (backend-side filtering)
+  // Load personnel from mock API with current filters (backend-side filtering, pagination and sorting)
   const loadPersonnel = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -39,6 +48,8 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     const result = await api.getPersonnel(filtersRef.current);
     if (result.success) {
       setPersonnel(result.data);
+      // If server provides total, use it, otherwise use local data length
+      setTotalCount(result.total !== undefined ? result.total : result.data.length);
     } else {
       setError(result.message);
       toast.error(result.message);
@@ -50,9 +61,6 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const isMounted = useRef(false);
 
   useEffect(() => {
-    // Current behavior loads personnel when filters change.
-    // If it's the very first render, we load immediately.
-    // Subsequent filter changes are debounced.
     if (!isMounted.current) {
       isMounted.current = true;
       loadPersonnel();
@@ -71,7 +79,6 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     const { id: _id, createdAt: _c, updatedAt: _u, ...personData } = person;
     const result = await api.createPerson(personData);
     if (result.success) {
-      // Re-fetch to get the updated list with current filters applied
       await loadPersonnel();
       return true;
     }
@@ -82,7 +89,6 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const updatePerson = async (id: string, updates: Partial<Person>): Promise<boolean> => {
     const result = await api.updatePerson(id, updates);
     if (result.success) {
-      // Re-fetch to keep consistency with server-side filtered state
       await loadPersonnel();
       return true;
     }
@@ -93,7 +99,6 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
   const deletePerson = async (id: string): Promise<boolean> => {
     const result = await api.deletePerson(id);
     if (result.success) {
-      // Re-fetch to keep consistency with server-side filtered state
       await loadPersonnel();
       return true;
     }
@@ -105,7 +110,6 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
     return personnel.find(p => p.id === id);
   };
 
-  // personnel already contains filtered results from the API
   const filteredPersonnel = personnel;
 
   return (
@@ -119,6 +123,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
         deletePerson,
         getPersonById,
         filteredPersonnel,
+        totalCount,
         loading,
         error,
         reload: loadPersonnel,

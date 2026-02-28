@@ -21,6 +21,10 @@ export const handlers = [
             status: url.searchParams.get('status') || undefined,
             serviceType: url.searchParams.get('serviceType') || undefined,
             roleId: url.searchParams.get('roleId') || undefined,
+            page: url.searchParams.get('page') ? parseInt(url.searchParams.get('page')!) : undefined,
+            pageSize: url.searchParams.get('pageSize') ? parseInt(url.searchParams.get('pageSize')!) : undefined,
+            sortBy: url.searchParams.get('sortBy') || undefined,
+            sortOrder: (url.searchParams.get('sortOrder') as 'asc' | 'desc') || undefined,
         }
 
         const filterResult = PersonnelFiltersSchema.safeParse(rawFilters)
@@ -31,6 +35,7 @@ export const handlers = [
 
         let result = [...db.personnel]
 
+        // Filtering
         if (filters.search) {
             const s = filters.search.toLowerCase()
             result = result.filter(
@@ -47,7 +52,30 @@ export const handlers = [
         if (filters.serviceType) result = result.filter((p) => p.serviceType === filters.serviceType)
         if (filters.roleId) result = result.filter((p) => p.roleIds.includes(filters.roleId!))
 
-        return HttpResponse.json({ success: true, data: result })
+        const total = result.length
+
+        // Sorting
+        if (filters.sortBy) {
+            const field = filters.sortBy as keyof typeof result[0]
+            const order = filters.sortOrder === 'desc' ? -1 : 1
+            result.sort((a, b) => {
+                const valA = a[field]
+                const valB = b[field]
+                if (valA === valB) return 0
+                if (valA === undefined || valA === null) return 1
+                if (valB === undefined || valB === null) return -1
+                return valA < valB ? -order : order
+            })
+        }
+
+        // Pagination
+        if (filters.page && filters.pageSize) {
+            const start = (filters.page - 1) * filters.pageSize
+            const end = start + filters.pageSize
+            result = result.slice(start, end)
+        }
+
+        return HttpResponse.json({ success: true, data: result, total })
     }),
 
     // GET single person
@@ -175,9 +203,35 @@ export const handlers = [
     // --- Dictionaries ---
 
     // Units
-    http.get(`${API_BASE}/units`, async () => {
+    http.get(`${API_BASE}/units`, async ({ request }) => {
         await delay(100)
-        return HttpResponse.json({ success: true, data: [...db.units] })
+        const url = new URL(request.url)
+        const sortBy = url.searchParams.get('sortBy')
+        const sortOrder = url.searchParams.get('sortOrder') as 'asc' | 'desc'
+        const page = url.searchParams.get('page') ? parseInt(url.searchParams.get('page')!) : undefined
+        const pageSize = url.searchParams.get('pageSize') ? parseInt(url.searchParams.get('pageSize')!) : undefined
+
+        let result = [...db.units]
+        if (sortBy) {
+            const field = sortBy as keyof typeof result[0]
+            const order = sortOrder === 'desc' ? -1 : 1
+            result.sort((a: any, b: any) => {
+                const valA = a[field]
+                const valB = b[field]
+                if (valA === valB) return 0
+                if (valA === undefined || valA === null) return 1
+                if (valB === undefined || valB === null) return -1
+                return valA < valB ? -order : order
+            })
+        }
+
+        const total = result.length
+        if (page && pageSize) {
+            const start = (page - 1) * pageSize
+            result = result.slice(start, start + pageSize)
+        }
+
+        return HttpResponse.json({ success: true, data: result, total })
     }),
     http.post(`${API_BASE}/units`, async ({ request }) => {
         const body = await request.json() as any
@@ -205,9 +259,33 @@ export const handlers = [
     }),
 
     // Positions
-    http.get(`${API_BASE}/positions`, async () => {
+    http.get(`${API_BASE}/positions`, async ({ request }) => {
         await delay(100)
-        return HttpResponse.json({ success: true, data: [...db.positions] })
+        const url = new URL(request.url)
+        const sortBy = url.searchParams.get('sortBy')
+        const sortOrder = url.searchParams.get('sortOrder') as 'asc' | 'desc'
+        const page = url.searchParams.get('page') ? parseInt(url.searchParams.get('page')!) : undefined
+        const pageSize = url.searchParams.get('pageSize') ? parseInt(url.searchParams.get('pageSize')!) : undefined
+
+        let result = [...db.positions]
+        if (sortBy) {
+            const field = sortBy as keyof typeof result[0]
+            const order = sortOrder === 'desc' ? -1 : 1
+            result.sort((a: any, b: any) => {
+                const valA = a[field]
+                const valB = b[field]
+                if (valA === valB) return 0
+                if (valA === undefined || valA === null) return 1
+                if (valB === undefined || valB === null) return -1
+                return valA < valB ? -order : order
+            })
+        }
+        const total = result.length
+        if (page && pageSize) {
+            const start = (page - 1) * pageSize
+            result = result.slice(start, start + pageSize)
+        }
+        return HttpResponse.json({ success: true, data: result, total })
     }),
     http.post(`${API_BASE}/positions`, async ({ request }) => {
         const body = await request.json() as any
@@ -235,9 +313,33 @@ export const handlers = [
     }),
 
     // Roles
-    http.get(`${API_BASE}/roles`, async () => {
+    http.get(`${API_BASE}/roles`, async ({ request }) => {
         await delay(100)
-        return HttpResponse.json({ success: true, data: [...db.roles] })
+        const url = new URL(request.url)
+        const sortBy = url.searchParams.get('sortBy')
+        const sortOrder = url.searchParams.get('sortOrder') as 'asc' | 'desc'
+        const page = url.searchParams.get('page') ? parseInt(url.searchParams.get('page')!) : undefined
+        const pageSize = url.searchParams.get('pageSize') ? parseInt(url.searchParams.get('pageSize')!) : undefined
+
+        let result = [...db.roles]
+        if (sortBy) {
+            const field = sortBy as keyof typeof result[0]
+            const order = sortOrder === 'desc' ? -1 : 1
+            result.sort((a: any, b: any) => {
+                const valA = a[field]
+                const valB = b[field]
+                if (valA === valB) return 0
+                if (valA === undefined || valA === null) return 1
+                if (valB === undefined || valB === null) return -1
+                return valA < valB ? -order : order
+            })
+        }
+        const total = result.length
+        if (page && pageSize) {
+            const start = (page - 1) * pageSize
+            result = result.slice(start, start + pageSize)
+        }
+        return HttpResponse.json({ success: true, data: result, total })
     }),
     http.post(`${API_BASE}/roles`, async ({ request }) => {
         const body = await request.json() as any
@@ -265,9 +367,33 @@ export const handlers = [
     }),
 
     // Directions
-    http.get(`${API_BASE}/directions`, async () => {
+    http.get(`${API_BASE}/directions`, async ({ request }) => {
         await delay(100)
-        return HttpResponse.json({ success: true, data: [...db.directions] })
+        const url = new URL(request.url)
+        const sortBy = url.searchParams.get('sortBy')
+        const sortOrder = url.searchParams.get('sortOrder') as 'asc' | 'desc'
+        const page = url.searchParams.get('page') ? parseInt(url.searchParams.get('page')!) : undefined
+        const pageSize = url.searchParams.get('pageSize') ? parseInt(url.searchParams.get('pageSize')!) : undefined
+
+        let result = [...db.directions]
+        if (sortBy) {
+            const field = sortBy as keyof typeof result[0]
+            const order = sortOrder === 'desc' ? -1 : 1
+            result.sort((a: any, b: any) => {
+                const valA = a[field]
+                const valB = b[field]
+                if (valA === valB) return 0
+                if (valA === undefined || valA === null) return 1
+                if (valB === undefined || valB === null) return -1
+                return valA < valB ? -order : order
+            })
+        }
+        const total = result.length
+        if (page && pageSize) {
+            const start = (page - 1) * pageSize
+            result = result.slice(start, start + pageSize)
+        }
+        return HttpResponse.json({ success: true, data: result, total })
     }),
     http.post(`${API_BASE}/directions`, async ({ request }) => {
         const body = await request.json() as any
@@ -295,9 +421,33 @@ export const handlers = [
     }),
 
     // Ranks
-    http.get(`${API_BASE}/ranks`, async () => {
+    http.get(`${API_BASE}/ranks`, async ({ request }) => {
         await delay(100)
-        return HttpResponse.json({ success: true, data: [...db.ranks] })
+        const url = new URL(request.url)
+        const sortBy = url.searchParams.get('sortBy')
+        const sortOrder = url.searchParams.get('sortOrder') as 'asc' | 'desc'
+        const page = url.searchParams.get('page') ? parseInt(url.searchParams.get('page')!) : undefined
+        const pageSize = url.searchParams.get('pageSize') ? parseInt(url.searchParams.get('pageSize')!) : undefined
+
+        let result = [...db.ranks]
+        if (sortBy) {
+            const field = sortBy as keyof typeof result[0]
+            const order = sortOrder === 'desc' ? -1 : 1
+            result.sort((a: any, b: any) => {
+                const valA = a[field]
+                const valB = b[field]
+                if (valA === valB) return 0
+                if (valA === undefined || valA === null) return 1
+                if (valB === undefined || valB === null) return -1
+                return valA < valB ? -order : order
+            })
+        }
+        const total = result.length
+        if (page && pageSize) {
+            const start = (page - 1) * pageSize
+            result = result.slice(start, start + pageSize)
+        }
+        return HttpResponse.json({ success: true, data: result, total })
     }),
     http.post(`${API_BASE}/ranks`, async ({ request }) => {
         const body = await request.json() as any

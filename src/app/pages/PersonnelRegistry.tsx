@@ -25,31 +25,49 @@ const STORAGE_KEY = 'personnel-table-columns';
 
 export default function PersonnelRegistry() {
   const navigate = useNavigate();
-  const { filteredPersonnel, filters, setFilters, loading, error, reload } = usePersonnel();
+  const { filteredPersonnel, filters, setFilters, totalCount, loading, error, reload } = usePersonnel();
   const { t } = useLanguage();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState<number>(() => {
-    if (typeof window === 'undefined') return 25;
-    const saved = localStorage.getItem('personnel-page-size');
-    return saved ? parseInt(saved, 10) : 25;
-  });
+
+  const currentPage = filters.page || 1;
+  const pageSize = filters.pageSize || 25;
 
   const [isPending, startTransition] = useTransition();
 
   const handleFiltersChange = (newFilters: PersonnelFiltersType) => {
     startTransition(() => {
-      setFilters(newFilters);
+      setFilters(prev => ({ ...prev, ...newFilters, page: 1 }));
     });
   };
 
-  useEffect(() => {
-    localStorage.setItem('personnel-page-size', pageSize.toString());
-  }, [pageSize]);
+  const setCurrentPage = (page: number | ((prev: number) => number)) => {
+    setFilters(prev => ({
+      ...prev,
+      page: typeof page === 'function' ? page(prev.page || 1) : page
+    }));
+  };
 
-  // Reset to first page when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filters]);
+  const setPageSize = (size: number) => {
+    setFilters(prev => ({ ...prev, pageSize: size, page: 1 }));
+    localStorage.setItem('personnel-page-size', size.toString());
+  };
+
+  const handleSort = (field: string) => {
+    setFilters(prev => {
+      if (prev.sortBy === field) {
+        return {
+          ...prev,
+          sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc',
+          page: 1
+        };
+      }
+      return {
+        ...prev,
+        sortBy: field,
+        sortOrder: 'asc' as const,
+        page: 1
+      };
+    });
+  };
 
   const [visibleColumns, setVisibleColumns] = useState<ColumnId[]>(() => {
     if (typeof window === 'undefined') return DEFAULT_COLUMNS;
@@ -83,11 +101,7 @@ export default function PersonnelRegistry() {
     { id: 'phone', label: t('table_col_phone') },
   ];
 
-  const totalPages = Math.ceil(filteredPersonnel.length / pageSize);
-  const paginatedPersonnel = filteredPersonnel.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
     <div className="flex flex-col p-6 gap-6">
@@ -98,7 +112,7 @@ export default function PersonnelRegistry() {
             {loading ? (
               <Skeleton className="h-4 w-32 inline-block" />
             ) : (
-              <>{t('registry_found')} <span className="font-medium">{filteredPersonnel.length}</span> {t('registry_records')}</>
+              <>{t('registry_found')} <span className="font-medium">{totalCount}</span> {t('registry_records')}</>
             )}
           </div>
         </div>
@@ -140,7 +154,13 @@ export default function PersonnelRegistry() {
       ) : (
         <div className="flex flex-col gap-4" style={{ opacity: isPending ? 0.7 : 1, transition: 'opacity 0.2s' }}>
           <div className="w-full relative rounded-md border">
-            <PersonnelTable personnel={paginatedPersonnel} visibleColumns={visibleColumns} />
+            <PersonnelTable
+              personnel={filteredPersonnel}
+              visibleColumns={visibleColumns}
+              sortField={filters.sortBy}
+              sortOrder={filters.sortOrder}
+              onSort={handleSort}
+            />
           </div>
 
           <div className="shrink-0">
