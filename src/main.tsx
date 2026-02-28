@@ -10,7 +10,8 @@ async function enableMocking() {
 
     // Safety check for base URL
     const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
-    const swUrl = `${baseUrl}/mockServiceWorker.js`
+    // Use the VitePWA service worker in production to ensure MSW and Workbox coexist
+    const swUrl = import.meta.env.PROD ? `${baseUrl}/sw.js` : `${baseUrl}/mockServiceWorker.js`
 
     console.log('[MSW] Initializing with SW:', swUrl)
 

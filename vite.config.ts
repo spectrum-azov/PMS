@@ -25,7 +25,8 @@ export default defineConfig({
       includeAssets: ['favicon.ico', 'icons/*.png'],
       workbox: {
         // Inject a notificationclick handler so tapping the notification opens the app
-        importScripts: ['sw-custom.js'],
+        // Also import MSW worker script to allow MSW to intercept requests alongside Workbox
+        importScripts: ['sw-custom.js', 'mockServiceWorker.js'],
       },
       manifest: {
         name: 'Personnel Management System',
