@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Personnel Management System</title>
+    <script type="text/javascript">
+        // GitHub Pages 404 Hack for SPAs
+        // This script converts the clean URL path into a hash fragment and redirects to the index page.
+        var segmentCount = 1; // Set this to 1 because your app is at /PMS/
+        var l = window.location;
+
+        // Reconstruct the intended path
+        var parts = l.pathname.split('/');
+        var base = parts.slice(0, segmentCount + 1).join('/');
+        var path = parts.slice(segmentCount + 1).join('/');
+
+        var newUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+            base + '/#/' + path + (l.search ? l.search : '') + l.hash;
+
+        window.location.replace(newUrl);
+    </script>
+</head>
+
+<body>
+    Redirecting...
+</body>
+
+</html>
