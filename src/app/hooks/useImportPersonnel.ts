@@ -8,6 +8,7 @@ import { Person, ServiceStatus, ServiceType } from '../types/personnel';
 import { checkDuplicatesInDb } from '../api/personnelApi';
 import Papa from 'papaparse';
 import { toast } from 'sonner';
+import { useEditableTable } from './useEditableTable';
 
 export interface ImportRow extends Partial<Person> {
     _id: string; // internal id for keying
@@ -33,7 +34,14 @@ export function useImportPersonnel() {
     const { addPerson } = usePersonnel();
     const { positions, ranks } = useDictionaries();
 
-    const [data, setData] = useState<ImportRow[]>([]);
+    const {
+        data,
+        setData,
+        updateRowField: updateField,
+        toggleRowSelection,
+        toggleAll
+    } = useEditableTable<ImportRow>({ initialData: [], idField: '_id', selectionField: '_selected' });
+
     const [isImporting, setIsImporting] = useState(false);
     const [isChecking, setIsChecking] = useState(false);
     const [dbChecked, setDbChecked] = useState(false);
@@ -240,25 +248,12 @@ export function useImportPersonnel() {
     };
 
     const updateRowField = (id: string, field: keyof Person, value: string) => {
-        setData(prev => {
-            const temp = prev.map(row => {
-                if (row._id === id) {
-                    return { ...row, [field]: value };
-                }
-                return row;
-            });
-            return checkDuplicates(temp);
-        });
-    };
-
-    const toggleRowSelection = (id: string) => {
-        setData(prev => prev.map(row =>
-            row._id === id ? { ...row, _selected: !row._selected } : row
-        ));
-    };
-
-    const toggleAll = (checked: boolean) => {
-        setData(prev => prev.map(row => ({ ...row, _selected: checked })));
+        // Use the generic updateField
+        updateField(id, field, value);
+        // We still need to run deduplication over the whole new dataset asynchronously
+        // or by reading the latest state. The old logic checked duplicates inline.
+        // Let's rely on the `updateField` and then trigger a duplicate check.
+        setData(prev => checkDuplicates(prev));
     };
 
     const handleCheckDb = async () => {
