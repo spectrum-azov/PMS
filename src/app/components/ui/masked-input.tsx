@@ -4,9 +4,9 @@ import { cn } from "./utils";
 import { Label } from "./label";
 
 interface MaskedInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onAccept'> {
-    mask: string | any;
+    mask: string | unknown;
     value?: string;
-    onAccept?: (value: string, mask: any) => void;
+    onAccept?: (value: string, mask: unknown) => void;
     label?: string;
     error?: string;
 }

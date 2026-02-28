@@ -15,7 +15,7 @@ export interface ImportRow extends Partial<Person> {
     _selected: boolean;
     _isValid: boolean;
     _errors: string[];
-    [key: string]: any; // allowing generic access
+    [key: string]: unknown; // allowing generic access
 }
 
 

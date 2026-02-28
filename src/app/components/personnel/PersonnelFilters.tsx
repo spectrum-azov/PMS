@@ -1,4 +1,5 @@
 import { Search, Filter, X } from 'lucide-react';
+import { useState, useDeferredValue, useEffect } from 'react';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import {
@@ -23,8 +24,23 @@ export function PersonnelFilters({ filters, onFiltersChange, actionSlot }: Perso
     const { units, positions, roles } = useDictionaries();
     const { t } = useLanguage();
 
+    const [searchText, setSearchText] = useState(filters.search || '');
+    const deferredSearchText = useDeferredValue(searchText);
+
+    useEffect(() => {
+        if (deferredSearchText !== (filters.search || '')) {
+            onFiltersChange({ ...filters, search: deferredSearchText || undefined });
+        }
+    }, [deferredSearchText]);
+
+    useEffect(() => {
+        if (filters.search === undefined && searchText !== '') {
+            setSearchText('');
+        }
+    }, [filters.search]);
+
     const handleSearchChange = (value: string) => {
-        onFiltersChange({ ...filters, search: value || undefined });
+        setSearchText(value);
     };
 
     const handleUnitChange = (value: string) => {
@@ -69,7 +85,7 @@ export function PersonnelFilters({ filters, onFiltersChange, actionSlot }: Perso
                     <Input
                         placeholder={t('filters_search_placeholder')}
                         className="pl-12"
-                        value={filters.search || ''}
+                        value={searchText}
                         onChange={(e) => handleSearchChange(e.target.value)}
                     />
                 </div>

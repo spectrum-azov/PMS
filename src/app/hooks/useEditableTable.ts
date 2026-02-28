@@ -7,7 +7,7 @@ export interface UseEditableTableProps<T> {
     selectionField?: keyof T;
 }
 
-export function useEditableTable<T extends { [key: string]: any }>({
+export function useEditableTable<T extends Record<string, unknown>>({
     initialData = [],
     onDataChange,
     idField = 'id' as keyof T,
@@ -25,7 +25,7 @@ export function useEditableTable<T extends { [key: string]: any }>({
         });
     }, [onDataChange]);
 
-    const updateRowField = useCallback((id: string, field: keyof T, value: any) => {
+    const updateRowField = useCallback((id: string, field: keyof T, value: T[keyof T]) => {
         setData((prev) =>
             prev.map((row) => {
                 if (String(row[idField]) === id) {
