@@ -23,7 +23,7 @@ export function PersonFormPersonalInfoCard({ register, control, errors, validate
             <CardHeader>
                 <CardTitle>{t('form_personal_info')}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5">
                 <div>
                     <Label htmlFor="callsign" className="mb-2">{t('form_callsign')}</Label>
                     <Input

@@ -6,7 +6,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { MaskedInput } from '../ui/masked-input';
 import { useLanguage } from '../../context/LanguageContext';
 
-const phonePattern = /^(?:\+?38)?0\d{9}$/;
 
 interface PersonFormAdditionalTabProps {
     register: UseFormRegister<Person>;
@@ -73,8 +72,11 @@ export function PersonFormAdditionalTab({ register, control, errors }: PersonFor
                                 name="family.emergencyContact.phone"
                                 control={control}
                                 rules={{
-                                    validate: (v) =>
-                                        !v || phonePattern.test(v) || t('form_val_phone_format'),
+                                    validate: (v) => {
+                                        if (!v) return true;
+                                        const digits = v.replace(/\D/g, '');
+                                        return digits.length === 10 || digits.length === 12 || t('form_val_phone_format');
+                                    }
                                 }}
                                 render={({ field }) => (
                                     <MaskedInput

@@ -6,7 +6,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { MaskedInput } from '../ui/masked-input';
 import { useLanguage } from '../../context/LanguageContext';
 
-const phonePattern = /^\+38 \(\d{3}\) \d{3}-\d{2}-\d{2}$/;
 const docPattern = /^[А-ЯҐЄІЇA-Z]{2}\s\d{6}$/i;
 
 interface PersonFormContactCardProps {
@@ -25,17 +24,20 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                 <CardHeader>
                     <CardTitle>{t('form_contact')}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-5">
                     <div>
                         <Controller
                             name="phone"
                             control={control}
                             rules={{
                                 required: t('common_required_field'),
-                                pattern: {
-                                    value: phonePattern,
-                                    message: t('form_val_phone_format'),
-                                },
+                                validate: (v) => {
+                                    if (!v) return true;
+                                    const digits = v.replace(/\D/g, '');
+                                    // if it's 10 digits (098...), or 12 digits (38098...)
+                                    if (digits.length === 10 || digits.length === 12) return true;
+                                    return t('form_val_phone_format');
+                                }
                             }}
                             render={({ field }) => (
                                 <MaskedInput
@@ -78,7 +80,7 @@ export function PersonFormContactCard({ register, control, errors }: PersonFormC
                 <CardHeader>
                     <CardTitle>{t('form_documents')}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-5">
                     <div>
                         <Label htmlFor="militaryId" className="mb-2">{t('form_military_id')}</Label>
                         <Input

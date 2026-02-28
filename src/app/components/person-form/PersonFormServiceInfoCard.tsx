@@ -22,7 +22,7 @@ export function PersonFormServiceInfoCard({ register, control, errors }: PersonF
             <CardHeader>
                 <CardTitle>{t('form_service')}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5">
                 <div>
                     <Label htmlFor="serviceType" className="mb-2">{t('form_service_type')}</Label>
                     <Controller
