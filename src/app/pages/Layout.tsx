@@ -62,7 +62,7 @@ export function Layout() {
             </div>
 
             <div className="flex items-center gap-2">
-              <ThemeToggle />
+              {/* <ThemeToggle />
               <Button
                 variant="ghost"
                 size="sm"
@@ -75,7 +75,7 @@ export function Layout() {
                   {lang === 'uk' ? 'UA' : 'EN'}
                 </span>
               </Button>
-              <NotificationCenter />
+              <NotificationCenter /> */}
               <Button
                 variant="outline"
                 size="sm"
