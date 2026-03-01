@@ -14,6 +14,7 @@ interface PersonnelContextType {
   getPersonById: (id: string) => Person | undefined;
   filteredPersonnel: Person[];
   totalCount: number;
+  totalOverallCount: number;
   loading: boolean;
   error: string | null;
   reload: () => Promise<void>;
@@ -29,6 +30,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
 
   const [personnel, setPersonnel] = useState<Person[]>([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [totalOverallCount, setTotalOverallCount] = useState(0);
   const [filters, setFilters] = useState<PersonnelFilters>(() => {
     if (typeof window === 'undefined') return { page: 1, pageSize: 25, sortBy: 'callsign', sortOrder: 'asc' };
     const savedSize = localStorage.getItem('personnel-page-size');
@@ -52,6 +54,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
       setPersonnel(result.data);
       // If server provides total, use it, otherwise use local data length
       setTotalCount(result.total !== undefined ? result.total : result.data.length);
+      setTotalOverallCount(result.totalOverall !== undefined ? result.totalOverall : (result.total !== undefined ? result.total : result.data.length));
     } else {
       setError(result.message);
       toast.error(result.message);
@@ -123,6 +126,7 @@ export function PersonnelProvider({ children }: { children: React.ReactNode }) {
         getPersonById,
         filteredPersonnel,
         totalCount,
+        totalOverallCount,
         loading,
         error,
         reload: () => loadPersonnel(filters),

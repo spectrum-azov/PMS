@@ -4,6 +4,7 @@ export interface ApiResponse<T> {
     data: T;
     success: true;
     total?: number;
+    totalOverall?: number;
 }
 
 export interface ApiError {

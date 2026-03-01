@@ -77,7 +77,7 @@ export const handlers = [
             result = result.slice(start, end)
         }
 
-        return HttpResponse.json({ success: true, data: result, total })
+        return HttpResponse.json({ success: true, data: result, total, totalOverall: db.personnel.length })
     }),
 
     // GET single person

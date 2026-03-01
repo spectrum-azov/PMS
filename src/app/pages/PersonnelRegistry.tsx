@@ -29,7 +29,7 @@ const STORAGE_KEY = 'personnel-table-columns';
 
 export default function PersonnelRegistry() {
   const navigate = useNavigate();
-  const { filteredPersonnel, filters, setFilters, totalCount, loading, error, reload } = usePersonnel();
+  const { filteredPersonnel, filters, setFilters, totalCount, totalOverallCount, loading, error, reload } = usePersonnel();
   const { settings } = useSettings();
   const { t } = useLanguage();
   const isInfiniteScroll = settings.tableDisplayMode === 'infiniteScroll';
@@ -96,9 +96,9 @@ export default function PersonnelRegistry() {
       pageSize: ps,
     });
     if (result.success) {
-      return { data: result.data, total: result.total ?? result.data.length };
+      return { data: result.data, total: result.total ?? result.data.length, totalOverall: result.totalOverall };
     }
-    return { data: [] as Person[], total: 0 };
+    return { data: [] as Person[], total: 0, totalOverall: 0 };
   }, [filters.search, filters.unitId, filters.positionId, filters.status, filters.serviceType, filters.roleId, filters.sortBy, filters.sortOrder]);
 
   const infiniteScroll = useInfiniteScroll<Person>({
@@ -145,6 +145,7 @@ export default function PersonnelRegistry() {
   // Choose data source based on display mode
   const displayData = isInfiniteScroll ? infiniteScroll.items : filteredPersonnel;
   const displayTotalCount = isInfiniteScroll ? infiniteScroll.totalCount : totalCount;
+  const displayTotalOverallCount = isInfiniteScroll ? infiniteScroll.totalOverallCount : totalOverallCount;
   const isLoading = isInfiniteScroll ? (infiniteScroll.loadingMore && infiniteScroll.items.length === 0) : loading;
 
   return (
@@ -152,13 +153,7 @@ export default function PersonnelRegistry() {
       <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-semibold text-foreground">{t('registry_title')}</h2>
-          <div className="text-muted-foreground mt-1">
-            {isLoading ? (
-              <Skeleton className="h-4 w-32 inline-block" />
-            ) : (
-              <>{t('registry_found')} <span className="font-medium">{displayTotalCount}</span> {t('registry_records')}</>
-            )}
-          </div>
+
         </div>
         <div className="flex gap-2">
           <Button onClick={() => navigate('/personnel/new')}>
@@ -197,6 +192,14 @@ export default function PersonnelRegistry() {
         </Card>
       ) : (
         <div className="flex flex-col gap-4" style={{ opacity: isPending ? 0.7 : 1, transition: 'opacity 0.2s' }}>
+          <div className="text-muted-foreground text-sm ml-1">
+            {isLoading ? (
+              <Skeleton className="h-4 w-64 inline-block" />
+            ) : (
+              <>{t('registry_found')} <span className="font-medium">{displayTotalCount}</span>. {t('dashboard_total_personnel')}: <span className="font-medium">{displayTotalOverallCount}</span></>
+            )}
+          </div>
+
           <div className="w-full relative rounded-md border">
             <PersonnelTable
               personnel={displayData}
